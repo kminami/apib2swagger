@@ -1,5 +1,8 @@
 var fs = require('fs');
+var http = require('http');
+var url = require('url');
 var exec = require('child_process').exec;
+
 var nopt = require('nopt');
 var protagonist = require('protagonist');
 
@@ -53,31 +56,43 @@ protagonist.parse(apibData, function(error, result) {
 });
 
 function apib2swagger(apib) {
-    //console.log(JSON.stringify(apib));
+    //console.log(JSON.stringify(apib, null, 4));
     var swagger = {};
     swagger.swagger = '2.0';
     swagger.info = {
         'title': apib.name,
-        'version': ''
+        'version': '',
+        'description': apib.description
     }
-    //swagger.host = apib.metadata[].host;
+    for (var i = 0; i < apib.metadata.length; i++) {
+        var meta = apib.metadata[i];
+        //console.log(meta);
+        if (meta.name.toLowerCase() === 'host') {
+            var urlParts = url.parse(meta.value);
+            swagger.host = urlParts.host;
+            swagger.basePath = urlParts.pathname;
+            swagger.schemes = [urlParts.protocol.replace(':','')];
+        }
+    }
     swagger.paths = {};
     for (var i = 0; i < apib.resourceGroups.length; i++) {
+        // description in Resource group section is discarded
         var group = apib.resourceGroups[i];
         //console.log("- " + group.name);
         for (var j = 0; j < group.resources.length; j++) {
+            // (name, description) in Resource section are discarded
             var resource = group.resources[j];
             //console.log("-- " + resource.name + " " + resource.uriTemplate);
-            swagger.paths[resource.uriTemplate] = swaggerPath(resource, group.name);
+            swagger.paths[resource.uriTemplate] = swaggerPath(resource.actions, group.name);
         }
     }
     return swagger;
 }
 
-function swaggerPath(resource, tag) {
+function swaggerPath(actions, tag) {
     path = {}
-    for (var k = 0; k < resource.actions.length; k++) {
-        var action = resource.actions[k];
+    for (var k = 0; k < actions.length; k++) {
+        var action = actions[k];
         //console.log("--- " + action.method);
         path[action.method.toLowerCase()] = {
             'parameters': swaggerParameters(action.parameters),
@@ -96,12 +111,23 @@ function swaggerParameters(parameters) {
     for (var l = 0; l < parameters.length; l++) {
         var parameter = parameters[l];
         //console.log(parameter);
-        // "query", "header", "path", "formData", "body"
-        params.push({
+        // in = ["query", "header", "path", "formData", "body"]
+        var param = {
             'name': parameter.name,
             'in': 'path',
-            'description': parameter.description
-        });
+            'description': parameter.description,
+            'required': parameter.required,
+            'default': parameter.default,
+        }
+        if (parameter.type === 'bool') {
+            param.type = 'boolean';
+        } else {
+            param.type = parameter.type;
+        }
+        if (parameter.values.length > 0) {
+            param.enum = parameter.values;
+        }
+        params.push(param);
     }
     return params;
 }
@@ -118,18 +144,24 @@ function swaggerResponses(examples) {
         for (var m = 0; m < example.responses.length; m++) {
             var response = example.responses[m];
             //console.log(response);
-            if (response.name === "200") {
-                responses['default'] = {};
-            } else {
-                responses[response.name] = {};
-            }
+            responses[response.name] = {
+                "description": http.STATUS_CODES[response.name],
+                //"headers": response.headers,
+                "examples": {}
+            };
+            //for (var n = 0; n < response.headers.length; n++) {
+            //    var header = response.headers[n];
+            //    if (header.name !== 'Content-Type') continue;
+            //    responses[response.name].examples[header.value] = response.body;
+            //    break;
+            //}
         }
     }
     return responses;
 }
 
 function runServer(swagger) {
-    var server = require('http').createServer(function(request, response) {
+    var server = http.createServer(function(request, response) {
         console.log(request.url);
         var path = request.url.split('?')[0];
         if (path === '/swagger.json') {
@@ -145,6 +177,7 @@ function runServer(swagger) {
             if (!fs.existsSync(file)) {
                 response.statusCode = 404;
                 response.end();
+                return;
             }
             response.statusCode = 200;
             response.write(fs.readFileSync(file));
