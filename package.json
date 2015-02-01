@@ -3,11 +3,14 @@
     "version": "0.1.0",
     "description": "Convert API Blueprint to Swagger.",
     "repository": {
+        "type": "git",
+        "url": "https://github.com/kminami/apib2swagger.git"
     },
     "license": "MIT",
     "author": {"name": "Keisuke Minami"},
     "dependencies": {
         "protagonist": ">=0.17.1",
+        "uritemplate": ">=0.3.4",
         "nopt": ">=3.0.1"
     }
 }

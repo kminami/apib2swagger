@@ -5,6 +5,7 @@ var exec = require('child_process').exec;
 
 var nopt = require('nopt');
 var protagonist = require('protagonist');
+var UriTemplate = require('uritemplate');
 
 var options = nopt({
     'input': String,
@@ -83,29 +84,48 @@ function apib2swagger(apib) {
             // (name, description) in Resource section are discarded
             var resource = group.resources[j];
             //console.log("-- " + resource.name + " " + resource.uriTemplate);
-            swagger.paths[resource.uriTemplate] = swaggerPath(resource.actions, group.name);
+            var uriTemplate = UriTemplate.parse(resource.uriTemplate);
+            swagger.paths[resource.uriTemplate] = swaggerPath(resource.actions, group.name, uriTemplate);
         }
     }
     return swagger;
 }
 
-function swaggerPath(actions, tag) {
+function swaggerPath(actions, tag, uriTemplate) {
     path = {}
     for (var k = 0; k < actions.length; k++) {
         var action = actions[k];
         //console.log("--- " + action.method);
-        path[action.method.toLowerCase()] = {
-            'parameters': swaggerParameters(action.parameters),
+        var operation = {
             'responses': swaggerResponses(action.examples),
             'summary': action.name,
             'description': action.description,
             'tags': [tag]
         }
+        if (action.parameters.length > 0) {
+            operation.parameters = swaggerParameters(action.parameters, uriTemplate);
+        }
+        //operation.produces = [];
+        //for (var key in operation.responses) {
+        //    var response = operation.responses[key];
+        //    for (var mime in response.examples) {
+        //        operation.produces.push(mime);
+        //    }
+        //}
+        path[action.method.toLowerCase()] = operation;
     }
     return path;
 }
 
-function swaggerParameters(parameters) {
+function swaggerParameters(parameters, uriTemplate) {
+    var PARAM_TYPES = {
+        'string': 'string',
+        'number': 'number',
+        'integer': 'integer',
+        'boolean': 'boolean', 'bool': 'boolean',
+        'array': 'array',
+        'file': 'file'
+    }
     var params = [];
     //console.log(parameters);
     for (var l = 0; l < parameters.length; l++) {
@@ -114,15 +134,15 @@ function swaggerParameters(parameters) {
         // in = ["query", "header", "path", "formData", "body"]
         var param = {
             'name': parameter.name,
-            'in': 'path',
+            'in': getParamType(parameter.name, uriTemplate),
             'description': parameter.description,
             'required': parameter.required,
             'default': parameter.default,
         }
-        if (parameter.type === 'bool') {
-            param.type = 'boolean';
+        if (PARAM_TYPES.hasOwnProperty(parameter.type)) {
+            param.type = PARAM_TYPES[parameter.type];
         } else {
-            param.type = parameter.type;
+            param.type = 'string';
         }
         if (parameter.values.length > 0) {
             param.enum = parameter.values;
@@ -130,6 +150,20 @@ function swaggerParameters(parameters) {
         params.push(param);
     }
     return params;
+}
+
+function getParamType(name, uriTemplate) {
+    for (var i = 0; i < uriTemplate.expressions.length; i++) {
+        var exp = uriTemplate.expressions[i];
+        if (!exp.varspecs) continue;
+        for (var j = 0; j < exp.varspecs.length; j++) {
+            var spec = exp.varspecs[j];
+            if (spec.varname === name) {
+                return exp.operator.symbol === '?' ? 'query' : 'path';
+            }
+        }
+    }
+    return 'header' // TODO: decide 'header', 'formData', 'body'
 }
 
 function swaggerResponses(examples) {
@@ -146,14 +180,15 @@ function swaggerResponses(examples) {
             //console.log(response);
             responses[response.name] = {
                 "description": http.STATUS_CODES[response.name],
-                //"headers": response.headers,
+                "headers": {},
                 "examples": {}
             };
             //for (var n = 0; n < response.headers.length; n++) {
             //    var header = response.headers[n];
-            //    if (header.name !== 'Content-Type') continue;
-            //    responses[response.name].examples[header.value] = response.body;
-            //    break;
+            //    responses[response.name].headers[header.name] = {'type':'string'}
+            //    if (header.name === 'Content-Type') {
+            //        responses[response.name].examples[header.value] = response.body;
+            //    }
             //}
         }
     }
