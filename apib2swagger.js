@@ -37,6 +37,10 @@ protagonist.parse(apibData, function(error, result) {
         console.log(error);
         return;
     }
+    //for (var i = 0; i < result.warnings.length; i++) {
+    //    var warn = result.warnings[i];
+    //    console.log(warn);
+    //}
     var swagger = apib2swagger(result.ast);
     if (options.server) {
         if (!fs.existsSync('swagger-ui-master/dist')) {
@@ -85,10 +89,25 @@ function apib2swagger(apib) {
             var resource = group.resources[j];
             //console.log("-- " + resource.name + " " + resource.uriTemplate);
             var uriTemplate = UriTemplate.parse(resource.uriTemplate);
-            swagger.paths[resource.uriTemplate] = swaggerPath(resource.actions, group.name, uriTemplate);
+            var pathName = swaggerPathName(uriTemplate);
+            swagger.paths[pathName] = swaggerPath(resource.actions, group.name, uriTemplate);
         }
     }
     return swagger;
+}
+
+function swaggerPathName(uriTemplate) {
+    var params = {}
+    for (var i = 0; i < uriTemplate.expressions.length; i++) {
+        var exp = uriTemplate.expressions[i];
+        if (!exp.varspecs) continue;
+        if (exp.operator.symbol === '?') continue; // query
+        for (var j = 0; j < exp.varspecs.length; j++) {
+            var spec = exp.varspecs[j];
+            params[spec.varname] = '{' + spec.varname + '}';
+        }
+    }
+    return decodeURIComponent(uriTemplate.expand(params));
 }
 
 function swaggerPath(actions, tag, uriTemplate) {
