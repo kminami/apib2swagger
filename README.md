@@ -2,29 +2,38 @@
 
 Convert API Blueprint to Swagger.
 
-## Setup
+## Install
 
 ```
-$ git clone https://github.com/kminami/apib2swagger.git
-$ cd apib2swagger
-$ npm install
+$ npm install apib2swagger
 ```
 
 ## Usage
 
 Convert to Swagger specification.
 ```
-$ nodejs apib2swagger.js -i api.md
-$ nodejs apib2swagger.js -i api.md -o swagger.json
+$ apib2swagger -i api.md
+$ apib2swagger -i api.md -o swagger.json
 ```
 
 Run http server with SwaggerUI.
 SwaggerUI will be automatically downloaded to current dir.
 ```
-$ nodejs apib2swagger.js -i api.md -s
-$ nodejs apib2swagger.js -i api.md -s -p 3000
+$ apib2swagger -i api.md -s
+$ apib2swagger -i api.md -s -p 3000
+```
+
+As a library.
+```
+var apib2swagger = require('apib2swagger');
+apib2swagger.convert(apib, function (error, result) {
+    if (!error) console.log(result.swagger);
+});
 ```
 
 ## License
+
 MIT
+
+Copyright (c) 2015 Keisuke Minami
 
