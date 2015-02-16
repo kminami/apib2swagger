@@ -23,10 +23,11 @@ $ apib2swagger -i api.md -s
 $ apib2swagger -i api.md -s -p 3000
 ```
 
-As a library.
+Use as a library.
 ```javascript
 var apib2swagger = require('apib2swagger'),
     apib = '...';
+
 apib2swagger.convert(apib, function (error, result) {
     if (!error) console.log(result.swagger);
 });
@@ -38,6 +39,6 @@ Copyright (c) 2015 Keisuke Minami
 
 MIT
 
-[API Blueprint] https://apiblueprint.org/ 'API Blueprint'
-[Swagger] http://swagger.io/ 'Swagger'
+[API Blueprint]: https://apiblueprint.org/ "API Blueprint"
+[Swagger]: http://swagger.io/ "Swagger"
 
