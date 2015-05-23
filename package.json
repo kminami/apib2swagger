@@ -1,6 +1,6 @@
 {
     "name": "apib2swagger",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Convert API Blueprint to Swagger.",
     "main": "./lib/main.js",
     "bin": "./bin/apib2swagger.js",
