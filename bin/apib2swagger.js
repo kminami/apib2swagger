@@ -2,6 +2,7 @@
 
 var fs = require('fs'),
     http = require('http'),
+    https = require('https'),
     exec = require('child_process').exec,
     nopt = require('nopt'),
     apib2swagger = require('../lib/main.js');
@@ -26,7 +27,8 @@ if (!options.input) {
     process.exit();
 }
 
-var swaggerUI = 'https://github.com/swagger-api/swagger-ui/archive/master.tar.gz',
+//var swaggerUI = 'https://github.com/swagger-api/swagger-ui/archive/master.tar.gz',
+var swaggerUI = 'https://codeload.github.com/swagger-api/swagger-ui/tar.gz/master',
     output = options.output || '-',
     port = options.port || 3000,
     apibData = fs.readFileSync(options.input, {encoding: 'utf8'});
@@ -86,21 +88,37 @@ function runServer(swagger) {
 function downloadSwagger(callback) {
     var filename = 'swagger-ui-master.tar.gz';
     console.log('Downloading SwaggerUI (' + swaggerUI + ')');
-    exec('wget ' + swaggerUI + ' -O ' + filename, function (err, stdout, stderr) {
+    https.get(swaggerUI, function (res) {
+        if (res.statusCode === 200) {
+        }
+        var w = fs.createWriteStream(filename);
+        res.pipe(w);
+        res.on('end', function () {
+            extract(filename, callback);
+        })
+    }).on('error', function (e) {
+        console.error(e);
+    });
+    //exec('wget ' + swaggerUI + ' -O ' + filename, function (err, stdout, stderr) {
+    //    if (err) {
+    //        console.log(stdout);
+    //        console.log(stderr);
+    //        return;
+    //    }
+    //    extract(filename, callback);
+    //});
+}
+
+function extract(filename, callback) {
+    console.log('Extracting ' + filename);
+    exec('tar xzvf ' + filename, function (err, stdout, stderr) {
         if (err) {
             console.log(stdout);
             console.log(stderr);
             return;
         }
-        console.log('Extracting ' + filename);
-        exec('tar xzvf ' + filename, function (err, stdout, stderr) {
-            if (err) {
-                console.log(stdout);
-                console.log(stderr);
-                return;
-            }
-            console.log('Complete!');
-            callback();
-        });
+        console.log('Complete!');
+        callback();
     });
 }
+

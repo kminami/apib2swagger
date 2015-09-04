@@ -2,6 +2,10 @@
 
 Convert [API Blueprint][] to [Swagger][].
 
+Support version:
+- API Blueprint 1A7
+- Swagger 2.0
+
 ## Install
 
 ```
@@ -17,7 +21,7 @@ $ apib2swagger -i api.md -o swagger.json
 ```
 
 Run http server with SwaggerUI.
-SwaggerUI will be automatically downloaded to current dir. (requires wget)
+SwaggerUI will be automatically downloaded to current dir.
 ```shell
 $ apib2swagger -i api.md -s
 $ apib2swagger -i api.md -s -p 3000
