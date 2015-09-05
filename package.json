@@ -1,18 +1,20 @@
 {
-    "name": "apib2swagger",
-    "version": "0.2.0",
-    "description": "Convert API Blueprint to Swagger.",
-    "main": "./lib/main.js",
-    "bin": "./bin/apib2swagger.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/kminami/apib2swagger.git"
-    },
-    "license": "MIT",
-    "author": {"name": "Keisuke Minami"},
-    "dependencies": {
-        "protagonist": ">=0.17.1",
-        "uritemplate": ">=0.3.4",
-        "nopt": ">=3.0.1"
-    }
+  "name": "apib2swagger",
+  "version": "0.2.0",
+  "description": "Convert API Blueprint to Swagger.",
+  "main": "./lib/main.js",
+  "bin": "./bin/apib2swagger.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kminami/apib2swagger.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Keisuke Minami"
+  },
+  "dependencies": {
+    "nopt": ">=3.0.1",
+    "protagonist": ">=0.19.0",
+    "uritemplate": ">=0.3.4"
+  }
 }
