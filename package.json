@@ -4,6 +4,9 @@
   "description": "Convert API Blueprint to Swagger.",
   "main": "./lib/main.js",
   "bin": "./bin/apib2swagger.js",
+  "scripts": {
+    "test": "mocha"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/kminami/apib2swagger.git"
@@ -16,5 +19,8 @@
     "nopt": ">=3.0.1",
     "protagonist": ">=0.19.0",
     "uritemplate": ">=0.3.4"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.5"
   }
 }

@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Data Structures API",
+    "version": "",
+    "description": "Following [Advanced Attributes](09.%20Advanced%20Attributes.md), this example demonstrates defining arbitrary data structure to be reused by various attribute descriptions. \n\nSince a portion of the `Coupon` data structure is shared between the `Coupon` definition itself and the `Create a Coupon` action, it was separated into a `Coupon Base` data structure in the `Data Strucutes` API Blueprint Section. Doing so enables us to reuse it as a base-type of other attribute definitions.\n\n## API Blueprint\n\n+ [Previous: Advanced Attributes](09.%20Advanced%20Attributes.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/10.%20Data%20Structures.md)\n\n+ [Next: Resource Model](11.%20Resource%20Model.md)\n\n"
+  },
+  "paths": {
+    "/coupons/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Retrieve a Coupon",
+        "description": "Retrieves the coupon with the given ID.\n\n",
+        "tags": [
+          "Coupons"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the desired coupon.\n",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "/coupons": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "List all Coupons",
+        "description": "Returns a list of your coupons.\n\n",
+        "tags": [
+          "Coupons"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100 items.\n",
+            "required": false,
+            "type": "number",
+            "default": 10
+          }
+        ]
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create a Coupon",
+        "description": "Creates a new Coupon.\n\n",
+        "tags": [
+          "Coupons"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/Coupon Base"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Coupon": {
+      "$ref": "#/definitions/Coupon Base"
+    },
+    "Coupons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Coupon"
+      }
+    },
+    "Coupon Base": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "percent_off": {
+          "type": "number"
+        },
+        "redeem_by": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

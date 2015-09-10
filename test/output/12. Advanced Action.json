@@ -1,0 +1,91 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Advanced Action API",
+    "version": "",
+    "description": "A resource action is – in fact – a state transition. This API example demonstrates an action - state transition - to another resource.\n\n## API Blueprint\n\n+ [Previous: Resource Model](11.%20Resource%20Model.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/11.%20Advanced%20Action.md)\n\n"
+  },
+  "paths": {
+    "/tasks/tasks": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "List All Tasks",
+        "description": "",
+        "tags": [
+          "(no tags)"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "type": "number"
+          }
+        ]
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Retrieve Task",
+        "description": "This is a state transition to another resource\n\n",
+        "tags": [
+          "(no tags)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Delete Task",
+        "description": "",
+        "tags": [
+          "(no tags)"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {}
+}

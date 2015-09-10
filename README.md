@@ -3,7 +3,7 @@
 Convert [API Blueprint][] to [Swagger][].
 
 Support version:
-- API Blueprint 1A7
+- API Blueprint 1A7 (@0.2.0), 1A8 (@0.3.0)
 - Swagger 2.0
 
 ## Install

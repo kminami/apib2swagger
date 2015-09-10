@@ -1,0 +1,43 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Requests API",
+    "version": "",
+    "description": "Following the [Responses](05.%20Responses.md) example, this API will show you how to define multiple requests and what data these requests can bear. Let's demonstrate multiple requests on a trivial example of content negotiation.\n\n## API Blueprint\n\n+ [Previous: Responses](05.%20Responses.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/06.%20Requests.md)\n\n+ [Next: Parameters](07.%20Parameters.md)\n\n"
+  },
+  "paths": {
+    "/message": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Retrieve a Message",
+        "description": "In API Blueprint requests can hold exactly the same kind of information and can be described by exactly the same structure as responses, only with different signature – using the `Request` keyword. The string that follows after the `Request` keyword is a request identifier. Again, using an explanatory and simple naming is the best way to go. \n\n",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": []
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Update a Message",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {}
+}
