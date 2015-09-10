@@ -1,7 +1,7 @@
 var assert = require("assert"),
     fs = require("fs"),
     https = require("https"),
-    apib2swagger = require("../lib/main.js");
+    apib2swagger = require("../index.js");
 
 var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A8/examples/',
     localInput = 'test/input/',

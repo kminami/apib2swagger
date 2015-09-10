@@ -5,7 +5,7 @@ var fs = require('fs'),
     https = require('https'),
     exec = require('child_process').exec,
     nopt = require('nopt'),
-    apib2swagger = require('../lib/main.js');
+    apib2swagger = require('../index.js');
 
 var options = nopt({
     'input': String,
