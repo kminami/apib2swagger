@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "nopt": ">=3.0.1",
-    "protagonist": ">=0.19.0",
+    "protagonist": ">=0.19.0 <1.0.0",
     "uritemplate": ">=0.3.4"
   },
   "devDependencies": {
