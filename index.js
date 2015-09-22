@@ -64,15 +64,14 @@ function swaggerPathName(uriTemplate) {
 }
 
 var swaggerDefinitions = function (definitions, resource) {
-    var scheme = searchDataStructure(resource.content); // Attributes 1
-    if (resource.name && scheme) {
-        definitions[resource.name] = scheme;
+    var scheme;
+    if (resource.name) {
+        scheme = searchDataStructure(resource.content); // Attributes 1
+        definitions[resource.name] = scheme ? scheme : {};
     }
-    if (resource.model.content) {
+    if (resource.model.content && resource.model.name) {
         scheme = searchDataStructure(resource.model.content); // Attribute 2
-        if (resource.model.name && scheme) {
-            definitions[resource.model.name + 'Model'] = scheme;
-        }
+        definitions[resource.model.name + 'Model'] = scheme ? scheme : {};
     }
 };
 
