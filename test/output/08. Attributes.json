@@ -24,5 +24,7 @@
       }
     }
   },
-  "definitions": {}
+  "definitions": {
+    "Coupon": {}
+  }
 }

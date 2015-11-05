@@ -39,5 +39,8 @@
       }
     }
   },
-  "definitions": {}
+  "definitions": {
+    "My Message": {},
+    "My MessageModel": {}
+  }
 }
