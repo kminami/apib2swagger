@@ -285,7 +285,11 @@ exports.convert = function (data, callback) {
         //    var warn = result.warnings[i];
         //    console.log(warn);
         //}
-        var swagger = apib2swagger(result.ast);
+        try {
+            var swagger = apib2swagger(result.ast);
+        } catch (e) {
+            return callback(e, {});
+        }
         return callback(null, {swagger: swagger});
     });
 };
