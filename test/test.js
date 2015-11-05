@@ -59,8 +59,10 @@ describe("apib2swagger", function () {
                 var apib = fs.readFileSync(localInput + file, "utf-8");
                 apib2swagger.convert(apib, function (error, result) {
                     if (error) {
-                        assert.ok(false);
-                    } else if (prepare) {
+                        return done(error);
+                    }
+
+                    if (prepare) {
                         fs.writeFileSync(localOutput + file.replace('.md', '.json'), JSON.stringify(result.swagger, 0, 2));
                         assert.ok(true);
                     } else {
