@@ -1,6 +1,6 @@
 var url = require('url'),
     http = require('http'),
-    protagonist = require('protagonist'),
+    drafter = require('drafter.js'),
     UriTemplate = require('uritemplate');
 
 var apib2swagger = module.exports.convertParsed = function(apib) {
@@ -277,20 +277,17 @@ function swaggerResponses(examples) {
 }
 
 exports.convert = function (data, callback) {
-    protagonist.parse(data, function (error, result) {
-        if (error) {
-            return callback(error, {});
-        }
-        //for (var i = 0; i < result.warnings.length; i++) {
-        //    var warn = result.warnings[i];
-        //    console.log(warn);
-        //}
-        try {
-            var swagger = apib2swagger(result.ast);
-        } catch (e) {
-            return callback(e, {});
-        }
-        return callback(null, {swagger: swagger});
-    });
+  try {
+    var result = drafter.parse(data, {type: 'ast'});
+    //for (var i = 0; i < result.warnings.length; i++) {
+    //    var warn = result.warnings[i];
+    //    console.log(warn);
+    //}
+    var swagger = apib2swagger(result.ast);
+    return callback(null, {swagger: swagger});
+  }
+  catch (error) {
+    return callback(error, {});
+  }
 };
 
