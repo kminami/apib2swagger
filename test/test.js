@@ -51,6 +51,7 @@ var fetch = function (file) {
 describe("apib2swagger", function () {
     describe("#convert()", function () {
         before(function () {
+            this.timeout(20000); // 20s
             return Promise.all(files.map(fetch));
         });
 
