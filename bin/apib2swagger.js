@@ -10,6 +10,7 @@ var fs = require('fs'),
 var options = nopt({
     'input': String,
     'output': String,
+    'convert': Boolean,
     'server': Boolean,
     'port': Number
 }, {
@@ -32,6 +33,22 @@ var swaggerUI = 'https://codeload.github.com/swagger-api/swagger-ui/tar.gz/maste
     output = options.output || '-',
     port = options.port || 3000,
     apibData = fs.readFileSync(options.input, {encoding: 'utf8'});
+
+if (options.convert === false) { // --no-convert
+    apib2swagger.noconvert(apibData, function(error, result) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+        var data = JSON.stringify(result.ast, null, 4);
+        if (output !== '-') {
+            fs.writeFileSync(output, data);
+        } else {
+            console.log(data);
+        }
+    });
+    return;
+}
 
 apib2swagger.convert(apibData, function(error, result) {
     if (error) {
