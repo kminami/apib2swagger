@@ -1,6 +1,6 @@
 var url = require('url'),
     http = require('http'),
-    protagonist = require('protagonist'),
+    drafter = require('drafter.js'),
     UriTemplate = require('uritemplate');
 
 var apib2swagger = module.exports.convertParsed = function(apib) {
@@ -28,11 +28,11 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
         // description in Resource group section is discarded
         var category = apib.content[i];
         if (category.element !== 'category') continue;
+        var groupName = category.attributes ? category.attributes.name : '(no tags)';
         for (var j = 0; j < category.content.length; j++) {
             var content = category.content[j];
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                var groupName = category.attributes ? category.attributes.name : '(no tags)';
                 swaggerDefinitions(swagger.definitions, content);
                 swaggerPaths(swagger.paths, groupName, content);
                 continue;
@@ -41,7 +41,8 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
                 continue;
             }
             if (content.element === 'dataStructure') {
-                swagger.definitions[content.name.literal] = jsonSchemaFromMSON(content);
+                swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content); // apib._version = "4.0"
+                //swagger.definitions[content.name.literal] = jsonSchemaFromMSON(content); // apib._version = "3.0"
                 continue;
             }
         }
@@ -188,6 +189,30 @@ var searchDataStructure = function (contents) {
 };
 
 var jsonSchemaFromMSON = function (content) {
+    // for apib._version = "4.0"
+    var mson = content.content[0];
+    if (mson.element === 'array') {
+        return {type: 'array'};
+    }
+    if (mson.element !== 'object') {
+        return {'$ref': '#/definitions/' + mson.element};
+    }
+    // object
+    var schema = {};
+    schema.type = 'object';
+    schema.required = [];
+    schema.properties = {};
+    for (var j = 0; j < mson.content.length; j++) {
+        var member = mson.content[j];
+        if (member.element !== "member") continue;
+        // MEMO: member.meta.description
+        schema.properties[member.content.key.content] = {type: member.content.value.element};
+    }
+    return schema;
+};
+
+var jsonSchemaFromMSONv3 = function (content) {
+    // for apib._version = "3.0"
     // MEMO: content.typeDefinition.typeSpecification.name referrences DataStructure name
     var type = content.typeDefinition.typeSpecification;
     if (type.name === 'string') {
@@ -276,21 +301,27 @@ function swaggerResponses(examples) {
     return responses;
 }
 
+exports.noconvert = function (data, callback) {
+    try {
+        var result = drafter.parse(data, {type: 'ast'});
+        return callback(null, result);
+    } catch (error) {
+        return callback(error, {});
+    }
+};
+
 exports.convert = function (data, callback) {
-    protagonist.parse(data, function (error, result) {
-        if (error) {
-            return callback(error, {});
-        }
+    try {
+        var result = drafter.parse(data, {type: 'ast'});
         //for (var i = 0; i < result.warnings.length; i++) {
         //    var warn = result.warnings[i];
         //    console.log(warn);
         //}
-        try {
-            var swagger = apib2swagger(result.ast);
-        } catch (e) {
-            return callback(e, {});
-        }
+        var swagger = apib2swagger(result.ast);
         return callback(null, {swagger: swagger});
-    });
+    }
+    catch (error) {
+        return callback(error, {});
+    }
 };
 
