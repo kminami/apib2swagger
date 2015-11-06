@@ -86,10 +86,7 @@
       "$ref": "#/definitions/Coupon Base"
     },
     "Coupons": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Coupon"
-      }
+      "type": "array"
     },
     "Coupon Base": {
       "type": "object",

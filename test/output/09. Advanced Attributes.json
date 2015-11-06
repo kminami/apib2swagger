@@ -110,10 +110,7 @@
       }
     },
     "Coupons": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Coupon"
-      }
+      "type": "array"
     }
   }
 }
