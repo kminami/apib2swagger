@@ -1,77 +1,103 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "",
-        "version": "",
-        "description": ""
-    },
-    "paths": {
-        "/some/resource": {
-            "post": {
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "headers": {},
-                        "examples": {}
-                    }
-                },
-                "summary": "Some resource",
-                "description": "",
-                "tags": [
-                    "(no tags)"
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "prop1": {
-                                    "type": "string",
-                                    "required": true
-                                }
-                            }
-                        }
-                    }
-                ]
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/some/resource": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "prop1": "a string"
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string",
+                  "required": true
+                }
+              }
             }
+          }
         },
-        "/some/resource/2": {
-            "post": {
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "headers": {},
-                        "examples": {}
-                    }
-                },
-                "summary": "",
-                "description": "",
-                "tags": [
-                    "(no tags)"
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "prop1": {
-                                    "type": "string",
-                                    "required": true
-                                }
-                            }
-                        }
-                    }
-                ]
+        "summary": "Some resource",
+        "description": "",
+        "tags": [
+          "(no tags)"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string",
+                  "required": true
+                }
+              }
             }
-        }
+          }
+        ]
+      }
     },
-    "definitions": {
-        "Some resource": {},
-        "Some resource 2": {},
-        "Some resource 2Model": {}
+    "/some/resource/2": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "prop1": "a string"
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [
+          "(no tags)"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string",
+                  "required": true
+                }
+              }
+            }
+          }
+        ]
+      }
     }
+  },
+  "definitions": {
+    "Some resource": {},
+    "Some resource 2": {},
+    "Some resource 2Model": {}
+  }
 }

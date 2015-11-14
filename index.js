@@ -131,11 +131,6 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                 }
             }
         }
-        //for (var l = 0; l < example.responses.length; l++) {
-        //    var response = example.responses[l];
-        //    scheme = searchDataStructure(response.content));
-        //    if (scheme) schema.push(scheme);
-        //}
     }
     if (schema.length == 1) {
         operation.parameters.push({name: 'body', in: 'body', schema: schema[0]});
@@ -242,11 +237,26 @@ function swaggerResponses(examples) {
         for (var m = 0; m < example.responses.length; m++) {
             var response = example.responses[m];
             //console.log(response);
-            responses[response.name] = {
+            var swaggerResponse = {
                 "description": http.STATUS_CODES[response.name],
                 "headers": {},
                 "examples": {}
             };
+            if (response.schema) {
+                try {
+                    swaggerResponse.schema = JSON.parse(response.schema);
+                } catch (e) {}
+            }
+            if (!swaggerResponse.schema) {
+                var schema = searchDataStructure(response.content); // Attributes in response
+                if (schema) swaggerResponse.schema = schema;
+            }
+            if (response.body) {
+                try {
+                    // TODO: check equality of Content-Type
+                    swaggerResponse.examples["application/json"] = JSON.parse(response.body);
+                } catch (e) {}
+            }
             //for (var n = 0; n < response.headers.length; n++) {
             //    var header = response.headers[n];
             //    responses[response.name].headers[header.name] = {'type':'string'}
@@ -254,6 +264,7 @@ function swaggerResponses(examples) {
             //        responses[response.name].examples[header.value] = response.body;
             //    }
             //}
+            responses[response.name] = swaggerResponse;
         }
     }
     return responses;

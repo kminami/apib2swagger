@@ -12,7 +12,17 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": {
+                "created": 1415203908,
+                "id": "250FF",
+                "percent_off": 25,
+                "redeem_by": 0
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Coupon"
+            }
           }
         },
         "summary": "Retrieve a Coupon",
@@ -37,7 +47,12 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": []
+            },
+            "schema": {
+              "$ref": "#/definitions/Coupons"
+            }
           }
         },
         "summary": "List all Coupons",
@@ -61,7 +76,17 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": {
+                "created": 1415203908,
+                "id": "250FF",
+                "percent_off": 25,
+                "redeem_by": 0
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Coupon"
+            }
           }
         },
         "summary": "Create a Coupon",

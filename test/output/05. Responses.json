@@ -12,7 +12,11 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": {
+                "message": "Hello World!"
+              }
+            }
           }
         },
         "summary": "Retrieve a Message",

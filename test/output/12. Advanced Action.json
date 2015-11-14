@@ -12,7 +12,22 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": [
+                {
+                  "id": 123,
+                  "name": "Exercise in gym",
+                  "done": false,
+                  "type": "task"
+                },
+                {
+                  "id": 124,
+                  "name": "Shop for groceries",
+                  "done": true,
+                  "type": "task"
+                }
+              ]
+            }
           }
         },
         "summary": "List All Tasks",
@@ -44,7 +59,14 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": {
+                "id": 123,
+                "name": "Go to gym",
+                "done": false,
+                "type": "task"
+              }
+            }
           }
         },
         "summary": "Retrieve Task",

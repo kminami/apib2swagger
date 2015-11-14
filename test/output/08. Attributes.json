@@ -12,7 +12,25 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "number"
+                },
+                "percent_off": {
+                  "type": "number"
+                },
+                "redeem_by": {
+                  "type": "number"
+                }
+              }
+            }
           }
         },
         "summary": "Retrieve a Coupon",

@@ -12,7 +12,22 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "application/json": {
+                "class": [
+                  "message"
+                ],
+                "properties": {
+                  "message": "Hello World!"
+                },
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "/message"
+                  }
+                ]
+              }
+            }
           }
         },
         "summary": "Retrieve a Message",
