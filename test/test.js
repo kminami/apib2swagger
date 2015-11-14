@@ -25,6 +25,9 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
 //        'Polls API.md',
 //        'Polls Hypermedia API.md',
 //        'Real World API.md',
+    ],
+    includedFiles = [
+        'Schema.md'
     ];
 
 var fetch = function (file) {
@@ -55,7 +58,7 @@ describe("apib2swagger", function () {
             return Promise.all(files.map(fetch));
         });
 
-        files.forEach(function (file) {
+        files.concat(includedFiles).forEach(function (file) {
             it(file, function (done) {
                 var apib = fs.readFileSync(localInput + file, "utf-8");
                 apib2swagger.convert(apib, function (error, result) {

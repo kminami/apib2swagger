@@ -1,6 +1,7 @@
 # apib2swagger
 
 [![Build Status](https://travis-ci.org/kminami/apib2swagger.svg?branch=master)](https://travis-ci.org/kminami/apib2swagger)
+[![npm version](https://badge.fury.io/js/apib2swagger.svg)](https://badge.fury.io/js/apib2swagger)
 
 Convert [API Blueprint][] to [Swagger][].
 

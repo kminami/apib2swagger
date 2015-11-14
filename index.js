@@ -41,8 +41,7 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
                 continue;
             }
             if (content.element === 'dataStructure') {
-                swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content); // apib._version = "4.0"
-                //swagger.definitions[content.name.literal] = jsonSchemaFromMSON(content); // apib._version = "3.0"
+                swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
                 continue;
             }
         }
@@ -118,10 +117,18 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
         var example = action.examples[j];
         for (var l = 0; l < example.requests.length; l++) {
             var request = example.requests[l];
-            scheme = searchDataStructure(request.content); // Attributes 4
-            if (scheme) schema.push(scheme);
-            if (request.reference) {
-                schema.push({'$ref': '#/definitions/' + request.reference.id + 'Model'});
+            if (request.schema) { // Schema section in Request section
+                try {
+                    // referencing Model's Schema is also here (no need to referencing defenitions)
+                    scheme = JSON.parse(request.schema);
+                    if (scheme) schema.push(scheme);
+                } catch (e) {}
+            } else {
+                scheme = searchDataStructure(request.content); // Attributes 4
+                if (scheme) schema.push(scheme);
+                if (request.reference) {
+                    schema.push({'$ref': '#/definitions/' + request.reference.id + 'Model'});
+                }
             }
         }
         //for (var l = 0; l < example.responses.length; l++) {
@@ -207,55 +214,6 @@ var jsonSchemaFromMSON = function (content) {
         if (member.element !== "member") continue;
         // MEMO: member.meta.description
         schema.properties[member.content.key.content] = {type: member.content.value.element};
-    }
-    return schema;
-};
-
-var jsonSchemaFromMSONv3 = function (content) {
-    // for apib._version = "3.0"
-    // MEMO: content.typeDefinition.typeSpecification.name referrences DataStructure name
-    var type = content.typeDefinition.typeSpecification;
-    if (type.name === 'string') {
-        return {type: 'string'};
-    }
-    if (type.name === 'number') {
-        return {type: 'number'};
-    }
-    if (type.name === 'array') {
-        if (!type.nestedTypes || type.nestedTypes.length === 0) {
-            return {type: 'array'};
-        } else if (type.nestedTypes.length === 1) {
-            return {type: 'array', items: {'$ref': '#/definitions/' + type.nestedTypes[0].literal}};
-        } else if (type.nestedTypes.length > 1) {
-            var items = [];
-            for (var i = 0; i < type.nestedTypes.length; i++) {
-                items.push({'$ref': '#/definitions/' + type.nestedTypes[i].literal});
-            }
-            return {type: 'array', items: {'allOf': items}};
-        }
-    }
-    if (type.name !== 'object' && type.name !== null) { // except object
-        if (type.name.literal) { // referrence
-            return {'$ref': '#/definitions/' + type.name.literal};
-        }
-        return {type: ''}; // except referrence
-    }
-    if (!content.sections) {
-        return {type: 'string'}; // TODO
-    }
-    // object
-    var schema = {};
-    schema.type = 'object';
-    schema.required = [];
-    schema.properties = {};
-    for (var j = 0; j < content.sections.length; j++) {
-        var section = content.sections[j];
-        if (section.class !== "memberType") continue;
-        for (var k = 0; k < section.content.length; k++) {
-            if (section.content[k].class !== "property") continue;
-            var property = section.content[k].content;
-            schema.properties[property.name.literal] = jsonSchemaFromMSON(property.valueDefinition);
-        }
     }
     return schema;
 };
