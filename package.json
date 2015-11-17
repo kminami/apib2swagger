@@ -1,6 +1,6 @@
 {
   "name": "apib2swagger",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Convert API Blueprint to Swagger.",
   "bin": "./bin/apib2swagger.js",
   "scripts": {
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "drafter.js": "^2.0.0-pre.1",
-    "nopt": ">=3.0.1",
-    "uritemplate": ">=0.3.4"
+    "nopt": "^3.0.1",
+    "uritemplate": "^0.3.4"
   },
   "devDependencies": {
     "mocha": "^2.3.3"
