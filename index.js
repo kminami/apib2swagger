@@ -28,7 +28,7 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
         // description in Resource group section is discarded
         var category = apib.content[i];
         if (category.element !== 'category') continue;
-        var groupName = category.attributes ? category.attributes.name : '(no tags)';
+        var groupName = category.attributes ? category.attributes.name : '';
         for (var j = 0; j < category.content.length; j++) {
             var content = category.content[j];
             if (content.element === 'resource') {
@@ -99,7 +99,7 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
         'responses': swaggerResponses(action.examples),
         'summary': action.name,
         'description': action.description,
-        'tags': [tag],
+        'tags': tag ? [tag] : [],
         'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))
     }
     //operation.produces = [];

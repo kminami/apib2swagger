@@ -32,9 +32,7 @@
         },
         "summary": "List All Tasks",
         "description": "",
-        "tags": [
-          "(no tags)"
-        ],
+        "tags": [],
         "parameters": [
           {
             "name": "status",
@@ -71,9 +69,7 @@
         },
         "summary": "Retrieve Task",
         "description": "This is a state transition to another resource\n\n",
-        "tags": [
-          "(no tags)"
-        ],
+        "tags": [],
         "parameters": [
           {
             "name": "id",
@@ -94,9 +90,7 @@
         },
         "summary": "Delete Task",
         "description": "",
-        "tags": [
-          "(no tags)"
-        ],
+        "tags": [],
         "parameters": [
           {
             "name": "id",

@@ -17,9 +17,7 @@
         },
         "summary": "Retrieve a Message",
         "description": "Now this is informative! No extra explanation needed here. This action clearly retrieves the message.\n\n",
-        "tags": [
-          "(no tags)"
-        ],
+        "tags": [],
         "parameters": []
       },
       "put": {
@@ -32,9 +30,7 @@
         },
         "summary": "Update a Message",
         "description": "`Update a message` - nice and simple naming is the best way to go.\n\n",
-        "tags": [
-          "(no tags)"
-        ],
+        "tags": [],
         "parameters": []
       }
     }
