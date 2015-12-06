@@ -15,7 +15,7 @@
     "name": "Keisuke Minami"
   },
   "dependencies": {
-    "drafter.js": "^2.0.0-pre.1",
+    "drafter.js": "^2.0.0",
     "nopt": "^3.0.1",
     "uritemplate": "^0.3.4"
   },

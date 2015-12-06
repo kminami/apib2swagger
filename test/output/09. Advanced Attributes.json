@@ -48,7 +48,14 @@
             "description": "OK",
             "headers": {},
             "examples": {
-              "application/json": []
+              "application/json": [
+                {
+                  "created": 1415203908,
+                  "id": "250FF",
+                  "percent_off": 25,
+                  "redeem_by": 0
+                }
+              ]
             },
             "schema": {
               "$ref": "#/definitions/Coupons"
@@ -135,7 +142,10 @@
       }
     },
     "Coupons": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Coupon"
+      }
     }
   }
 }

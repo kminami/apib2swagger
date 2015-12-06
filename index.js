@@ -135,7 +135,7 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
     if (schema.length == 1) {
         operation.parameters.push({name: 'body', in: 'body', schema: schema[0]});
     } else if (schema.length > 1) {
-        operation.parameters.push({name: 'body', in: 'body', schema: {allOf: schema}});
+        operation.parameters.push({name: 'body', in: 'body', schema: {anyOf: schema}});
     }
     return operation;
 }
@@ -194,9 +194,19 @@ var jsonSchemaFromMSON = function (content) {
     // for apib._version = "4.0"
     var mson = content.content[0];
     if (mson.element === 'array') {
-        return {type: 'array'};
+        if (!mson.content || mson.content.length === 0) {
+            return {type: 'array'};
+        } else if (mson.content.length === 1) {
+            return {type: 'array', items: {'$ref': '#/definitions/' + mson.content[0].element}};
+        } else if (mson.content.length > 1) {
+            var items = [];
+            for (var i = 0; i < mson.content.length; i++) {
+                items.push({'$ref': '#/definitions/' + mson.content[i].element});
+            }
+            return {type: 'array', items: {'anyOf': items}};
+        }
     }
-    if (mson.element !== 'object') {
+    if (mson.element !== 'object' && !mson.content) {
         return {'$ref': '#/definitions/' + mson.element};
     }
     // object
@@ -209,6 +219,9 @@ var jsonSchemaFromMSON = function (content) {
         if (member.element !== "member") continue;
         // MEMO: member.meta.description
         schema.properties[member.content.key.content] = {type: member.content.value.element};
+    }
+    if (mson.element !== 'object') {
+        return {'allOf': [{'$ref':'#/definitions/' + mson.element}, schema]};
     }
     return schema;
 };
