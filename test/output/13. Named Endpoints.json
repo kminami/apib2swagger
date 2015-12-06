@@ -1,0 +1,48 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Named Endpoints API",
+    "version": "",
+    "description": "This API example demonstrates how to define a standalone endpoint with an identifier.\n\n## API Blueprint\n\n+ [Previous: Advanced Action](12.%20Advanced%20Action.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/13.%20Named%20Endpoints.md)\n\n"
+  },
+  "paths": {
+    "/messages": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create message",
+        "description": "Start out by creating a message for the world to see.\n\n",
+        "tags": [
+          "Quick start"
+        ],
+        "parameters": []
+      }
+    },
+    "/tasks": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create a new task",
+        "description": "Now create a task that you need to do at a later date.\n\n",
+        "tags": [
+          "Quick start"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {
+    "Create message": {},
+    "Create a new task": {}
+  }
+}

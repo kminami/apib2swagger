@@ -3,7 +3,7 @@
   "info": {
     "title": "Resource and Actions API",
     "version": "",
-    "description": "This API example demonstrates how to define a resource with multiple actions.\n\n## API Blueprint\n\n+ [Previous: The Simplest API](01.%20Simplest%20API.md) \n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/02.%20Resource%20and%20Actions.md)\n\n+ [Next: Named Resource and Actions](03.%20Named%20Resource%20and%20Actions.md)\n\n"
+    "description": "This API example demonstrates how to define a resource with multiple actions.\n\n## API Blueprint\n\n+ [Previous: The Simplest API](01.%20Simplest%20API.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/02.%20Resource%20and%20Actions.md)\n\n+ [Next: Named Resource and Actions](03.%20Named%20Resource%20and%20Actions.md)\n\n"
   },
   "paths": {
     "/message": {

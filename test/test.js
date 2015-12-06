@@ -3,7 +3,7 @@ var assert = require("assert"),
     https = require("https"),
     apib2swagger = require("../index.js");
 
-var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A8/examples/',
+var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A9/examples/',
     localInput = 'test/input/',
     localOutput = 'test/output/',
     prepare = false,
@@ -20,6 +20,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         '10. Data Structures.md',
         '11. Resource Model.md',
         '12. Advanced Action.md',
+        '13. Named Endpoints.md',
 //        'Gist Fox API + Auth.md',
 //        'Gist Fox API.md',
 //        'Polls API.md',
@@ -60,6 +61,7 @@ describe("apib2swagger", function () {
 
         files.concat(includedFiles).forEach(function (file) {
             it(file, function (done) {
+                this.timeout(10000); // 10s
                 var apib = fs.readFileSync(localInput + file, "utf-8");
                 apib2swagger.convert(apib, function (error, result) {
                     if (error) {
