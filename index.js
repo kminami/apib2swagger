@@ -219,6 +219,12 @@ var jsonSchemaFromMSON = function (content) {
         if (member.element !== "member") continue;
         // MEMO: member.meta.description
         schema.properties[member.content.key.content] = {type: member.content.value.element};
+        if (!member.attributes || !member.attributes.typeAttributes) continue;
+        for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
+            if (member.attributes.typeAttributes[k] === "required") {
+                schema.required.push(member.content.key.content);
+            }
+        }
     }
     if (mson.element !== 'object') {
         return {'allOf': [{'$ref':'#/definitions/' + mson.element}, schema]};

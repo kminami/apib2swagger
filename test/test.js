@@ -6,7 +6,7 @@ var assert = require("assert"),
 var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A9/examples/',
     localInput = 'test/input/',
     localOutput = 'test/output/',
-    prepare = false,
+    prepare = process.env.PREPARE === "true",
     files = [
         '01. Simplest API.md',
         '02. Resource and Actions.md',
@@ -28,6 +28,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
 //        'Real World API.md',
     ],
     includedFiles = [
+        'Attributes.md',
         'Schema.md'
     ];
 
