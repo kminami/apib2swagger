@@ -1,9 +1,10 @@
 {
   "name": "apib2swagger",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Convert API Blueprint to Swagger.",
   "bin": "./bin/apib2swagger.js",
   "scripts": {
+    "prepare": "PREPARE=true mocha",
     "test": "mocha"
   },
   "repository": {
