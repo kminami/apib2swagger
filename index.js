@@ -12,8 +12,7 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
         'version': '',
         'description': apib.description
     }
-    for (var i = 0; i < apib.metadata.length; i++) {
-        var meta = apib.metadata[i];
+    apib.metadata.forEach(function(meta) {
         //console.log(meta);
         if (meta.name.toLowerCase() === 'host') {
             var urlParts = url.parse(meta.value);
@@ -21,31 +20,25 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
             swagger.basePath = urlParts.pathname;
             swagger.schemes = [urlParts.protocol.replace(':','')];
         }
-    }
+    });
     swagger.paths = {};
     swagger.definitions = {};
-    for (var i = 0; i < apib.content.length; i++) {
+    apib.content.filter(function(content) {
+        return content.element === 'category';
+    }).forEach(function(category) {
         // description in Resource group section is discarded
-        var category = apib.content[i];
-        if (category.element !== 'category') continue;
         var groupName = category.attributes ? category.attributes.name : '';
-        for (var j = 0; j < category.content.length; j++) {
-            var content = category.content[j];
+        category.content.forEach(function(content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
                 swaggerDefinitions(swagger.definitions, content);
                 swaggerPaths(swagger.paths, groupName, content);
-                continue;
-            }
-            if (content.element === 'copy') {
-                continue;
-            }
-            if (content.element === 'dataStructure') {
+            } else if (content.element === 'copy') {
+            } else if (content.element === 'dataStructure') {
                 swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
-                continue;
             }
-        }
-    }
+        });
+    });
     return swagger;
 }
 
