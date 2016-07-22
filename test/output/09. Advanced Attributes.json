@@ -14,14 +14,32 @@
             "headers": {},
             "examples": {
               "application/json": {
-                "created": 1415203908,
                 "id": "250FF",
+                "created": 1415203908,
                 "percent_off": 25,
                 "redeem_by": 0
               }
             },
             "schema": {
-              "$ref": "#/definitions/Coupon"
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "number",
+                  "description": "Time stamp"
+                },
+                "percent_off": {
+                  "type": "number",
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                },
+                "redeem_by": {
+                  "type": "number",
+                  "description": "Date after which the coupon can no longer be redeemed"
+                }
+              }
             }
           }
         },
@@ -50,15 +68,16 @@
             "examples": {
               "application/json": [
                 {
-                  "created": 1415203908,
                   "id": "250FF",
+                  "created": 1415203908,
                   "percent_off": 25,
                   "redeem_by": 0
                 }
               ]
             },
             "schema": {
-              "$ref": "#/definitions/Coupons"
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "array"
             }
           }
         },
@@ -85,14 +104,32 @@
             "headers": {},
             "examples": {
               "application/json": {
-                "created": 1415203908,
                 "id": "250FF",
+                "created": 1415203908,
                 "percent_off": 25,
                 "redeem_by": 0
               }
             },
             "schema": {
-              "$ref": "#/definitions/Coupon"
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "number",
+                  "description": "Time stamp"
+                },
+                "percent_off": {
+                  "type": "number",
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                },
+                "redeem_by": {
+                  "type": "number",
+                  "description": "Date after which the coupon can no longer be redeemed"
+                }
+              }
             }
           }
         },
