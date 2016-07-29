@@ -33,6 +33,9 @@
             "required": true,
             "type": "number"
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       },
       "put": {
@@ -97,6 +100,9 @@
             "type": "number",
             "default": 20
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       }
     }

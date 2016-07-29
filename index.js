@@ -94,14 +94,21 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
         'description': action.description,
         'tags': tag ? [tag] : [],
         'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))
+    };
+    var produces = {}, producesExist = false;
+    for (var key in operation.responses) {
+        var response = operation.responses[key];
+        for (var mime in response.examples) {
+            producesExist = true;
+            produces[mime] = true;
+        }
     }
-    //operation.produces = [];
-    //for (var key in operation.responses) {
-    //    var response = operation.responses[key];
-    //    for (var mime in response.examples) {
-    //        operation.produces.push(mime);
-    //    }
-    //}
+    if (producesExist) {
+        operation.produces = [];
+        for (var mime in produces) {
+            operation.produces.push(mime);
+        }
+    }
     // body parameter (schema)
     var schema = [],
         scheme = searchDataStructure(action.content); // Attributes 3
@@ -263,19 +270,19 @@ function swaggerResponses(examples) {
                 var schema = searchDataStructure(response.content); // Attributes in response
                 if (schema) swaggerResponse.schema = schema;
             }
-            if (response.body) {
-                try {
-                    // TODO: check equality of Content-Type
-                    swaggerResponse.examples["application/json"] = JSON.parse(response.body);
-                } catch (e) {}
+            for (var n = 0; n < response.headers.length; n++) {
+                var header = response.headers[n];
+                //swaggerResponse.headers[header.name] = {'type':'string'}
+                if (header.name === 'Content-Type') {
+                    if (header.value.match(/application\/.*json/)) {
+                        try {
+                            swaggerResponse.examples[header.value] = JSON.parse(response.body);
+                        } catch (e) {}
+                        continue;
+                    }
+                    swaggerResponse.examples[header.value] = response.body;
+                }
             }
-            //for (var n = 0; n < response.headers.length; n++) {
-            //    var header = response.headers[n];
-            //    responses[response.name].headers[header.name] = {'type':'string'}
-            //    if (header.name === 'Content-Type') {
-            //        responses[response.name].examples[header.value] = response.body;
-            //    }
-            //}
             responses[response.name] = swaggerResponse;
         }
     }

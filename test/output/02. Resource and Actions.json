@@ -12,13 +12,18 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "text/plain": "Hello World!\n"
+            }
           }
         },
         "summary": "",
         "description": "Here we define an action using the `GET` [HTTP request method](http://www.w3schools.com/tags/ref_httpmethods.asp) for our resource `/message`.\n\nAs with every good action it should return a [response](http://www.w3.org/TR/di-gloss/#def-http-response). A response always bears a status code. Code 200 is great as it means all is green. Responding with some data can be a great idea as well so let's add a plain text message to our response.\n\n",
         "tags": [],
-        "parameters": []
+        "parameters": [],
+        "produces": [
+          "text/plain"
+        ]
       },
       "put": {
         "responses": {

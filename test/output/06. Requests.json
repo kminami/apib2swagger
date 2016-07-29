@@ -24,7 +24,10 @@
         "tags": [
           "Messages"
         ],
-        "parameters": []
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
       },
       "put": {
         "responses": {

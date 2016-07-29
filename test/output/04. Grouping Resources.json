@@ -12,7 +12,9 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "text/plain": "Hello World!\n"
+            }
           }
         },
         "summary": "Retrieve a Message",
@@ -20,7 +22,10 @@
         "tags": [
           "Messages"
         ],
-        "parameters": []
+        "parameters": [],
+        "produces": [
+          "text/plain"
+        ]
       },
       "put": {
         "responses": {

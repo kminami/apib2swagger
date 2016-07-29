@@ -12,13 +12,18 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {
+              "text/plain": "Hello World!\n"
+            }
           }
         },
         "summary": "",
         "description": "",
         "tags": [],
-        "parameters": []
+        "parameters": [],
+        "produces": [
+          "text/plain"
+        ]
       }
     }
   },

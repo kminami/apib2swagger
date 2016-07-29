@@ -56,6 +56,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       }
     },
@@ -95,6 +98,9 @@
             "type": "number",
             "default": 10
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       },
       "post": {
@@ -146,6 +152,9 @@
               "$ref": "#/definitions/Coupon Base"
             }
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       }
     }

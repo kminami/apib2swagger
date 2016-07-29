@@ -13,7 +13,7 @@
             "description": "OK",
             "headers": {},
             "examples": {
-              "application/json": {
+              "application/vnd.siren+json": {
                 "class": [
                   "message"
                 ],
@@ -35,7 +35,10 @@
         "tags": [
           "Messages"
         ],
-        "parameters": []
+        "parameters": [],
+        "produces": [
+          "application/vnd.siren+json"
+        ]
       },
       "put": {
         "responses": {

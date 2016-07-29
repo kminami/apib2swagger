@@ -48,6 +48,9 @@
             "required": true,
             "type": "number"
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       }
     },
@@ -78,6 +81,9 @@
             "required": true,
             "type": "string"
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       },
       "delete": {
