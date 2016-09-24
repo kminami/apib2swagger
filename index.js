@@ -257,7 +257,7 @@ function swaggerResponses(examples) {
             var response = example.responses[m];
             //console.log(response);
             var swaggerResponse = {
-                "description": http.STATUS_CODES[response.name],
+                "description": response.description || http.STATUS_CODES[response.name],
                 "headers": {},
                 "examples": {}
             };
