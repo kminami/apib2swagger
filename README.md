@@ -41,6 +41,13 @@ apib2swagger.convert(apib, function (error, result) {
 });
 ```
 
+## Docker
+You can also run apib2swagger inside a docker container
+
+```bash
+$ docker run -it --rm -v $(pwd):/docs cbarraford/apib2swagger -i api.md -o swagger.json
+```
+
 ## License
 
 Copyright (c) 2015 Keisuke Minami
