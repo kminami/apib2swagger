@@ -6,7 +6,7 @@
 Convert [API Blueprint][] to [Swagger][].
 
 Support version:
-- API Blueprint 1A9 (>=0.3.1)
+- API Blueprint 1A9
 - Swagger 2.0
 - Node.js 0.12, 4.x, 5.x, 6.x or higher
 
@@ -42,7 +42,7 @@ apib2swagger.convert(apib, function (error, result) {
 ```
 
 ## Docker
-You can also run apib2swagger inside a docker container
+You can also run apib2swagger inside a docker container. (Unofficial image. Use it carefully)
 
 ```bash
 $ docker run -it --rm -v $(pwd):/docs cbarraford/apib2swagger -i api.md -o swagger.json
