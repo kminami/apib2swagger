@@ -29,7 +29,8 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
     ],
     includedFiles = [
         'Attributes.md',
-        'Schema.md'
+        'Schema.md',
+        'Issue-#15.md'
     ];
 
 var fetch = function (file) {

@@ -1,0 +1,281 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "",
+    "description": "This is a reference document explaining the API. Please note that paths are relative to the base API url (ie `http://example:8000/__api__/`)\n\n"
+  },
+  "host": "example:8000",
+  "basePath": "/__api__",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/server_settings": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "version": "software version",
+                "build": "software build"
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string"
+                },
+                "build": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "version",
+                "build"
+              ]
+            }
+          }
+        },
+        "summary": "Get Server Settings",
+        "description": "",
+        "tags": [
+          "Settings"
+        ],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "principal_id": 1,
+                  "provider_key": "p401",
+                  "email": "chad@test.com",
+                  "email_hash": "a51b767bfd8fccf9b5831a99e1f97c81",
+                  "username": "admin",
+                  "first_name": "Chad",
+                  "last_name": "Smith",
+                  "password": "password",
+                  "user_role": "administrator",
+                  "confirmed": true,
+                  "locked": false
+                }
+              ]
+            },
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        },
+        "summary": "List all users",
+        "description": "Get a list of all users. Optionally, you can specify a `prefix` to search for a specific user.\n\n+ prefix (string - The prefix of a user (username, first name, or last name)\n\n",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "principal_id": 1,
+                "provider_key": "p401",
+                "email": "chad@test.com",
+                "email_hash": "a51b767bfd8fccf9b5831a99e1f97c81",
+                "username": "admin",
+                "first_name": "Chad",
+                "last_name": "Smith",
+                "password": "password",
+                "user_role": "administrator",
+                "confirmed": true,
+                "locked": false,
+                "privileges": [
+                  "[\"add_users\"]"
+                ]
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number",
+                  "description": "unique numerical identified"
+                },
+                "principal_id": {
+                  "type": "number",
+                  "description": "unique numerical identified across users and groups"
+                },
+                "provider_key": {
+                  "type": "string",
+                  "description": "unique identifier in string format"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "email address"
+                },
+                "email_hash": {
+                  "type": "string",
+                  "description": "hashed email address"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "username of the user"
+                },
+                "first_name": {
+                  "type": "string",
+                  "description": "the first name of the user"
+                },
+                "last_name": {
+                  "type": "string",
+                  "description": "the last name of the user"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "user_role": {
+                  "type": "string",
+                  "description": "the role of the user"
+                },
+                "confirmed": {
+                  "type": "boolean",
+                  "description": "has the user been confirmed"
+                },
+                "locked": {
+                  "type": "boolean",
+                  "description": "is the user locked"
+                },
+                "privileges": {
+                  "type": "array",
+                  "description": "List of privileges the user has",
+                  "items": {}
+                }
+              },
+              "required": [
+                "id",
+                "principal_id",
+                "username",
+                "user_role",
+                "confirmed",
+                "locked",
+                "privileges"
+              ]
+            }
+          }
+        },
+        "summary": "Get a specific user",
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "The ID of a specific user in the form of a string",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Server Settings": {},
+    "Users": {},
+    "User Detail": {},
+    "User": {
+      "type": "object",
+      "required": [
+        "id",
+        "principal_id",
+        "username",
+        "user_role",
+        "confirmed",
+        "locked"
+      ],
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "principal_id": {
+          "type": "number"
+        },
+        "provider_key": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "email_hash": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "user_role": {
+          "type": "string"
+        },
+        "confirmed": {
+          "type": "boolean"
+        },
+        "locked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UserDetail": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/User"
+        },
+        {
+          "type": "object",
+          "required": [
+            "privileges"
+          ],
+          "properties": {
+            "privileges": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        }
+      ]
+    }
+  }
+}

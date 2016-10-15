@@ -21,7 +21,6 @@
               }
             },
             "schema": {
-              "$schema": "http://json-schema.org/draft-04/schema#",
               "type": "object",
               "properties": {
                 "percent_off": {
@@ -79,8 +78,8 @@
               ]
             },
             "schema": {
-              "$schema": "http://json-schema.org/draft-04/schema#",
-              "type": "array"
+              "type": "array",
+              "items": {}
             }
           }
         },
@@ -117,7 +116,6 @@
               }
             },
             "schema": {
-              "$schema": "http://json-schema.org/draft-04/schema#",
               "type": "object",
               "properties": {
                 "percent_off": {

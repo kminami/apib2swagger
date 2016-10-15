@@ -195,7 +195,7 @@ var jsonSchemaFromMSON = function (content) {
     var mson = content.content[0];
     if (mson.element === 'array') {
         if (!mson.content || mson.content.length === 0) {
-            return {type: 'array'};
+            return {type: 'array', items: {}};
         } else if (mson.content.length === 1) {
             return {type: 'array', items: {'$ref': '#/definitions/' + mson.content[0].element}};
         } else if (mson.content.length > 1) {
@@ -218,7 +218,12 @@ var jsonSchemaFromMSON = function (content) {
         var member = mson.content[j];
         if (member.element !== "member") continue;
         // MEMO: member.meta.description
-        schema.properties[member.content.key.content] = {type: member.content.value.element};
+        if (member.content.value.element === 'array') {
+            // TODO: use member.content.value.content (schema for items)
+            schema.properties[member.content.key.content] = {type: 'array', items: {}};
+        } else {
+            schema.properties[member.content.key.content] = {type: member.content.value.element};
+        }
         if (!member.attributes || !member.attributes.typeAttributes) continue;
         for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
             if (member.attributes.typeAttributes[k] === "required") {
@@ -247,6 +252,14 @@ function getParamType(name, uriTemplate) {
     return 'body'; // TODO: decide 'header', 'formData', 'body'
 }
 
+function fixArraySchema(schema) {
+    if (schema.type === 'array') {
+        if (!schema.hasOwnProperty('items')) schema.items = {};
+    } else if (schema.type === 'object') {
+        for (var k in schema.properties) fixArraySchema(schema.properties[k]);
+    }
+}
+
 function swaggerResponses(examples) {
     var responses = {};
     //console.log(examples);
@@ -264,6 +277,8 @@ function swaggerResponses(examples) {
             if (response.schema) {
                 try {
                     swaggerResponse.schema = JSON.parse(response.schema);
+                    delete swaggerResponse.schema['$schema'];
+                    fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
                 } catch (e) {}
             }
             if (!swaggerResponse.schema) {
