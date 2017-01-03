@@ -3,7 +3,7 @@
   "info": {
     "title": "Named Endpoints API",
     "version": "",
-    "description": "This API example demonstrates how to define a standalone endpoint with an identifier.\n\n## API Blueprint\n\n+ [Previous: Advanced Action](12.%20Advanced%20Action.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/13.%20Named%20Endpoints.md)\n\n"
+    "description": "This API example demonstrates how to define a standalone endpoint with an identifier.\n\n## API Blueprint\n\n+ [Previous: Advanced Action](12.%20Advanced%20Action.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/13.%20Named%20Endpoints.md)"
   },
   "paths": {
     "/messages": {
@@ -16,7 +16,7 @@
           }
         },
         "summary": "Create message",
-        "description": "Start out by creating a message for the world to see.\n\n",
+        "description": "Start out by creating a message for the world to see.",
         "tags": [
           "Quick start"
         ],
@@ -33,7 +33,7 @@
           }
         },
         "summary": "Create a new task",
-        "description": "Now create a task that you need to do at a later date.\n\n",
+        "description": "Now create a task that you need to do at a later date.",
         "tags": [
           "Quick start"
         ],
