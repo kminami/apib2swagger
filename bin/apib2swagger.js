@@ -12,67 +12,89 @@ var options = nopt({
     'output': String,
     'convert': Boolean,
     'server': Boolean,
-    'port': Number
+    'port': Number,
+    'help': Boolean
 }, {
     'i': ['--input'],
     'o': ['--output'],
     's': ['--server'],
-    'p': ['--port']
+    'p': ['--port'],
+    'h': ['--help']
 });
 
-if (!options.input) {
-    console.log("Usage: apib2swagger -i api.md");
-    console.log("       apib2swagger -i api.md -o swagger.json");
-    console.log("       apib2swagger -i api.md -s");
-    console.log("       apib2swagger -i api.md -s -p 3000");
+if (options.help) {
+    console.log("apib2swagger [options]");
+    console.log("Converts Apilueprint specification to Swagger 2.0");
+    console.log("");
+    console.log("Usage:");
+    console.log(" apib2swagger");
+    console.log(" apib2swagger -i api.md");
+    console.log(" apib2swagger -i api.md -o swagger.json");
+    console.log(" apib2swagger -i api.md -s");
+    console.log(" apib2swagger -i api.md -s -p 3000");
+    console.log("");
+    console.log("Options:")
+    console.log("  -h --help Print this help and exit.");
+    console.log("  -i --input <file> Use file as input instead of STDIN.");
+    console.log("  -o --output <file> Output result to file instead of STDOUT.");
+    console.log("  -s --server Run http server with SwaggerUI.");
+    console.log("  -p --port <port> Use port for the http server.");
     process.exit();
 }
 
-//var swaggerUI = 'https://github.com/swagger-api/swagger-ui/archive/master.tar.gz',
 var swaggerUI = 'https://codeload.github.com/swagger-api/swagger-ui/tar.gz/master',
     output = options.output || '-',
-    port = options.port || 3000,
-    apibData = fs.readFileSync(options.input, {encoding: 'utf8'});
+    port = options.port || 3000;
 
-if (options.convert === false) { // --no-convert
-    apib2swagger.noconvert(apibData, function(error, result) {
+var apibData = ''
+rs = (options.input ? fs.createReadStream(options.input) : process.stdin).
+on('data', (chunk) => {
+    apibData += chunk;
+}).on('end', () => {
+    processBlueprint(apibData, options);
+});
+
+function processBlueprint(blueprint, opts) {
+    if (opts.convert === false) { // --no-convert
+        apib2swagger.noconvert(blueprint, function(error, result) {
+            if (error) {
+                console.log(error);
+                return;
+            }
+            var data = JSON.stringify(result.ast, null, 4);
+            if (output !== '-') {
+                fs.writeFileSync(output, data);
+            } else {
+                console.log(data);
+            }
+        });
+        return;
+    }
+
+    apib2swagger.convert(blueprint, function(error, result) {
         if (error) {
             console.log(error);
             return;
         }
-        var data = JSON.stringify(result.ast, null, 4);
+        var swagger = result.swagger;
+        if (opts.server) {
+            if (!fs.existsSync('swagger-ui-master/dist')) {
+                console.log('SwaggerUI is not found.');
+                downloadSwagger(function() {
+                    runServer(swagger);
+                });
+                return;
+            }
+            return runServer(swagger);
+        }
+        var data = JSON.stringify(swagger, null, 4);
         if (output !== '-') {
             fs.writeFileSync(output, data);
         } else {
             console.log(data);
         }
     });
-    return;
 }
-
-apib2swagger.convert(apibData, function(error, result) {
-    if (error) {
-        console.log(error);
-        return;
-    }
-    var swagger = result.swagger;
-    if (options.server) {
-        if (!fs.existsSync('swagger-ui-master/dist')) {
-            console.log('SwaggerUI is not found.');
-            downloadSwagger(function() {
-                runServer(swagger);
-            });
-            return;
-        }
-        return runServer(swagger);
-    }
-    var data = JSON.stringify(swagger, null, 4);
-    if (output !== '-') {
-        fs.writeFileSync(output, data);
-    } else {
-        console.log(data);
-    }
-});
 
 function runServer(swagger) {
     var server = http.createServer(function(request, response) {
@@ -130,4 +152,3 @@ function extract(filename, callback) {
         callback();
     });
 }
-

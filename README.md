@@ -24,6 +24,12 @@ $ apib2swagger -i api.md
 $ apib2swagger -i api.md -o swagger.json
 ```
 
+Without -i option it reads from STDIN, without -o option writes to STDOUT.
+```shell
+$ apib2swagger < api.md > swagger.json
+$ cat api.md | apib2swagger
+```
+
 Run http server with SwaggerUI.
 SwaggerUI will be automatically downloaded to current dir.
 ```shell
@@ -56,4 +62,3 @@ MIT
 
 [API Blueprint]: https://apiblueprint.org/ "API Blueprint"
 [Swagger]: http://swagger.io/ "Swagger"
-
