@@ -258,9 +258,16 @@ var jsonSchemaFromMSON = function (content) {
             }
         }
     }
+
+    // According to schema definition, required is a stringArray, which must be non-empty
+    if (schema.required.length === 0) {
+        delete schema.required
+    }
+
     if (mson.element !== 'object') {
         return {'allOf': [{'$ref':'#/definitions/' + mson.element}, schema]};
     }
+
     return schema;
 };
 
@@ -354,4 +361,3 @@ exports.convert = function (data, callback) {
         return callback(error, {});
     }
 };
-

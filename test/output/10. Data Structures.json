@@ -165,7 +165,7 @@
         },
         {
           "type": "object",
-          "required": [],
+
           "properties": {
             "id": {
               "type": "string"
@@ -185,7 +185,7 @@
     },
     "Coupon Base": {
       "type": "object",
-      "required": [],
+
       "properties": {
         "percent_off": {
           "type": "number"

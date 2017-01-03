@@ -148,7 +148,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "required": [],
               "properties": {
                 "percent_off": {
                   "type": "number"
@@ -169,7 +168,7 @@
   "definitions": {
     "Coupon": {
       "type": "object",
-      "required": [],
+
       "properties": {
         "id": {
           "type": "string"
