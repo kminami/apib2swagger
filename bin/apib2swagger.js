@@ -116,14 +116,6 @@ function downloadSwagger(callback) {
     }).on('error', function (e) {
         console.error(e);
     });
-    //exec('wget ' + swaggerUI + ' -O ' + filename, function (err, stdout, stderr) {
-    //    if (err) {
-    //        console.log(stdout);
-    //        console.log(stderr);
-    //        return;
-    //    }
-    //    extract(filename, callback);
-    //});
 }
 
 function extract(filename, callback) {
