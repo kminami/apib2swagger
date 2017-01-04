@@ -26,3 +26,7 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# Swagger server
+swagger-ui-master/*
+swagger-ui-master.tar.gz
