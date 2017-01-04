@@ -1,7 +1,8 @@
 var assert = require("assert"),
     fs = require("fs"),
     https = require("https"),
-    apib2swagger = require("../index.js");
+    apib2swagger = require("../index.js"),
+    tv4 = require('tv4');
 
 var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A9/examples/',
     localInput = 'test/input/',
@@ -20,17 +21,14 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         '10. Data Structures.md',
         '11. Resource Model.md',
         '12. Advanced Action.md',
-        '13. Named Endpoints.md',
-//        'Gist Fox API + Auth.md',
-//        'Gist Fox API.md',
-//        'Polls API.md',
-//        'Polls Hypermedia API.md',
-//        'Real World API.md',
+        '13. Named Endpoints.md'
     ],
     includedFiles = [
         'Attributes.md',
         'Schema.md',
-        'Issue-#15.md'
+        'Issue-#15.md',
+        'apiblueprint_uber.md',
+        'apiblueprint_valid_simple.md'
     ];
 
 var fetch = function (file) {
@@ -54,12 +52,18 @@ var fetch = function (file) {
     });
 };
 
+
 describe("apib2swagger", function () {
     describe("#convert()", function () {
         before(function () {
             this.timeout(20000); // 20s
             return Promise.all(files.map(fetch));
         });
+
+        schema = JSON.parse(fs.readFileSync('test/swagger_20_schema.json'));
+        tv4.addSchema('http://swagger.io/v2/schema.json', schema);
+        meta_schema =  JSON.parse(fs.readFileSync('test/meta_schema.json'));
+        tv4.addSchema('http://json-schema.org/draft-04/schema', meta_schema);
 
         files.concat(includedFiles).forEach(function (file) {
             it(file, function (done) {
@@ -75,8 +79,11 @@ describe("apib2swagger", function () {
                         assert.ok(true);
                     } else {
                         var f = fs.readFileSync(localOutput + file.replace('.md', '.json'));
-                        var answer = JSON.parse(f);
-                        assert.deepEqual(result.swagger, answer);
+                        var expected_answer = JSON.parse(f);
+                        assert.deepEqual(result.swagger, expected_answer);
+                        var validation_result = tv4.validateResult(result.swagger, schema);
+                        assert(validation_result.valid);
+                        assert(validation_result.missing.length === 0)
                     }
                     done();
                 });

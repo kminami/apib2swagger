@@ -21,6 +21,7 @@
     "uritemplate": "^0.3.4"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.3",
+    "tv4": "^1.2.7"
   }
 }
