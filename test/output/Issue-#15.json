@@ -3,7 +3,7 @@
   "info": {
     "title": "API Documentation",
     "version": "",
-    "description": "This is a reference document explaining the API. Please note that paths are relative to the base API url (ie `http://example:8000/__api__/`)\n\n"
+    "description": "This is a reference document explaining the API. Please note that paths are relative to the base API url (ie `http://example:8000/__api__/`)"
   },
   "host": "example:8000",
   "basePath": "/__api__",
@@ -82,7 +82,7 @@
           }
         },
         "summary": "List all users",
-        "description": "Get a list of all users. Optionally, you can specify a `prefix` to search for a specific user.\n\n+ prefix (string - The prefix of a user (username, first name, or last name)\n\n",
+        "description": "Get a list of all users. Optionally, you can specify a `prefix` to search for a specific user.\n\n+ prefix (string - The prefix of a user (username, first name, or last name)",
         "tags": [
           "Users"
         ],

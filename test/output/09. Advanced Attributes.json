@@ -3,7 +3,7 @@
   "info": {
     "title": "Advanced Attributes API",
     "version": "",
-    "description": "Improving the previous [Attributes](08.%20Attributes.md) description example, this API example describes the `Coupon` resource attributes (data structure) regardless of the serialization format. These attributes can be later referenced using the resource name\n\nThese attributes are then reused in the `Retrieve a Coupon` action. Since they describe the complete message, no explicit JSON body example is needed.\n\nMoving forward, the `Coupon` resource data structure is then reused when defining the attributes of the coupons collection resource – `Coupons`.\n\nThe `Create a Coupon` action also demonstrate the description of request attributes – once defined, these attributes are implied on every `Create a Coupon` request unless the request specifies otherwise. Apparently, the description of action attributes is somewhat duplicate to the definition of `Coupon` resource attributes. We will address this in the next [Data Structures](10.%20Data%20Structures.md) example.\n\n## API Blueprint\n\n+ [Previous: Attributes](08.%20Attributes.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/09.%20Advanced%20Attributes.md)\n\n+ [Next: Data Structures](10.%20Data%20Structures.md)\n\n"
+    "description": "Improving the previous [Attributes](08.%20Attributes.md) description example, this API example describes the `Coupon` resource attributes (data structure) regardless of the serialization format. These attributes can be later referenced using the resource name\n\nThese attributes are then reused in the `Retrieve a Coupon` action. Since they describe the complete message, no explicit JSON body example is needed.\n\nMoving forward, the `Coupon` resource data structure is then reused when defining the attributes of the coupons collection resource – `Coupons`.\n\nThe `Create a Coupon` action also demonstrate the description of request attributes – once defined, these attributes are implied on every `Create a Coupon` request unless the request specifies otherwise. Apparently, the description of action attributes is somewhat duplicate to the definition of `Coupon` resource attributes. We will address this in the next [Data Structures](10.%20Data%20Structures.md) example.\n\n## API Blueprint\n\n+ [Previous: Attributes](08.%20Attributes.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/09.%20Advanced%20Attributes.md)\n\n+ [Next: Data Structures](10.%20Data%20Structures.md)"
   },
   "paths": {
     "/coupons/{id}": {
@@ -32,7 +32,7 @@
                 },
                 "percent_off": {
                   "type": "number",
-                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
                 },
                 "redeem_by": {
                   "type": "number",
@@ -43,7 +43,7 @@
           }
         },
         "summary": "Retrieve a Coupon",
-        "description": "Retrieves the coupon with the given ID.\n\n",
+        "description": "Retrieves the coupon with the given ID.",
         "tags": [
           "Coupons"
         ],
@@ -51,7 +51,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "The ID of the desired coupon.\n",
+            "description": "The ID of the desired coupon.",
             "required": true,
             "type": "string"
           }
@@ -84,7 +84,7 @@
           }
         },
         "summary": "List all Coupons",
-        "description": "Returns a list of your coupons.\n\n",
+        "description": "Returns a list of your coupons.",
         "tags": [
           "Coupons"
         ],
@@ -92,7 +92,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100 items.\n",
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100 items.",
             "required": false,
             "type": "number",
             "default": 10
@@ -127,7 +127,7 @@
                 },
                 "percent_off": {
                   "type": "number",
-                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
                 },
                 "redeem_by": {
                   "type": "number",
@@ -138,7 +138,7 @@
           }
         },
         "summary": "Create a Coupon",
-        "description": "Creates a new Coupon.\n\n",
+        "description": "Creates a new Coupon.",
         "tags": [
           "Coupons"
         ],
@@ -148,7 +148,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "required": [],
               "properties": {
                 "percent_off": {
                   "type": "number"
@@ -169,7 +168,7 @@
   "definitions": {
     "Coupon": {
       "type": "object",
-      "required": [],
+
       "properties": {
         "id": {
           "type": "string"

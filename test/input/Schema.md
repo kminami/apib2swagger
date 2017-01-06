@@ -8,10 +8,10 @@
               "type": "object",
               "properties": {
                 "prop1": {
-                  "type": "string",
-                  "required": true
+                  "type": "string"
                 }
-              }
+              },
+              "required": ["prop1"]
             }
 
     + Body
@@ -28,8 +28,7 @@
               "type": "object",
               "properties": {
                 "prop1": {
-                  "type": "string",
-                  "required": true
+                  "type": "string"
                 }
               }
             }
@@ -50,8 +49,7 @@
               "type": "object",
               "properties": {
                 "prop1": {
-                  "type": "string",
-                  "required": true
+                  "type": "string"
                 }
               }
             }
@@ -71,4 +69,3 @@
 + Response 200
 
     [Some resource 2][]
-

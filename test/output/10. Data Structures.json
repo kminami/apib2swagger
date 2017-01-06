@@ -3,7 +3,7 @@
   "info": {
     "title": "Data Structures API",
     "version": "",
-    "description": "Following [Advanced Attributes](09.%20Advanced%20Attributes.md), this example demonstrates defining arbitrary data structure to be reused by various attribute descriptions.\n\nSince a portion of the `Coupon` data structure is shared between the `Coupon` definition itself and the `Create a Coupon` action, it was separated into a `Coupon Base` data structure in the `Data Structures` API Blueprint Section. Doing so enables us to reuse it as a base-type of other attribute definitions.\n\n## API Blueprint\n\n+ [Previous: Advanced Attributes](09.%20Advanced%20Attributes.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/10.%20Data%20Structures.md)\n\n+ [Next: Resource Model](11.%20Resource%20Model.md)\n\n"
+    "description": "Following [Advanced Attributes](09.%20Advanced%20Attributes.md), this example demonstrates defining arbitrary data structure to be reused by various attribute descriptions.\n\nSince a portion of the `Coupon` data structure is shared between the `Coupon` definition itself and the `Create a Coupon` action, it was separated into a `Coupon Base` data structure in the `Data Structures` API Blueprint Section. Doing so enables us to reuse it as a base-type of other attribute definitions.\n\n## API Blueprint\n\n+ [Previous: Advanced Attributes](09.%20Advanced%20Attributes.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/10.%20Data%20Structures.md)\n\n+ [Next: Resource Model](11.%20Resource%20Model.md)"
   },
   "paths": {
     "/coupons/{id}": {
@@ -25,7 +25,7 @@
               "properties": {
                 "percent_off": {
                   "type": "number",
-                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
                 },
                 "redeem_by": {
                   "type": "number",
@@ -43,7 +43,7 @@
           }
         },
         "summary": "Retrieve a Coupon",
-        "description": "Retrieves the coupon with the given ID.\n\n",
+        "description": "Retrieves the coupon with the given ID.",
         "tags": [
           "Coupons"
         ],
@@ -51,7 +51,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "The ID of the desired coupon.\n",
+            "description": "The ID of the desired coupon.",
             "required": true,
             "type": "string"
           }
@@ -84,7 +84,7 @@
           }
         },
         "summary": "List all Coupons",
-        "description": "Returns a list of your coupons.\n\n",
+        "description": "Returns a list of your coupons.",
         "tags": [
           "Coupons"
         ],
@@ -92,7 +92,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100 items.\n",
+            "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100 items.",
             "required": false,
             "type": "number",
             "default": 10
@@ -120,7 +120,7 @@
               "properties": {
                 "percent_off": {
                   "type": "number",
-                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply.\n"
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
                 },
                 "redeem_by": {
                   "type": "number",
@@ -138,7 +138,7 @@
           }
         },
         "summary": "Create a Coupon",
-        "description": "Creates a new Coupon.\n\n",
+        "description": "Creates a new Coupon.",
         "tags": [
           "Coupons"
         ],
@@ -165,7 +165,7 @@
         },
         {
           "type": "object",
-          "required": [],
+
           "properties": {
             "id": {
               "type": "string"
@@ -185,7 +185,7 @@
     },
     "Coupon Base": {
       "type": "object",
-      "required": [],
+
       "properties": {
         "percent_off": {
           "type": "number"

@@ -161,21 +161,48 @@ function swaggerParameters(parameters, uriTemplate) {
             'description': parameter.description,
             'required': parameter.required
         }
+
+        var paramType = undefined;
         if (PARAM_TYPES.hasOwnProperty(parameter.type)) {
-            param.type = PARAM_TYPES[parameter.type];
+            paramType = PARAM_TYPES[parameter.type];
         } else {
-            param.type = 'string';
+            paramType = 'string';
         }
+
+        var allowedValues = []
+        for (var j = 0; j < parameter.values.length; j++) {
+            allowedValues.push(parameter.values[j].value);
+        }
+
+        var parameterDefault = undefined;
         if (parameter.default) {
-            if (param.type === 'number' || param.type === 'integer') {
-                param.default = Number(parameter.default);
+            if (paramType === 'number' || paramType === 'integer') {
+                parameterDefault = Number(parameter.default);
             } else {
-                param.default = parameter.default;
+                parameterDefault = parameter.default;
             }
         }
-        for (var j = 0; j < parameter.values.length; j++) {
-            if (!param.enum) param.enum = [];
-            param.enum.push(parameter.values[j].value);
+
+        // Body parameters has all info in schema
+        if (param.in === 'body') {
+            param.schema = {
+                'type': paramType
+            }
+            if (allowedValues.length > 0) {
+                param.schema.enum = allowedValues;
+            }
+            if (parameterDefault) {
+              param.scheam.default = parameterDefault;
+            }
+        }
+        else {
+          param.type = paramType;
+          if (parameterDefault) {
+              param.default = parameterDefault;
+          }
+          if (allowedValues.length > 0) {
+            param.enum = allowedValues;
+          }
         }
         params.push(param);
     }
@@ -231,9 +258,16 @@ var jsonSchemaFromMSON = function (content) {
             }
         }
     }
+
+    // According to schema definition, required is a stringArray, which must be non-empty
+    if (schema.required.length === 0) {
+        delete schema.required
+    }
+
     if (mson.element !== 'object') {
         return {'allOf': [{'$ref':'#/definitions/' + mson.element}, schema]};
     }
+
     return schema;
 };
 
@@ -327,4 +361,3 @@ exports.convert = function (data, callback) {
         return callback(error, {});
     }
 };
-
