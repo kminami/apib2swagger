@@ -24,7 +24,7 @@ var options = nopt({
 
 if (options.help) {
     console.log("apib2swagger [options]");
-    console.log("Converts Apilueprint specification to Swagger 2.0");
+    console.log("Converts API Blueprint specification to Swagger 2.0");
     console.log("");
     console.log("Usage:");
     console.log(" apib2swagger");
