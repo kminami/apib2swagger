@@ -192,7 +192,7 @@ function swaggerParameters(parameters, uriTemplate) {
                 param.schema.enum = allowedValues;
             }
             if (parameterDefault) {
-              param.scheam.default = parameterDefault;
+              param.schema.default = parameterDefault;
             }
         }
         else {
