@@ -4,7 +4,9 @@ var fs = require('fs'),
     http = require('http'),
     https = require('https'),
     exec = require('child_process').exec,
+    path = require('path'),
     nopt = require('nopt'),
+    apibIncludeDirective = require('apib-include-directive'),
     apib2swagger = require('../index.js');
 
 var options = nopt({
@@ -46,11 +48,18 @@ var swaggerUI = 'https://codeload.github.com/swagger-api/swagger-ui/tar.gz/maste
     output = options.output || '-',
     port = options.port || 3000;
 
-var apibData = ''
-rs = (options.input ? fs.createReadStream(options.input) : process.stdin).
+var includePath = options.input ? path.dirname(options.input) : process.cwd();
+var apibData = '';
+(options.input ? fs.createReadStream(options.input) : process.stdin).
 on('data', (chunk) => {
     apibData += chunk;
 }).on('end', () => {
+    try {
+      apibData = apibIncludeDirective.includeDirective(includePath, apibData);
+    } catch(e) {
+      console.log(e.toString());
+      return;
+    }
     processBlueprint(apibData, options);
 });
 
