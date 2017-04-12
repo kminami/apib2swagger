@@ -18,6 +18,7 @@
   "dependencies": {
     "apib-include-directive": "^0.1.0",
     "drafter.js": "^2.6.2",
+    "generate-schema": "^2.5.0",
     "nopt": "^3.0.6",
     "uritemplate": "^0.3.4"
   },
