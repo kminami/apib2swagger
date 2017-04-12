@@ -361,11 +361,11 @@ function swaggerResponses(examples) {
                     if (header.value.match(/application\/.*json/)) {
                         try {
                             swaggerResponse.examples[header.value] = JSON.parse(response.body);
+                            swaggerResponse.schema = {type: "object"};
                         } catch (e) {}
                         continue;
                     }
                     swaggerResponse.examples[header.value] = response.body;
-                    swaggerResponse.schema = {type: "object"};
                 }
             }
             responses[response.name] = swaggerResponse;
