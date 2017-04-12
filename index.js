@@ -132,11 +132,20 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                 }
                 // fall back to body
                 if (request.body && (schema == null || schema.length == 0)) {
-                    scheme = GenerateSchema.json("", JSON.parse(request.body));
-                    if (scheme) {
-                        delete scheme.title;
-                        delete scheme.$schema;
-                        schema.push(scheme);
+                    for (var n = 0; n < request.headers.length; n++) {
+                        var header = request.headers[n];
+                        //swaggerResponse.headers[header.name] = {'type':'string'}
+                        if (header.name === 'Content-Type') {
+                            if (header.value.match(/application\/.*json/)) {
+                                scheme = GenerateSchema.json("", JSON.parse(request.body));
+                                if (scheme) {
+                                    delete scheme.title;
+                                    delete scheme.$schema;
+                                    schema.push(scheme);
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -331,14 +340,19 @@ function swaggerResponses(examples) {
             }
             if (!swaggerResponse.schema) {
                 // fall back to body
-                if (response.body) {
-                    schema = GenerateSchema.json("", JSON.parse(response.body));
-                    if (schema) {
-                        delete schema.title;
-                        delete schema.$schema;
-                        swaggerResponse.schema = schema;
-                    }
-                }
+                // if (response.body) {
+                //     schema = GenerateSchema.json("", JSON.parse(response.body));
+                //     if (schema) {
+                //         delete schema.title;
+                //         delete schema.$schema;
+                //         swaggerResponse.schema = schema;
+                //     }
+                // }
+
+                // use object
+                // if (response.body) {
+                //     swaggerResponse.schema = {type: "object"};
+                // }
             }
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
@@ -351,6 +365,7 @@ function swaggerResponses(examples) {
                         continue;
                     }
                     swaggerResponse.examples[header.value] = response.body;
+                    swaggerResponse.schema = {type: "object"};
                 }
             }
             responses[response.name] = swaggerResponse;

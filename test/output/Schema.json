@@ -93,12 +93,7 @@
               }
             },
             "schema": {
-              "type": "object",
-              "properties": {
-                "prop1": {
-                  "type": "string"
-                }
-              }
+              "type": "object"
             }
           }
         },
