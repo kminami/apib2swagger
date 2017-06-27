@@ -248,6 +248,12 @@ var jsonSchemaFromMSON = function (content) {
         if (member.content.value.element === 'array') {
             // TODO: use member.content.value.content (schema for items)
             schema.properties[member.content.key.content] = {type: 'array', items: {}};
+        } else if (member.content.value.element === 'enum') {
+            var body = {type: member.content.key.element};
+            body.enum = member.content.value.content.map(function(a) {
+              return a.content;
+            });
+            schema.properties[member.content.key.content] = body;
         } else {
             schema.properties[member.content.key.content] = {type: member.content.value.element};
         }

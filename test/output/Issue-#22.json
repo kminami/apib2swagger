@@ -1,0 +1,40 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {},
+  "definitions": {
+    "TotalV3Item": {
+      "type": "object",
+      "required": [
+        "name",
+        "api_code",
+        "total"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "api_code": {
+          "type": "string",
+          "enum": [
+            "all",
+            "ios7",
+            "win8",
+            "win10",
+            "android",
+            "androidL",
+            "color",
+            "office"
+          ]
+        },
+        "total": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
