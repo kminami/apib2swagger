@@ -22,6 +22,7 @@ Convert to Swagger specification.
 ```shell
 $ apib2swagger -i api.md
 $ apib2swagger -i api.md -o swagger.json
+$ apib2swagger -i api.md --yaml -o swagger.yaml
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.

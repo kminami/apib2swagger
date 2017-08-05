@@ -6,6 +6,7 @@ var fs = require('fs'),
     exec = require('child_process').exec,
     path = require('path'),
     nopt = require('nopt'),
+    yaml = require('js-yaml'),
     apibIncludeDirective = require('apib-include-directive'),
     apib2swagger = require('../index.js');
 
@@ -15,12 +16,14 @@ var options = nopt({
     'convert': Boolean,
     'server': Boolean,
     'port': Number,
+    'yaml': Boolean,
     'help': Boolean
 }, {
     'i': ['--input'],
     'o': ['--output'],
     's': ['--server'],
     'p': ['--port'],
+    'y': ['--yaml'],
     'h': ['--help']
 });
 
@@ -41,6 +44,7 @@ if (options.help) {
     console.log("  -o --output <file> Output result to file instead of STDOUT.");
     console.log("  -s --server Run http server with SwaggerUI.");
     console.log("  -p --port <port> Use port for the http server.");
+    console.log("  -y --yaml Output YAML");
     process.exit();
 }
 
@@ -95,6 +99,15 @@ function processBlueprint(blueprint, opts) {
                 return;
             }
             return runServer(swagger);
+        }
+        if (opts.yaml) {
+            var data = yaml.safeDump(swagger);
+            if (output !== '-') {
+                fs.writeFileSync(output, data);
+            } else {
+                console.log(data);
+            }
+            return;
         }
         var data = JSON.stringify(swagger, null, 4);
         if (output !== '-') {
