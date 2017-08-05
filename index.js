@@ -121,6 +121,7 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                 try {
                     // referencing Model's Schema is also here (no need to referencing defenitions)
                     scheme = JSON.parse(request.schema);
+                    delete scheme['$schema'];
                     if (scheme) schema.push(scheme);
                 } catch (e) {}
             } else {
