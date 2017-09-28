@@ -128,7 +128,7 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                 scheme = searchDataStructure(request.content); // Attributes 4
                 if (scheme) schema.push(scheme);
                 if (request.reference) {
-                    schema.push({'$ref': '#/definitions/' + request.reference.id + 'Model'});
+                    schema.push({'$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model')});
                 }
             }
         }
@@ -225,17 +225,17 @@ var jsonSchemaFromMSON = function (content) {
         if (!mson.content || mson.content.length === 0) {
             return {type: 'array', items: {}};
         } else if (mson.content.length === 1) {
-            return {type: 'array', items: {'$ref': '#/definitions/' + mson.content[0].element}};
+            return {type: 'array', items: {'$ref': '#/definitions/' + escapeJSONPointer(mson.content[0].element)}};
         } else if (mson.content.length > 1) {
             var items = [];
             for (var i = 0; i < mson.content.length; i++) {
-                items.push({'$ref': '#/definitions/' + mson.content[i].element});
+                items.push({'$ref': '#/definitions/' + escapeJSONPointer(mson.content[i].element)});
             }
             return {type: 'array', items: {'anyOf': items}};
         }
     }
     if (mson.element !== 'object' && !mson.content) {
-        return {'$ref': '#/definitions/' + mson.element};
+        return {'$ref': '#/definitions/' + escapeJSONPointer(mson.element)};
     }
     // object
     var schema = {};
@@ -272,7 +272,7 @@ var jsonSchemaFromMSON = function (content) {
     }
 
     if (mson.element !== 'object') {
-        return {'allOf': [{'$ref':'#/definitions/' + mson.element}, schema]};
+        return {'allOf': [{'$ref':'#/definitions/' + escapeJSONPointer(mson.element)}, schema]};
     }
 
     return schema;
@@ -368,3 +368,9 @@ exports.convert = function (data, callback) {
         return callback(error, {});
     }
 };
+
+// RFC 6901
+function escapeJSONPointer(input) {
+    s = input.replace(/~/g, '~0')
+    return s.replace(/\//g, '~1')
+}
