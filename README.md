@@ -8,7 +8,7 @@ Convert [API Blueprint][] to [Swagger][].
 Supported versions:
 - API Blueprint 1A9 (with include directive)
 - Swagger 2.0
-- Node.js 4.x, 5.x, 6.x, 7.x or higher
+- Node.js 4.x, 5.x, 6.x, 7.x, 8.x or higher
 
 ## Install
 
