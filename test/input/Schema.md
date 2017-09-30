@@ -69,3 +69,19 @@
 + Response 200
 
     [Some resource 2][]
+
+# Some resource 3 [/some/resource/3]
+
+## POST
+
++ Request (application/json)
+
+    {"prop1": "a string", "prop2": 1, "prop3": {"prop3a": false, "prop3b": [{"prop3b1": 1}, {"prop3b1": 2}]}}
+
++ Response 200 (application/json)
+
+    + Body
+            {
+              "prop1": "a string"
+            }
+      

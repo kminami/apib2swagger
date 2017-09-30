@@ -1,7 +1,8 @@
 var url = require('url'),
     http = require('http'),
     drafter = require('drafter.js'),
-    UriTemplate = require('uritemplate');
+    UriTemplate = require('uritemplate'),
+    GenerateSchema = require('generate-schema');
 
 var apib2swagger = module.exports.convertParsed = function(apib) {
     //console.log(JSON.stringify(apib, null, 4));
@@ -129,6 +130,24 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                 if (scheme) schema.push(scheme);
                 if (request.reference) {
                     schema.push({'$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model')});
+                }
+                // fall back to body
+                if (request.body && (schema == null || schema.length == 0)) {
+                    for (var n = 0; n < request.headers.length; n++) {
+                        var header = request.headers[n];
+                        //swaggerResponse.headers[header.name] = {'type':'string'}
+                        if (header.name === 'Content-Type') {
+                            if (header.value.match(/application\/.*json/)) {
+                                scheme = GenerateSchema.json("", JSON.parse(request.body));
+                                if (scheme) {
+                                    delete scheme.title;
+                                    delete scheme.$schema;
+                                    schema.push(scheme);
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -326,6 +345,22 @@ function swaggerResponses(examples) {
                 var schema = searchDataStructure(response.content); // Attributes in response
                 if (schema) swaggerResponse.schema = schema;
             }
+            if (!swaggerResponse.schema) {
+                // fall back to body
+                // if (response.body) {
+                //     schema = GenerateSchema.json("", JSON.parse(response.body));
+                //     if (schema) {
+                //         delete schema.title;
+                //         delete schema.$schema;
+                //         swaggerResponse.schema = schema;
+                //     }
+                // }
+
+                // use object
+                // if (response.body) {
+                //     swaggerResponse.schema = {type: "object"};
+                // }
+            }
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
                 //swaggerResponse.headers[header.name] = {'type':'string'}
@@ -333,6 +368,7 @@ function swaggerResponses(examples) {
                     if (header.value.match(/application\/.*json/)) {
                         try {
                             swaggerResponse.examples[header.value] = JSON.parse(response.body);
+                            swaggerResponse.schema = {type: "object"};
                         } catch (e) {}
                         continue;
                     }

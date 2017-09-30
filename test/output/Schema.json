@@ -37,7 +37,9 @@
                   "type": "string"
                 }
               },
-              "required": ["prop1"]
+              "required": [
+                "prop1"
+              ]
             }
           }
         ]
@@ -78,11 +80,75 @@
           }
         ]
       }
+    },
+    "/some/resource/3": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "prop1": "a string"
+              }
+            },
+            "schema": {
+              "type": "object"
+            }
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                },
+                "prop2": {
+                  "type": "number"
+                },
+                "prop3": {
+                  "type": "object",
+                  "properties": {
+                    "prop3a": {
+                      "type": "boolean"
+                    },
+                    "prop3b": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "prop3b1": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "prop3b1"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
     }
   },
   "definitions": {
     "Some resource": {},
     "Some resource 2": {},
-    "Some resource 2Model": {}
+    "Some resource 2Model": {},
+    "Some resource 3": {}
   }
 }

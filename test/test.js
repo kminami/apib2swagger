@@ -71,7 +71,7 @@ describe("apib2swagger", function () {
         files.concat(includedFiles).forEach(function (file) {
             it(file, function (done) {
                 this.timeout(10000); // 10s
-                var apib = fs.readFileSync(localInput + file, "utf-8");
+                var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
                 apib2swagger.convert(apib, function (error, result) {
                     if (error) {
                         return done(error);
