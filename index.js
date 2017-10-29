@@ -138,13 +138,15 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                         //swaggerResponse.headers[header.name] = {'type':'string'}
                         if (header.name === 'Content-Type') {
                             if (header.value.match(/application\/.*json/)) {
-                                scheme = GenerateSchema.json("", JSON.parse(request.body));
-                                if (scheme) {
-                                    delete scheme.title;
-                                    delete scheme.$schema;
-                                    schema.push(scheme);
-                                }
-                                break;
+                                try {
+                                    scheme = GenerateSchema.json("", JSON.parse(request.body));
+                                    if (scheme) {
+                                        delete scheme.title;
+                                        delete scheme.$schema;
+                                        schema.push(scheme);
+                                    }
+                                    break;
+                                } catch (e) {}
                             }
                         }
                     }
@@ -368,7 +370,7 @@ function swaggerResponses(examples) {
                     if (header.value.match(/application\/.*json/)) {
                         try {
                             swaggerResponse.examples[header.value] = JSON.parse(response.body);
-                            swaggerResponse.schema = {type: "object"};
+                            //swaggerResponse.schema = {type: "object"};
                         } catch (e) {}
                         continue;
                     }

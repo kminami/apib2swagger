@@ -58,6 +58,18 @@
             "description": "An unique identifier of the message.",
             "required": true,
             "type": "number"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         ]
       }

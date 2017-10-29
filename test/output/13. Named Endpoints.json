@@ -20,7 +20,20 @@
         "tags": [
           "Quick start"
         ],
-        "parameters": []
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "/tasks": {
@@ -37,7 +50,26 @@
         "tags": [
           "Quick start"
         ],
-        "parameters": []
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "done": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
       }
     }
   },

@@ -91,18 +91,12 @@
               "application/json": {
                 "prop1": "a string"
               }
-            },
-            "schema": {
-              "type": "object"
             }
           }
         },
         "summary": "",
         "description": "",
         "tags": [],
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "body",
@@ -141,6 +135,9 @@
               }
             }
           }
+        ],
+        "produces": [
+          "application/json"
         ]
       }
     }
