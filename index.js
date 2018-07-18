@@ -123,6 +123,12 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                     // referencing Model's Schema is also here (no need to referencing defenitions)
                     scheme = JSON.parse(request.schema);
                     delete scheme['$schema'];
+
+                    // if we have example values in the body then insert them into the json schema
+                    var body = JSON.parse(request.body);
+                    if(scheme['type'] === 'object'){
+                        scheme.example = body;
+                    }
                     if (scheme) schema.push(scheme);
                 } catch (e) {}
             } else {
@@ -143,6 +149,12 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                                     if (scheme) {
                                         delete scheme.title;
                                         delete scheme.$schema;
+
+                                        // if we have example values in the body then insert them into the json schema
+                                        var body = JSON.parse(request.body);
+                                        if(scheme['type'] === 'object'){
+                                            scheme.example = body;
+                                        }
                                         schema.push(scheme);
                                     }
                                     break;
