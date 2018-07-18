@@ -128,6 +128,8 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                     var body = JSON.parse(request.body);
                     if(scheme['type'] === 'object'){
                         scheme.example = body;
+                    } else if (scheme['type'] === 'array'){
+                        scheme.items.example = body;
                     }
                     if (scheme) schema.push(scheme);
                 } catch (e) {}
@@ -154,6 +156,8 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                                         var body = JSON.parse(request.body);
                                         if(scheme['type'] === 'object'){
                                             scheme.example = body;
+                                        } else if (scheme['type'] === 'array'){
+                                            scheme.items.example = body;
                                         }
                                         schema.push(scheme);
                                     }

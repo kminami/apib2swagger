@@ -1,0 +1,94 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "",
+        "version": "",
+        "description": ""
+    },
+    "paths": {
+        "/posts": {
+            "get": {
+                "responses": {},
+                "summary": "Retrieve All Posts",
+                "description": "",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "text": {
+                                        "type": "string"
+                                    },
+                                    "author": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "description": "Author of the blog post."
+                                    }
+                                },
+                                "required": [
+                                    "id"
+                                ],
+                                "example": [
+                                    {
+                                        "id": 42,
+                                        "text": "Hello World",
+                                        "author": {
+                                            "name": "Boba Fett",
+                                            "email": "fett@intergalactic.com"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Blog Posts": {},
+        "BlogPost": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "Author"
+                }
+            }
+        },
+        "Author": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
