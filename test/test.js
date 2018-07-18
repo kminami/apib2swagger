@@ -30,6 +30,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#22.md',
         'Issue-#23.md',
         'Issue-#26.md',
+        'Issue-#29.md',
         'apiblueprint_uber.md',
         'apiblueprint_valid_simple.md'
     ];

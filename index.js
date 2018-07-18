@@ -197,7 +197,8 @@ function swaggerParameters(parameters, uriTemplate) {
             'name': parameter.name,
             'in': getParamType(parameter.name, uriTemplate),
             'description': parameter.description,
-            'required': parameter.required
+            'required': parameter.required,
+            'example': parameter.example
         }
 
         var paramType = undefined;

@@ -1,10 +1,21 @@
 FORMAT: 1A
 
-# Blog Posts [/posts]
+# Blog Post [/posts/{id}]
+## Retrieve A Post [GET]
 
-## Retrieve All Posts [GET]
-+ Request (application/json)
++ Parameters
+    + id: `12345` (required, string)
+
++ Response 200 (application/json)
     + Attributes (array[BlogPost], fixed-type)
+
+
+# Create Blog Posts [/posts]
+
+## Create Post [POST]
++ Request (application/json)
+    + Attributes (BlogPost, fixed-type)
+
 
 ## Data Structures
 
