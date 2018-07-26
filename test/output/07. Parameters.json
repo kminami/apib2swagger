@@ -31,7 +31,8 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "x-example": "1"
           }
         ],
         "produces": [
@@ -57,13 +58,17 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "x-example": "1"
           },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "message": "All your base are belong to us."
+              },
               "properties": {
                 "message": {
                   "type": "string"

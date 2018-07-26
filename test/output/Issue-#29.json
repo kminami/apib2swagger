@@ -1,0 +1,212 @@
+{
+    "definitions": {
+      "Author": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Blog Post": {},
+      "BlogPost": {
+        "properties": {
+          "author": {
+            "$ref": "#/definitions/Author"
+          },
+          "id": {
+            "type": "number"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
+      "Create Blog Posts": {}
+    },
+    "info": {
+      "description": "",
+      "title": "",
+      "version": ""
+    },
+    "paths": {
+      "/posts": {
+        "post": {
+          "description": "",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "schema": {
+                "additionalProperties": false,
+                "example": {
+                  "author": {
+                    "email": "fett@intergalactic.com",
+                    "name": "Boba Fett"
+                  },
+                  "id": 42,
+                  "text": "Hello World"
+                },
+                "properties": {
+                  "author": {
+                    "additionalProperties": false,
+                    "description": "Author of the blog post.",
+                    "properties": {
+                      "email": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "id": {
+                    "type": "number"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "text",
+                  "author"
+                ],
+                "type": "object"
+              }
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": [
+                  {
+                    "author": {
+                      "email": "fett@intergalactic.com",
+                      "name": "Boba Fett"
+                    },
+                    "id": 42,
+                    "text": "Hello World"
+                  }
+                ]
+              },
+              "headers": {},
+              "schema": {
+                "items": {
+                  "properties": {
+                    "author": {
+                      "additionalProperties": false,
+                      "description": "Author of the blog post.",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            }
+          },
+          "summary": "Create Post",
+          "tags": []
+        }
+      },
+      "/posts/{id}": {
+        "get": {
+          "description": "",
+          "parameters": [
+            {
+              "description": "",
+              "in": "path",
+              "name": "id",
+              "required": true,
+              "type": "string",
+              "x-example": "12345"
+            }
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": [
+                  {
+                    "author": {
+                      "email": "fett@intergalactic.com",
+                      "name": "Boba Fett"
+                    },
+                    "id": 42,
+                    "text": "Hello World"
+                  }
+                ]
+              },
+              "headers": {},
+              "schema": {
+                "items": {
+                  "properties": {
+                    "author": {
+                      "additionalProperties": false,
+                      "description": "Author of the blog post.",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "id": {
+                      "type": "number"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            }
+          },
+          "summary": "Retrieve A Post",
+          "tags": []
+        }
+      }
+    },
+    "swagger": "2.0"
+  }

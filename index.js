@@ -123,6 +123,14 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                     // referencing Model's Schema is also here (no need to referencing defenitions)
                     scheme = JSON.parse(request.schema);
                     delete scheme['$schema'];
+
+                    // if we have example values in the body then insert them into the json schema
+                    var body = JSON.parse(request.body);
+                    if(scheme['type'] === 'object'){
+                        scheme.example = body;
+                    } else if (scheme['type'] === 'array'){
+                        scheme.items.example = body;
+                    }
                     if (scheme) schema.push(scheme);
                 } catch (e) {}
             } else {
@@ -143,6 +151,14 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
                                     if (scheme) {
                                         delete scheme.title;
                                         delete scheme.$schema;
+
+                                        // if we have example values in the body then insert them into the json schema
+                                        var body = JSON.parse(request.body);
+                                        if(scheme['type'] === 'object'){
+                                            scheme.example = body;
+                                        } else if (scheme['type'] === 'array'){
+                                            scheme.items.example = body;
+                                        }
                                         schema.push(scheme);
                                     }
                                     break;
@@ -182,6 +198,10 @@ function swaggerParameters(parameters, uriTemplate) {
             'in': getParamType(parameter.name, uriTemplate),
             'description': parameter.description,
             'required': parameter.required
+        };
+
+        if (parameter.example){
+            param['x-example'] = parameter.example
         }
 
         var paramType = undefined;
@@ -281,6 +301,9 @@ var jsonSchemaFromMSON = function (content) {
         }
         if (!member.attributes || !member.attributes.typeAttributes) continue;
         for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
+            if (member.attributes.typeAttributes[k] === "fixedType") {
+                schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element)};
+            }
             if (member.attributes.typeAttributes[k] === "required") {
                 schema.required.push(member.content.key.content);
             }

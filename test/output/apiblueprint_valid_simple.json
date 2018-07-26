@@ -103,6 +103,9 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "content": "Updated file contents"
+              },
               "properties": {
                 "content": {
                   "type": "string"
@@ -219,6 +222,10 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "content": "String content",
+                "description": "Description of Gist"
+              },
               "properties": {
                 "description": {
                   "type": "string"
@@ -359,6 +366,11 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "scopes": [
+                  "gist_write"
+                ]
+              },
               "properties": {
                 "scopes": {
                   "type": "array",
