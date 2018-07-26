@@ -24,6 +24,10 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "fuga": "",
+                "hoge": ""
+              },
               "properties": {
                 "hoge": {
                   "type": "string"

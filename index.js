@@ -197,9 +197,8 @@ function swaggerParameters(parameters, uriTemplate) {
             'name': parameter.name,
             'in': getParamType(parameter.name, uriTemplate),
             'description': parameter.description,
-            'required': parameter.required,
-            'example': parameter.example
-        }
+            'required': parameter.required
+        };
 
         var paramType = undefined;
         if (PARAM_TYPES.hasOwnProperty(parameter.type)) {
@@ -298,6 +297,9 @@ var jsonSchemaFromMSON = function (content) {
         }
         if (!member.attributes || !member.attributes.typeAttributes) continue;
         for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
+            if (member.attributes.typeAttributes[k] === "fixedType") {
+                schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element)};
+            }
             if (member.attributes.typeAttributes[k] === "required") {
                 schema.required.push(member.content.key.content);
             }

@@ -86,6 +86,9 @@ describe("apib2swagger", function () {
                         var expected_answer = JSON.parse(f);
                         assert.deepEqual(result.swagger, expected_answer);
                         var validation_result = tv4.validateResult(result.swagger, schema);
+                        if (validation_result.error) {
+	                        console.log(validation_result);
+                        }
                         assert(validation_result.valid);
                         assert(validation_result.missing.length === 0)
                     }

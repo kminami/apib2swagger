@@ -16,14 +16,17 @@ FORMAT: 1A
 + Request (application/json)
     + Attributes (BlogPost, fixed-type)
 
++ Response 200 (application/json)
+    + Attributes (array[BlogPost], fixed-type)
+
 
 ## Data Structures
 
 ### BlogPost (object)
 + id: 42 (number, required)
 + text: Hello World (string)
-+ author (Author) - Author of the blog post.
++ author (Author, fixed-type) - Author of the blog post.
 
-### Author (object)
-+ name: Boba Fett
-+ email: fett@intergalactic.com
+### Author
++ name: Boba Fett (string, optional)
++ email: fett@intergalactic.com (string, optional)

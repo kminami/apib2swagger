@@ -59,6 +59,9 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "message": "All your base are belong to us."
+              },
               "properties": {
                 "message": {
                   "type": "string"

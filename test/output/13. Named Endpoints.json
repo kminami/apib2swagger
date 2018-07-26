@@ -26,6 +26,9 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "message": "Hello World!"
+              },
               "properties": {
                 "message": {
                   "type": "string"
@@ -56,6 +59,11 @@
             "in": "body",
             "schema": {
               "type": "object",
+              "example": {
+                "done": false,
+                "name": "Exercise in gym",
+                "type": "task"
+              },
               "properties": {
                 "name": {
                   "type": "string"
