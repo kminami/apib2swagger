@@ -31,7 +31,8 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "x-example": "1"
           }
         ],
         "produces": [
@@ -57,7 +58,8 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number"
+            "type": "number",
+            "x-example": "1"
           },
           {
             "name": "body",

@@ -148,7 +148,8 @@
               "in": "path",
               "name": "id",
               "required": true,
-              "type": "string"
+              "type": "string",
+              "x-example": "12345"
             }
           ],
           "produces": [

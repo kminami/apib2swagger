@@ -200,6 +200,10 @@ function swaggerParameters(parameters, uriTemplate) {
             'required': parameter.required
         };
 
+        if (parameter.example){
+            param['x-example'] = parameter.example
+        }
+
         var paramType = undefined;
         if (PARAM_TYPES.hasOwnProperty(parameter.type)) {
             paramType = PARAM_TYPES[parameter.type];
