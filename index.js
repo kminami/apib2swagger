@@ -302,7 +302,12 @@ var jsonSchemaFromMSON = function (content) {
         if (!member.attributes || !member.attributes.typeAttributes) continue;
         for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
             if (member.attributes.typeAttributes[k] === "fixedType") {
-                schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element)};
+                // handle when we have attributes containing objects
+                if (member.content.value.element === 'array'){
+                    schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.content[0].element)};
+                } else {
+                    schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element)};
+                }
             }
             if (member.attributes.typeAttributes[k] === "required") {
                 schema.required.push(member.content.key.content);
