@@ -25,7 +25,7 @@ FORMAT: 1A
 + id: 42 (number, required)
 + text: Hello World (string)
 + author (Author, fixed-type) - Author of the blog post.
-+ editors (array[Editors], fixed-type) (array)
++ editors (array[Editors], fixed-type)
 
 ### Author
 + name: Boba Fett (string, optional)
