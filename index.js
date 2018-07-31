@@ -304,7 +304,12 @@ var jsonSchemaFromMSON = function (content) {
             if (member.attributes.typeAttributes[k] === "fixedType") {
                 // handle when we have attributes containing objects
                 if (member.content.value.element === 'array'){
-                    schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.content[0].element)};
+                    schema.properties[member.content.key.content] = {
+                        'type': "array",
+                        'items': {
+                            '$ref': '#/definitions/' + escapeJSONPointer(member.content.value.content[0].element)
+                        }
+                    };
                 } else {
                     schema.properties[member.content.key.content] = {'$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element)};
                 }

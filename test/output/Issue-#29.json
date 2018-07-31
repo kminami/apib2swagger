@@ -18,7 +18,10 @@
             "$ref": "#/definitions/Author"
           },
           "editors": {
-             "$ref": "#/definitions/Editors"
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Editors"
+            }
           },
           "id": {
             "type": "number"
