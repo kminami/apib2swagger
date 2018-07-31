@@ -17,7 +17,6 @@ FORMAT: 1A
     + Attributes (BlogPost, fixed-type)
 
 + Response 200 (application/json)
-    + Attributes (array[BlogPost], fixed-type)
 
 
 ## Data Structures
@@ -26,7 +25,12 @@ FORMAT: 1A
 + id: 42 (number, required)
 + text: Hello World (string)
 + author (Author, fixed-type) - Author of the blog post.
++ editors (array[Editors], fixed-type)
 
 ### Author
 + name: Boba Fett (string, optional)
 + email: fett@intergalactic.com (string, optional)
+
+### Editors (object)
++ name: Lando Calrissian (string, optional)
++ email: lando@intergalactic.com (string, optional)

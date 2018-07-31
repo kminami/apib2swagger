@@ -17,6 +17,12 @@
           "author": {
             "$ref": "#/definitions/Author"
           },
+          "editors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Editors"
+            }
+          },
           "id": {
             "type": "number"
           },
@@ -29,7 +35,18 @@
         ],
         "type": "object"
       },
-      "Create Blog Posts": {}
+      "Create Blog Posts": {},
+      "Editors": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
     },
     "info": {
       "description": "",
@@ -51,6 +68,12 @@
                     "email": "fett@intergalactic.com",
                     "name": "Boba Fett"
                   },
+                  "editors": [
+                    {
+                      "email": "lando@intergalactic.com",
+                      "name": "Lando Calrissian"
+                    }
+                  ],
                   "id": 42,
                   "text": "Hello World"
                 },
@@ -68,47 +91,8 @@
                     },
                     "type": "object"
                   },
-                  "id": {
-                    "type": "number"
-                  },
-                  "text": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "id",
-                  "text",
-                  "author"
-                ],
-                "type": "object"
-              }
-            }
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "examples": {
-                "application/json": [
-                  {
-                    "author": {
-                      "email": "fett@intergalactic.com",
-                      "name": "Boba Fett"
-                    },
-                    "id": 42,
-                    "text": "Hello World"
-                  }
-                ]
-              },
-              "headers": {},
-              "schema": {
-                "items": {
-                  "properties": {
-                    "author": {
-                      "additionalProperties": false,
-                      "description": "Author of the blog post.",
+                  "editors": {
+                    "items": {
                       "properties": {
                         "email": {
                           "type": "string"
@@ -119,20 +103,30 @@
                       },
                       "type": "object"
                     },
-                    "id": {
-                      "type": "number"
-                    },
-                    "text": {
-                      "type": "string"
-                    }
+                    "type": "array"
                   },
-                  "required": [
-                    "id"
-                  ],
-                  "type": "object"
+                  "id": {
+                    "type": "number"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
                 },
-                "type": "array"
+                "required": [
+                  "id",
+                  "text",
+                  "author",
+                  "editors"
+                ],
+                "type": "object"
               }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {},
+              "headers": {}
             }
           },
           "summary": "Create Post",
@@ -165,6 +159,12 @@
                       "email": "fett@intergalactic.com",
                       "name": "Boba Fett"
                     },
+                    "editors": [
+                      {
+                        "email": "lando@intergalactic.com",
+                        "name": "Lando Calrissian"
+                      }
+                    ],
                     "id": 42,
                     "text": "Hello World"
                   }
@@ -186,6 +186,20 @@
                         }
                       },
                       "type": "object"
+                    },
+                    "editors": {
+                      "items": {
+                        "properties": {
+                          "email": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
                     },
                     "id": {
                       "type": "number"
