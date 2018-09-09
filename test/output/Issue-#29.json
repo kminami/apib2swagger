@@ -1,226 +1,226 @@
 {
-    "definitions": {
-      "Author": {
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "Blog Post": {},
-      "BlogPost": {
-        "properties": {
-          "author": {
-            "$ref": "#/definitions/Author"
-          },
-          "editors": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/Editors"
-            }
-          },
-          "id": {
-            "type": "number"
-          },
-          "text": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "type": "object"
-      },
-      "Create Blog Posts": {},
-      "Editors": {
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          }
-        },
-        "type": "object"
-      }
-    },
-    "info": {
-      "description": "",
-      "title": "",
-      "version": ""
-    },
-    "paths": {
-      "/posts": {
-        "post": {
-          "description": "",
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "schema": {
-                "additionalProperties": false,
-                "example": {
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/posts/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": [
+                {
+                  "id": 42,
+                  "text": "Hello World",
                   "author": {
-                    "email": "fett@intergalactic.com",
-                    "name": "Boba Fett"
+                    "name": "Boba Fett",
+                    "email": "fett@intergalactic.com"
                   },
                   "editors": [
                     {
-                      "email": "lando@intergalactic.com",
-                      "name": "Lando Calrissian"
+                      "name": "Lando Calrissian",
+                      "email": "lando@intergalactic.com"
                     }
-                  ],
-                  "id": 42,
-                  "text": "Hello World"
-                },
+                  ]
+                }
+              ]
+            },
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
                 "properties": {
-                  "author": {
-                    "additionalProperties": false,
-                    "description": "Author of the blog post.",
-                    "properties": {
-                      "email": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
-                      }
-                    },
-                    "type": "object"
-                  },
-                  "editors": {
-                    "items": {
-                      "properties": {
-                        "email": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
-                    },
-                    "type": "array"
-                  },
                   "id": {
                     "type": "number"
                   },
                   "text": {
                     "type": "string"
+                  },
+                  "author": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "description": "Author of the blog post."
+                  },
+                  "editors": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        }
+                      }
+                    }
                   }
                 },
                 "required": [
-                  "id",
-                  "text",
-                  "author",
-                  "editors"
-                ],
-                "type": "object"
+                  "id"
+                ]
               }
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "examples": {},
-              "headers": {}
-            }
-          },
-          "summary": "Create Post",
-          "tags": []
-        }
-      },
-      "/posts/{id}": {
-        "get": {
-          "description": "",
-          "parameters": [
-            {
-              "description": "",
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "type": "string",
-              "x-example": "12345"
-            }
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "OK",
-              "examples": {
-                "application/json": [
-                  {
-                    "author": {
-                      "email": "fett@intergalactic.com",
-                      "name": "Boba Fett"
-                    },
-                    "editors": [
-                      {
-                        "email": "lando@intergalactic.com",
-                        "name": "Lando Calrissian"
-                      }
-                    ],
-                    "id": 42,
-                    "text": "Hello World"
-                  }
-                ]
-              },
-              "headers": {},
-              "schema": {
-                "items": {
+          }
+        },
+        "summary": "Retrieve A Post",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "x-example": "12345",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/posts": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create Post",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "object",
                   "properties": {
-                    "author": {
-                      "additionalProperties": false,
-                      "description": "Author of the blog post.",
-                      "properties": {
-                        "email": {
-                          "type": "string"
-                        },
-                        "name": {
-                          "type": "string"
-                        }
-                      },
-                      "type": "object"
+                    "name": {
+                      "type": "string"
                     },
-                    "editors": {
-                      "items": {
-                        "properties": {
-                          "email": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          }
-                        },
-                        "type": "object"
-                      },
-                      "type": "array"
-                    },
-                    "id": {
-                      "type": "number"
-                    },
-                    "text": {
+                    "email": {
                       "type": "string"
                     }
                   },
-                  "required": [
-                    "id"
-                  ],
-                  "type": "object"
+                  "additionalProperties": false,
+                  "description": "Author of the blog post."
                 },
-                "type": "array"
+                "editors": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "text",
+                "author",
+                "editors"
+              ],
+              "additionalProperties": false,
+              "example": {
+                "id": 42,
+                "text": "Hello World",
+                "author": {
+                  "name": "Boba Fett",
+                  "email": "fett@intergalactic.com"
+                },
+                "editors": [
+                  {
+                    "name": "Lando Calrissian",
+                    "email": "lando@intergalactic.com"
+                  }
+                ]
               }
             }
-          },
-          "summary": "Retrieve A Post",
-          "tags": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Blog Post": {},
+    "Create Blog Posts": {},
+    "BlogPost": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "text": {
+          "type": "string"
+        },
+        "author": {
+          "$ref": "#/definitions/Author"
+        },
+        "editors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Editors"
+          }
         }
       }
     },
-    "swagger": "2.0"
+    "Author": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "Editors": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    }
   }
+}
