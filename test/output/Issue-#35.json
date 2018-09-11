@@ -1,0 +1,31 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {},
+  "definitions": {
+    "some category of data structures": {
+      "type": "object",
+      "properties": {}
+    },
+    "Config": {
+      "type": "object",
+      "required": [
+        "alice",
+        "bob"
+      ],
+      "properties": {
+        "alice": {
+          "type": "string"
+        },
+        "bob": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "tags": []
+}

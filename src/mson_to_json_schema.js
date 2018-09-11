@@ -27,7 +27,7 @@ function convertMsonToJsonSchema(content) {
     schema.type = 'object';
     schema.required = [];
     schema.properties = {};
-    for (var j = 0; j < mson.content.length; j++) {
+    for (var j = 0; mson.content && j < mson.content.length; j++) {
         var member = mson.content[j];
         if (member.element !== "member") continue;
         // MEMO: member.meta.description
