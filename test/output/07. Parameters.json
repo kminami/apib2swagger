@@ -31,8 +31,8 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number",
-            "x-example": "1"
+            "x-example": "1",
+            "type": "number"
           }
         ],
         "produces": [
@@ -58,21 +58,21 @@
             "in": "path",
             "description": "An unique identifier of the message.",
             "required": true,
-            "type": "number",
-            "x-example": "1"
+            "x-example": "1",
+            "type": "number"
           },
           {
             "name": "body",
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "message": "All your base are belong to us."
-              },
               "properties": {
                 "message": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "message": "All your base are belong to us."
               }
             }
           }
@@ -127,5 +127,11 @@
   "definitions": {
     "My Message": {},
     "All My Messages": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources."
+    }
+  ]
 }

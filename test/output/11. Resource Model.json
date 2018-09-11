@@ -59,13 +59,13 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "message": "All your base are belong to us."
-              },
               "properties": {
                 "message": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "message": "All your base are belong to us."
               }
             }
           }
@@ -76,5 +76,11 @@
   "definitions": {
     "My Message": {},
     "My MessageModel": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources."
+    }
+  ]
 }

@@ -46,5 +46,15 @@
   },
   "definitions": {
     "My Message": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources.\n\nThis is the first group of resources in this document. It is **recognized** by the **keyword `group`** and its name is `Messages`.\n\nAny following resource definition is considered to be a part of this group until another group is defined. It is **customary** to increase header level of resources (and actions) nested under a resource."
+    },
+    {
+      "name": "Users",
+      "description": "Group of all user-related resources.\n\nThis is the second group in this blueprint. For now, no resources were defined here and as such we will omit it from the next installement of this course."
+    }
+  ]
 }

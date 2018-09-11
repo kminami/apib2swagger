@@ -24,10 +24,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "fuga": "",
-                "hoge": ""
-              },
               "properties": {
                 "hoge": {
                   "type": "string"
@@ -35,6 +31,10 @@
                 "fuga": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "hoge": "",
+                "fuga": ""
               }
             }
           }
@@ -42,5 +42,6 @@
       }
     }
   },
-  "definitions": {}
+  "definitions": {},
+  "tags": []
 }

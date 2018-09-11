@@ -168,7 +168,6 @@
   "definitions": {
     "Coupon": {
       "type": "object",
-
       "properties": {
         "id": {
           "type": "string"
@@ -190,5 +189,10 @@
         "$ref": "#/definitions/Coupon"
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Coupons"
+    }
+  ]
 }

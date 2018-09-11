@@ -196,8 +196,8 @@
             "in": "path",
             "description": "The ID of a specific user in the form of a string",
             "required": true,
-            "type": "string",
-            "x-example": "p401"
+            "x-example": "p401",
+            "type": "string"
           }
         ],
         "produces": [
@@ -278,5 +278,14 @@
         }
       ]
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Settings"
+    },
+    {
+      "name": "Users",
+      "description": "Get, update, and delete users"
+    }
+  ]
 }

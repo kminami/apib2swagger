@@ -103,13 +103,13 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "content": "Updated file contents"
-              },
               "properties": {
                 "content": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "content": "Updated file contents"
               }
             }
           }
@@ -222,10 +222,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "content": "String content",
-                "description": "Description of Gist"
-              },
               "properties": {
                 "description": {
                   "type": "string"
@@ -233,6 +229,10 @@
                 "content": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "description": "Description of Gist",
+                "content": "String content"
               }
             }
           }
@@ -366,11 +366,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "scopes": [
-                  "gist_write"
-                ]
-              },
               "properties": {
                 "scopes": {
                   "type": "array",
@@ -378,6 +373,11 @@
                     "type": "string"
                   }
                 }
+              },
+              "example": {
+                "scopes": [
+                  "gist_write"
+                ]
               }
             }
           }
@@ -410,5 +410,15 @@
     "StarModel": {},
     "Authorization": {},
     "AuthorizationModel": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Gist",
+      "description": "Gist-related resources of *Gist Fox API*."
+    },
+    {
+      "name": "Access Authorization and Control",
+      "description": "Access and Control of *Gist Fox API* OAuth token."
+    }
+  ]
 }

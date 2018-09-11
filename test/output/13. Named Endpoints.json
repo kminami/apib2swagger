@@ -26,13 +26,13 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "message": "Hello World!"
-              },
               "properties": {
                 "message": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "message": "Hello World!"
               }
             }
           }
@@ -59,11 +59,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "done": false,
-                "name": "Exercise in gym",
-                "type": "task"
-              },
               "properties": {
                 "name": {
                   "type": "string"
@@ -74,6 +69,11 @@
                 "type": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "name": "Exercise in gym",
+                "done": false,
+                "type": "task"
               }
             }
           }
@@ -84,5 +84,10 @@
   "definitions": {
     "Create message": {},
     "Create a new task": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Quick start"
+    }
+  ]
 }

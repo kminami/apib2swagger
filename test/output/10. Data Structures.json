@@ -165,7 +165,6 @@
         },
         {
           "type": "object",
-
           "properties": {
             "id": {
               "type": "string"
@@ -185,7 +184,6 @@
     },
     "Coupon Base": {
       "type": "object",
-
       "properties": {
         "percent_off": {
           "type": "number"
@@ -195,5 +193,10 @@
         }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Coupons"
+    }
+  ]
 }

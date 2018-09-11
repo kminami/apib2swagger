@@ -48,5 +48,11 @@
   },
   "definitions": {
     "My Message": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources."
+    }
+  ]
 }

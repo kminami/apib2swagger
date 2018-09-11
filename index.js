@@ -27,22 +27,31 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
     });
     swagger.paths = {};
     swagger.definitions = {};
+    var tags = {};
     apib.content.filter(function(content) {
         return content.element === 'category';
     }).forEach(function(category) {
-        // description in Resource group section is discarded
         var groupName = category.attributes ? category.attributes.name : '';
+        if (groupName && !tags[groupName]) {
+            tags[groupName] = { name: groupName };
+        }
         category.content.forEach(function(content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
                 swaggerDefinitions(swagger.definitions, content);
                 swaggerPaths(swagger.paths, groupName, content);
             } else if (content.element === 'copy') {
+                // group description here
+                tags[groupName].description = content.content;
             } else if (content.element === 'dataStructure') {
                 swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
             }
         });
     });
+    swagger.tags = [];
+    for (var key in tags) {
+        swagger.tags.push(tags[key]);
+    }
     return swagger;
 }
 

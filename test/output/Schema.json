@@ -32,9 +32,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "prop1": "a string"
-              },
               "properties": {
                 "prop1": {
                   "type": "string"
@@ -42,7 +39,10 @@
               },
               "required": [
                 "prop1"
-              ]
+              ],
+              "example": {
+                "prop1": "a string"
+              }
             }
           }
         ]
@@ -74,13 +74,13 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "prop1": "a string"
-              },
               "properties": {
                 "prop1": {
                   "type": "string"
                 }
+              },
+              "example": {
+                "prop1": "a string"
               }
             }
           }
@@ -109,21 +109,6 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "example": {
-                "prop1": "a string",
-                "prop2": 1,
-                "prop3": {
-                  "prop3a": false,
-                  "prop3b": [
-                    {
-                      "prop3b1": 1
-                    },
-                    {
-                      "prop3b1": 2
-                    }
-                  ]
-                }
-              },
               "properties": {
                 "prop1": {
                   "type": "string"
@@ -153,6 +138,21 @@
                     }
                   }
                 }
+              },
+              "example": {
+                "prop1": "a string",
+                "prop2": 1,
+                "prop3": {
+                  "prop3a": false,
+                  "prop3b": [
+                    {
+                      "prop3b1": 1
+                    },
+                    {
+                      "prop3b1": 2
+                    }
+                  ]
+                }
               }
             }
           }
@@ -168,5 +168,6 @@
     "Some resource 2": {},
     "Some resource 2Model": {},
     "Some resource 3": {}
-  }
+  },
+  "tags": []
 }

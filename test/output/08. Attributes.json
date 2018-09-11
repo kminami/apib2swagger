@@ -46,5 +46,10 @@
   },
   "definitions": {
     "Coupon": {}
-  }
+  },
+  "tags": [
+    {
+      "name": "Coupons"
+    }
+  ]
 }
