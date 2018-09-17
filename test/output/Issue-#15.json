@@ -272,7 +272,9 @@
           "properties": {
             "privileges": {
               "type": "array",
-              "items": {}
+              "items": {
+                "type": "string"
+              }
             }
           }
         }
