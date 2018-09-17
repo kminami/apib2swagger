@@ -1,0 +1,114 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/hoge": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "segment": {
+                  "attr1": "",
+                  "attr2": "",
+                  "attr3": ""
+                },
+                "segmentsArray": [
+                  {
+                    "attr1": "",
+                    "attr2": "",
+                    "attr3": ""
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "segment": {
+                  "type": "object",
+                  "properties": {
+                    "attr1": {
+                      "type": "string"
+                    },
+                    "attr2": {
+                      "type": "string"
+                    },
+                    "attr3": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "One segment."
+                },
+                "segmentsArray": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attr1": {
+                        "type": "string"
+                      },
+                      "attr2": {
+                        "type": "string"
+                      },
+                      "attr3": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "description": "Array of segments."
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PLAN": {
+      "type": "object",
+      "properties": {
+        "segment": {
+          "$ref": "#/definitions/SEGMENT",
+          "description": "One segment."
+        },
+        "segmentsArray": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SEGMENT"
+          },
+          "description": "Array of segments."
+        }
+      }
+    },
+    "SEGMENT": {
+      "type": "object",
+      "properties": {
+        "attr1": {
+          "type": "string"
+        },
+        "attr2": {
+          "type": "string"
+        },
+        "attr3": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "tags": []
+}

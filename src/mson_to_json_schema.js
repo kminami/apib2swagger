@@ -3,7 +3,19 @@ var escapeJSONPointer = require('./escape_json_pointer');
 function convertMsonToJsonSchema(content) {
     // for apib._version = "4.0"
     var mson = content.content[0];
-    return convert(mson);
+    var schema = convert(mson);
+    if (schema.type === 'array') {
+        var fixedType = false;
+        if (mson.attributes && mson.attributes.typeAttributes) {
+            fixedType = mson.attributes.typeAttributes.some(function (typeAttr) {
+                return typeAttr === 'fixedType';
+            });
+        }
+        if (!fixedType) {
+            return { type: 'array', items: {} }; // reset items schema
+        }
+    }
+    return schema;
 }
 
 function convert(mson) {
@@ -39,26 +51,25 @@ function convert(mson) {
     for (var j = 0; mson.content && j < mson.content.length; j++) {
         var member = mson.content[j];
         if (member.element !== "member") continue;
-        // MEMO: member.meta.description
         schema.properties[member.content.key.content] = convert(member.content.value);
-        if (!member.attributes || !member.attributes.typeAttributes) continue;
-        for (var k = 0; k < member.attributes.typeAttributes.length; k++) {
-            if (member.attributes.typeAttributes[k] === "fixedType") {
-                // handle when we have attributes containing objects
-                if (member.content.value.element === 'array') {
-                    schema.properties[member.content.key.content] = {
-                        'type': "array",
-                        'items': {
-                            '$ref': '#/definitions/' + escapeJSONPointer(member.content.value.content[0].element)
-                        }
-                    };
-                } else {
-                    schema.properties[member.content.key.content] = { '$ref': '#/definitions/' + escapeJSONPointer(member.content.value.element) };
+        if (member.meta && member.meta.description) {
+            schema.properties[member.content.key.content].description = member.meta.description;
+        }
+        var fixedType = false;
+        if (member.attributes && member.attributes.typeAttributes) {
+            member.attributes.typeAttributes.forEach(function (typeAttr) {
+                switch (typeAttr) {
+                    case 'fixedType':
+                        fixedType = true;
+                        break;
+                    case 'required':
+                        schema.required.push(member.content.key.content);
+                        break;
                 }
-            }
-            if (member.attributes.typeAttributes[k] === "required") {
-                schema.required.push(member.content.key.content);
-            }
+            });
+        }
+        if (schema.properties[member.content.key.content].type === 'array' && !fixedType) {
+            schema.properties[member.content.key.content].items = {}; // reset item schema
         }
     }
 

@@ -23,6 +23,7 @@ Convert to Swagger specification.
 $ apib2swagger -i api.md
 $ apib2swagger -i api.md -o swagger.json
 $ apib2swagger -i api.md --yaml -o swagger.yaml
+$ apib2swagger -i api.md --prefer-reference
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.
@@ -41,9 +42,10 @@ $ apib2swagger -i api.md -s -p 3000
 Use as a library.
 ```javascript
 var apib2swagger = require('apib2swagger'),
-    apib = '...';
+    apib = '...',
+    options = { preferReference: true };
 
-apib2swagger.convert(apib, function (error, result) {
+apib2swagger.convert(apib, options, function (error, result) {
     if (!error) console.log(result.swagger);
 });
 ```

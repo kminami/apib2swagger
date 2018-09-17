@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/path": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "hoge": {
+                  "type": "string"
+                },
+                "fuga": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "hoge": "",
+                "fuga": ""
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "tags": []
+}

@@ -1,0 +1,137 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Parameters API",
+    "version": "",
+    "description": "In this installment of the API Blueprint course we will discuss how to describe URI parameters.\n\nBut first let's add more messages to our system. For that we would need introduce an message identifier – id. This id will be our parameter when communicating with our API about messages.\n\n## API Blueprint\n\n+ [Previous: Requests](06.%20Requests.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/07.%20Parameters.md)\n\n+ [Next: Attributes](08.%20Attributes.md)"
+  },
+  "paths": {
+    "/message/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "id": 1,
+                "message": "Hello World!"
+              }
+            }
+          }
+        },
+        "summary": "Retrieve a Message",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "An unique identifier of the message.",
+            "required": true,
+            "x-example": "1",
+            "type": "number"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Update a Message",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "An unique identifier of the message.",
+            "required": true,
+            "x-example": "1",
+            "type": "number"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "message": "All your base are belong to us."
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/messages": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "message": "Hello World!"
+                },
+                {
+                  "id": 2,
+                  "message": "Time is an illusion. Lunchtime doubly so."
+                },
+                {
+                  "id": 3,
+                  "message": "So long, and thanks for all the fish."
+                }
+              ]
+            }
+          }
+        },
+        "summary": "Retrieve all Messages",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of results to return.",
+            "required": false,
+            "type": "number",
+            "default": 20
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "My Message": {},
+    "All My Messages": {}
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources."
+    }
+  ]
+}

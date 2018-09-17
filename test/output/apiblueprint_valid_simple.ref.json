@@ -1,0 +1,424 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Gist Fox API",
+    "version": "",
+    "description": "Gist Fox API is a **pastes service** similar to [GitHub's Gist](http://gist.github.com).\n\n## Authentication\n\n*Gist Fox API* uses OAuth Authorization. First you create a new (or acquire existing) OAuth token using Basic Authentication. After you have acquired your token you can use it to access other resources within token' scope.\n\n## Media Types\n\nWhere applicable this API uses the [HAL+JSON](https://github.com/mikekelly/hal_specification/blob/master/hal_specification.md) media-type to represent resources states and affordances.\n\nRequests with a message-body are using plain JSON to set or update resource states.\n\n## Error States\n\nThe common [HTTP Response Status Codes](https://github.com/for-GET/know-your-http-well/blob/master/status-codes.md) are used."
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/hal+json": {
+                "_links": {
+                  "self": {
+                    "href": "/"
+                  },
+                  "gists": {
+                    "href": "/gists?{since}",
+                    "templated": true
+                  },
+                  "authorization": {
+                    "href": "/authorization"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve the Entry Point",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "produces": [
+          "application/hal+json"
+        ]
+      }
+    },
+    "/gists/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Retrieve a Single Gist",
+        "description": "",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Gist in the form of a hash.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Edit a Gist",
+        "description": "To update a Gist send a JSON with updated value for one or more of the Gist resource attributes. All attributes values (states) from the previous version of this Gist are carried over by default if not included in the hash.",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Gist in the form of a hash.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "content": "Updated file contents"
+              }
+            }
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Delete a Gist",
+        "description": "",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Gist in the form of a hash.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "/gists": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "HAL+JSON representation of Gist Collection Resource. The Gist resources in collections are embedded. Note the embedded Gists resource are incomplete representations of the Gist in question. Use the respective Gist link to retrieve its full representation.",
+            "headers": {},
+            "examples": {
+              "application/hal+json": {
+                "_links": {
+                  "self": {
+                    "href": "/gists"
+                  }
+                },
+                "_embedded": {
+                  "gists": [
+                    {
+                      "_links": {
+                        "self": {
+                          "href": "/gists/42"
+                        }
+                      },
+                      "id": "42",
+                      "created_at": "2014-04-14T02:15:15Z",
+                      "description": "Description of Gist"
+                    }
+                  ]
+                },
+                "total": 1
+              }
+            }
+          }
+        },
+        "summary": "List All Gists",
+        "description": "",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ` Only gists updated at or after this time are returned.",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/hal+json"
+        ]
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create a Gist",
+        "description": "To create a new Gist simply provide a JSON hash of the *description* and *content* attributes for the new Gist.\n\nThis action requires an `access_token` with `gist_write` scope.",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "description": "Description of Gist",
+                "content": "String content"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/gists/{id}/star": {
+      "put": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Star a Gist",
+        "description": "This action requires an `access_token` with `gist_write` scope.",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the gist in the form of a hash",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Unstar a Gist",
+        "description": "This action requires an `access_token` with `gist_write` scope.",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the gist in the form of a hash",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "HAL+JSON representation of Star Resource.",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Check if a Gist is Starred",
+        "description": "",
+        "tags": [
+          "Gist"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the gist in the form of a hash",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "access_token",
+            "in": "query",
+            "description": "Gist Fox API access token.",
+            "required": false,
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "/authorization": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Retrieve Authorization",
+        "description": "",
+        "tags": [
+          "Access Authorization and Control"
+        ],
+        "parameters": []
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Create Authorization",
+        "description": "",
+        "tags": [
+          "Access Authorization and Control"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "scopes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "scopes": [
+                  "gist_write"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Remove an Authorization",
+        "description": "",
+        "tags": [
+          "Access Authorization and Control"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {
+    "Gist Fox API Root": {},
+    "Gist": {},
+    "GistModel": {},
+    "Gists Collection": {},
+    "Gists CollectionModel": {},
+    "Star": {},
+    "StarModel": {},
+    "Authorization": {},
+    "AuthorizationModel": {}
+  },
+  "tags": [
+    {
+      "name": "Gist",
+      "description": "Gist-related resources of *Gist Fox API*."
+    },
+    {
+      "name": "Access Authorization and Control",
+      "description": "Access and Control of *Gist Fox API* OAuth token."
+    }
+  ]
+}

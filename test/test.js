@@ -33,6 +33,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#29.md',
         'Issue-#33.md',
         'Issue-#35.md',
+        'Issue-#36.md',
         'apiblueprint_uber.md',
         'apiblueprint_valid_simple.md'
     ];
@@ -90,6 +91,32 @@ describe("apib2swagger", function () {
                         var validation_result = tv4.validateResult(result.swagger, schema);
                         if (validation_result.error) {
 	                        console.log(validation_result);
+                        }
+                        assert(validation_result.valid);
+                        assert(validation_result.missing.length === 0)
+                    }
+                    done();
+                });
+            });
+
+            it(file + ' (--prefer-reference)', function (done) {
+                this.timeout(10000); // 10s
+                var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
+                apib2swagger.convert(apib, { preferReference: true }, function (error, result) {
+                    if (error) {
+                        return done(error);
+                    }
+
+                    if (prepare) {
+                        fs.writeFileSync(localOutput + file.replace('.md', '.ref.json'), JSON.stringify(result.swagger, 0, 2));
+                        assert.ok(true);
+                    } else {
+                        var f = fs.readFileSync(localOutput + file.replace('.md', '.ref.json'));
+                        var expected_answer = JSON.parse(f);
+                        assert.deepEqual(result.swagger, expected_answer);
+                        var validation_result = tv4.validateResult(result.swagger, schema);
+                        if (validation_result.error) {
+                            console.log(validation_result);
                         }
                         assert(validation_result.valid);
                         assert(validation_result.missing.length === 0)

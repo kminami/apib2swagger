@@ -1,0 +1,173 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/some/resource": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {},
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Some resource",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "prop1"
+              ],
+              "example": {
+                "prop1": "a string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/some/resource/2": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {},
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "prop1": "a string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/some/resource/3": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "prop1": "a string"
+              }
+            }
+          }
+        },
+        "summary": "",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                },
+                "prop2": {
+                  "type": "number"
+                },
+                "prop3": {
+                  "type": "object",
+                  "properties": {
+                    "prop3a": {
+                      "type": "boolean"
+                    },
+                    "prop3b": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "prop3b1": {
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "prop3b1"
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "prop1": "a string",
+                "prop2": 1,
+                "prop3": {
+                  "prop3a": false,
+                  "prop3b": [
+                    {
+                      "prop3b1": 1
+                    },
+                    {
+                      "prop3b1": 2
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Some resource": {},
+    "Some resource 2": {},
+    "Some resource 2Model": {},
+    "Some resource 3": {}
+  },
+  "tags": []
+}

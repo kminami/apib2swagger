@@ -33,45 +33,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "number"
-                  },
-                  "text": {
-                    "type": "string"
-                  },
-                  "author": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "email": {
-                        "type": "string"
-                      }
-                    },
-                    "additionalProperties": false,
-                    "description": "Author of the blog post."
-                  },
-                  "editors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "id"
-                ]
+                "$ref": "#/definitions/BlogPost"
               }
             }
           }

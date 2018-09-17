@@ -1,0 +1,60 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Grouping Resources API",
+    "version": "",
+    "description": "This API example demonstrates how to group resources and form **groups of resources**. You can create as many or as few groups as you like. If you do not create any group all your resources will be part of an \"unnamed\" group.\n\n## API Blueprint\n\n+ [Previous: Named Resource and Actions](03.%20Named%20Resource%20and%20Actions.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/04.%20Grouping%20Resources.md)\n\n+ [Next: Responses](05.%20Responses.md)"
+  },
+  "paths": {
+    "/message": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "text/plain": "Hello World!\n"
+            }
+          }
+        },
+        "summary": "Retrieve a Message",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": [],
+        "produces": [
+          "text/plain"
+        ]
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Update a Message",
+        "description": "",
+        "tags": [
+          "Messages"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {
+    "My Message": {}
+  },
+  "tags": [
+    {
+      "name": "Messages",
+      "description": "Group of all messages-related resources.\n\nThis is the first group of resources in this document. It is **recognized** by the **keyword `group`** and its name is `Messages`.\n\nAny following resource definition is considered to be a part of this group until another group is defined. It is **customary** to increase header level of resources (and actions) nested under a resource."
+    },
+    {
+      "name": "Users",
+      "description": "Group of all user-related resources.\n\nThis is the second group in this blueprint. For now, no resources were defined here and as such we will omit it from the next installement of this course."
+    }
+  ]
+}

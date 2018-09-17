@@ -25,6 +25,10 @@
             },
             "schema": {
               "type": "object",
+              "required": [
+                "version",
+                "build"
+              ],
               "properties": {
                 "version": {
                   "type": "string"
@@ -32,11 +36,7 @@
                 "build": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "version",
-                "build"
-              ]
+              }
             }
           }
         },
@@ -118,70 +118,7 @@
               }
             },
             "schema": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "number",
-                  "description": "unique numerical identified"
-                },
-                "principal_id": {
-                  "type": "number",
-                  "description": "unique numerical identified across users and groups"
-                },
-                "provider_key": {
-                  "type": "string",
-                  "description": "unique identifier in string format"
-                },
-                "email": {
-                  "type": "string",
-                  "description": "email address"
-                },
-                "email_hash": {
-                  "type": "string",
-                  "description": "hashed email address"
-                },
-                "username": {
-                  "type": "string",
-                  "description": "username of the user"
-                },
-                "first_name": {
-                  "type": "string",
-                  "description": "the first name of the user"
-                },
-                "last_name": {
-                  "type": "string",
-                  "description": "the last name of the user"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "user_role": {
-                  "type": "string",
-                  "description": "the role of the user"
-                },
-                "confirmed": {
-                  "type": "boolean",
-                  "description": "has the user been confirmed"
-                },
-                "locked": {
-                  "type": "boolean",
-                  "description": "is the user locked"
-                },
-                "privileges": {
-                  "type": "array",
-                  "description": "List of privileges the user has",
-                  "items": {}
-                }
-              },
-              "required": [
-                "id",
-                "principal_id",
-                "username",
-                "user_role",
-                "confirmed",
-                "locked",
-                "privileges"
-              ]
+              "$ref": "#/definitions/UserDetail"
             }
           }
         },

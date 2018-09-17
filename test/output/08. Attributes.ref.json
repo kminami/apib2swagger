@@ -1,0 +1,55 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Attributes API",
+    "version": "",
+    "description": "This API example demonstrates how to describe body attributes of a request or response message.\n\nIn this case, the description is complementary (and duplicate!) to the provided JSON example in the body section. The [Advanced Attributes](09.%20Advanced%20Attributes.md) API example will demonstrate how to avoid duplicates and how to reuse attributes descriptions.\n\n## API Blueprint\n\n+ [Previous: Parameters](07.%20Parameters.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/08.%20Attributes.md)\n\n+ [Next: Advanced Attributes](09.%20Advanced%20Attributes.md)"
+  },
+  "paths": {
+    "/coupons/{id}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {},
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "number",
+                  "description": "Time stamp"
+                },
+                "percent_off": {
+                  "type": "number",
+                  "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
+                },
+                "redeem_by": {
+                  "type": "number",
+                  "description": "Date after which the coupon can no longer be redeemed"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve a Coupon",
+        "description": "Retrieves the coupon with the given ID.",
+        "tags": [
+          "Coupons"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {
+    "Coupon": {}
+  },
+  "tags": [
+    {
+      "name": "Coupons"
+    }
+  ]
+}

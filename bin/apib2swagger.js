@@ -17,6 +17,7 @@ var options = nopt({
     'server': Boolean,
     'port': Number,
     'yaml': Boolean,
+    'prefer-reference': Boolean,
     'help': Boolean
 }, {
     'i': ['--input'],
@@ -45,6 +46,7 @@ if (options.help) {
     console.log("  -s --server Run http server with SwaggerUI.");
     console.log("  -p --port <port> Use port for the http server.");
     console.log("  -y --yaml Output YAML");
+    console.log("  --prefer-reference Refer to definitions as possible");
     process.exit();
 }
 
@@ -84,7 +86,8 @@ function processBlueprint(blueprint, opts) {
         return;
     }
 
-    apib2swagger.convert(blueprint, function(error, result) {
+    var options = { preferReference: opts['prefer-reference'] };
+    apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
             console.log(error);
             return;

@@ -7,7 +7,7 @@ var url = require('url'),
 var jsonSchemaFromMSON = require('./src/mson_to_json_schema'),
     escapeJSONPointer = require('./src/escape_json_pointer');
 
-var apib2swagger = module.exports.convertParsed = function(apib) {
+var apib2swagger = module.exports.convertParsed = function(apib, options) {
     //console.log(JSON.stringify(apib, null, 4));
     var swagger = {};
     swagger.swagger = '2.0';
@@ -39,7 +39,7 @@ var apib2swagger = module.exports.convertParsed = function(apib) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
                 swaggerDefinitions(swagger.definitions, content);
-                swaggerPaths(swagger.paths, groupName, content);
+                swaggerPaths(swagger.paths, groupName, content, options);
             } else if (content.element === 'copy') {
                 // group description here
                 tags[groupName].description = content.content;
@@ -81,7 +81,7 @@ var swaggerDefinitions = function (definitions, resource) {
     }
 };
 
-var swaggerPaths = function (paths, tag, resource) {
+var swaggerPaths = function (paths, tag, resource, options) {
     var uriTemplate = UriTemplate.parse(resource.uriTemplate),
         pathName = swaggerPathName(uriTemplate);
     //path.parameters = swaggerParameters(resource.parameters, uriTemplate);
@@ -90,19 +90,19 @@ var swaggerPaths = function (paths, tag, resource) {
         var action = resource.actions[k];
         if (!action.attributes.uriTemplate) {
             if (!paths[pathName]) paths[pathName] = {};
-            paths[pathName][action.method.toLowerCase()] = swaggerOperation(pathParams, uriTemplate, action, tag);
+            paths[pathName][action.method.toLowerCase()] = swaggerOperation(pathParams, uriTemplate, action, tag, options);
             continue;
         }
         var attrUriTemplate = UriTemplate.parse(action.attributes.uriTemplate),
             attrPathName = swaggerPathName(attrUriTemplate);
         if (!paths[attrPathName]) paths[attrPathName] = {};
-        paths[attrPathName][action.method.toLowerCase()] = swaggerOperation([], attrUriTemplate, action, tag);
+        paths[attrPathName][action.method.toLowerCase()] = swaggerOperation([], attrUriTemplate, action, tag, options);
     }
 };
 
-var swaggerOperation = function (pathParams, uriTemplate, action, tag) {
+var swaggerOperation = function (pathParams, uriTemplate, action, tag, options) {
     var operation = {
-        'responses': swaggerResponses(action.examples),
+        'responses': swaggerResponses(action.examples, options),
         'summary': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
@@ -294,7 +294,7 @@ function fixArraySchema(schema) {
     }
 }
 
-function swaggerResponses(examples) {
+function swaggerResponses(examples, options) {
     var responses = {};
     //console.log(examples);
     for (var l = 0; l < examples.length; l++) {
@@ -308,16 +308,29 @@ function swaggerResponses(examples) {
                 "headers": {},
                 "examples": {}
             };
-            if (response.schema) {
-                try {
-                    swaggerResponse.schema = JSON.parse(response.schema);
-                    delete swaggerResponse.schema['$schema'];
-                    fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
-                } catch (e) {}
-            }
-            if (!swaggerResponse.schema) {
+            if (options.preferReference) { // MSON then schema
                 var schema = searchDataStructure(response.content); // Attributes in response
-                if (schema) swaggerResponse.schema = schema;
+                if (schema) {
+                    swaggerResponse.schema = schema;
+                } else if (response.schema) {
+                    try {
+                        swaggerResponse.schema = JSON.parse(response.schema);
+                        delete swaggerResponse.schema['$schema'];
+                        fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
+                    } catch (e) {}
+                }
+            } else { // schema then MSON
+                if (response.schema) {
+                    try {
+                        swaggerResponse.schema = JSON.parse(response.schema);
+                        delete swaggerResponse.schema['$schema'];
+                        fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
+                    } catch (e) {}
+                }
+                if (!swaggerResponse.schema) {
+                    var schema = searchDataStructure(response.content); // Attributes in response
+                    if (schema) swaggerResponse.schema = schema;
+                }
             }
             if (!swaggerResponse.schema) {
                 // fall back to body
@@ -364,14 +377,18 @@ exports.noconvert = function (data, callback) {
     }
 };
 
-exports.convert = function (data, callback) {
+exports.convert = function (data, options, callback) {
+    if (typeof options === 'function') {
+        callback = options;
+        options = {};
+    }
     try {
         var result = drafter.parse(data, {type: 'ast'});
         //for (var i = 0; i < result.warnings.length; i++) {
         //    var warn = result.warnings[i];
         //    console.log(warn);
         //}
-        var swagger = apib2swagger(result.ast);
+        var swagger = apib2swagger(result.ast, options);
         return callback(null, {swagger: swagger});
     }
     catch (error) {

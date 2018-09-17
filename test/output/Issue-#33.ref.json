@@ -1,0 +1,134 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "INT-1_Plan_v1_dev",
+    "version": "",
+    "description": "This API is a HTTP-1.1 REST service that provides plans\n\n**Changelog**\n\n| Date of change    | Description       |\n| ----------------- | ----------------- |\n| 03.08.2018        | Document creation |"
+  },
+  "paths": {
+    "/myapp/people/plans": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "segments": [
+                  "LOW"
+                ],
+                "plans": [
+                  {
+                    "state": "COMPLETED",
+                    "stateCounters": [
+                      {
+                        "segment": "LOW",
+                        "count": 5
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "schema": {
+              "type": "object",
+              "required": [
+                "segments",
+                "plans"
+              ],
+              "properties": {
+                "segments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/SEGMENT_ENUM"
+                  },
+                  "description": "List of found segments"
+                },
+                "plans": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "state",
+                      "stateCounters"
+                    ],
+                    "properties": {
+                      "state": {
+                        "type": "string",
+                        "description": "State code"
+                      },
+                      "stateCounters": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "segment",
+                            "count"
+                          ],
+                          "properties": {
+                            "segment": {
+                              "$ref": "#/definitions/SEGMENT_ENUM",
+                              "description": "segment code"
+                            },
+                            "count": {
+                              "type": "number",
+                              "description": "number of plans"
+                            }
+                          }
+                        },
+                        "description": "List of states of plans by segment"
+                      }
+                    }
+                  },
+                  "description": "List of plans"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get Plans of People",
+        "description": "* Paginated &#10006;\n\n* Sortable &#10006;\n\n* Signable &#10006;\n\n#### Error Codes\n\nPossible error codes for this resource.\n\n| HTTP Status Code  | Error Code        | Purpose   |\n| ----------------- | ----------------- | --------- |\n| 400               | VALIDATION\\_ERROR | Validation error. |\n| 400               | FIELD\\_MISSING    | A required field is missing. |",
+        "tags": [
+          "People"
+        ],
+        "parameters": [
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "description": "Date from.",
+            "required": false,
+            "x-example": "2018-08-01",
+            "type": "string"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "description": "Date to.",
+            "required": false,
+            "x-example": "2018-08-30",
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Collection of Plans of People": {},
+    "SEGMENT_ENUM": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MIDDLE",
+        "HIGH"
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "People"
+    }
+  ]
+}

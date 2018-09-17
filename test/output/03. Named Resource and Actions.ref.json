@@ -1,0 +1,47 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Named Resource and Actions API",
+    "version": "",
+    "description": "This API example demonstrates how to name a resource and its actions, to give the reader a better idea about what the resource is used for.\n\n## API Blueprint\n\n+ [Previous: Resource and Actions](02.%20Resource%20and%20Actions.md)\n\n+ [This: Raw API Blueprint](https://raw.github.com/apiaryio/api-blueprint/master/examples/03.%20Named%20Resource%20and%20Actions.md)\n\n+ [Next: Grouping Resources](04.%20Grouping%20Resources.md)"
+  },
+  "paths": {
+    "/message": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "text/plain": "Hello World!\n"
+            }
+          }
+        },
+        "summary": "Retrieve a Message",
+        "description": "Now this is informative! No extra explanation needed here. This action clearly retrieves the message.",
+        "tags": [],
+        "parameters": [],
+        "produces": [
+          "text/plain"
+        ]
+      },
+      "put": {
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Update a Message",
+        "description": "`Update a message` - nice and simple naming is the best way to go.",
+        "tags": [],
+        "parameters": []
+      }
+    }
+  },
+  "definitions": {
+    "My Message": {}
+  },
+  "tags": []
+}
