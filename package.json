@@ -4,7 +4,7 @@
   "description": "Convert API Blueprint to Swagger.",
   "bin": "./bin/apib2swagger.js",
   "scripts": {
-    "prepareTest": "PREPARE=true mocha",
+    "prepareTest": "cross-env PREPARE=true mocha",
     "test": "mocha"
   },
   "repository": {
@@ -24,6 +24,7 @@
     "uritemplate": "^0.3.4"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "mocha": "^2.3.3",
     "tv4": "^1.2.7"
   }
