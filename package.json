@@ -1,11 +1,11 @@
 {
   "name": "apib2swagger",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Convert API Blueprint to Swagger.",
   "bin": "./bin/apib2swagger.js",
   "scripts": {
     "prepareTest": "cross-env PREPARE=true mocha",
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "cross-env": "^5.2.0",
     "mocha": "^2.3.3",
+    "nyc": "^13.0.1",
     "tv4": "^1.2.7"
   }
 }
