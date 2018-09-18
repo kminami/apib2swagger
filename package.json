@@ -5,7 +5,8 @@
   "bin": "./bin/apib2swagger.js",
   "scripts": {
     "prepareTest": "cross-env PREPARE=true mocha",
-    "test": "nyc mocha"
+    "test": "nyc --reporter=html --reporter=text mocha",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "uritemplate": "^0.3.4"
   },
   "devDependencies": {
+    "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "mocha": "^2.3.3",
     "nyc": "^13.0.1",
