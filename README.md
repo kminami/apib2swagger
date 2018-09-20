@@ -7,7 +7,11 @@
 Convert [API Blueprint][] to [Swagger][].
 
 Supported versions:
-- API Blueprint 1A9 (with include directive)
+- API Blueprint 1A9
+    - [Metadata section](https://github.com/apiaryio/api-blueprint/blob/master/API%20Blueprint%20Specification.md#def-metadata-section)
+        - HOST -> .host, .basePath, .schemes
+        - VERSION -> .info.version
+    - [Include directive](https://github.com/danielgtaylor/aglio#including-files)
 - Swagger 2.0
 - Node.js 6.x, 8.x, 9.x, 10.x or higher
 

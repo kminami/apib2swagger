@@ -23,6 +23,8 @@ var apib2swagger = module.exports.convertParsed = function(apib, options) {
             swagger.host = urlParts.host;
             swagger.basePath = urlParts.pathname;
             swagger.schemes = [urlParts.protocol.replace(':','')];
+        } else if (meta.name.toLowerCase() === 'version') {
+            swagger.info.version = meta.value;
         }
     });
     swagger.paths = {};

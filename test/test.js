@@ -125,5 +125,47 @@ describe("apib2swagger", function () {
                 });
             });
         });
+
+        var versionTests = [
+            {input: 'VERSION: 1.0.0', output: '1.0.0'},
+            {input: 'Version: 2.0', output: '2.0'},
+            {input: 'version: 3', output: '3'},
+        ];
+        versionTests.forEach(function (test) {
+            it(test.input, function (done) {
+                apib2swagger.convert(test.input, function (error, result) {
+                    if (error) {
+                        return done(error);
+                    }
+                    assert.equal(result.swagger.info.version, test.output);
+                    var validation_result = tv4.validateResult(result.swagger, schema);
+                    if (validation_result.error) {
+                        console.log(validation_result);
+                    }
+                    assert(validation_result.valid);
+                    assert(validation_result.missing.length === 0)
+                    done();
+                });                    
+            });
+        });
+    });
+
+    describe("#noconvert()", function () {
+        it('success', function (done) {
+            apib2swagger.noconvert('', function (error, result) {
+                if (error) {
+                    return done(error);
+                }
+                done();
+            });
+        });
+        it('fail', function (done) {
+            apib2swagger.noconvert(null, function (error, result) {
+                if (!error) {
+                    return done(new Error());
+                }
+                done();
+            });
+        });
     });
 });
