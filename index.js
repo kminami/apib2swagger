@@ -102,13 +102,33 @@ var swaggerPaths = function (paths, tag, resource, options) {
     }
 };
 
+var swaggerHeaders = function(action) {
+    var params = [];
+    if (action.examples[0].requests[0]) {
+        for (let i = 0; i <  action.examples[0].requests[0].headers.length; i++) {
+            const element =  action.examples[0].requests[0].headers[i];
+            if (element.name === 'Content-Type') continue;
+            var param = {
+                'name': element.name,
+                'in': 'header',
+                'description': element.value,
+                'required': false,
+                'x-example': element.value
+            };
+        params.push(param);
+        }
+    }
+    return params;
+};
+
 var swaggerOperation = function (pathParams, uriTemplate, action, tag, options) {
+    const tmp = pathParams.concat(swaggerHeaders(action, pathParams));
     var operation = {
         'responses': swaggerResponses(action.examples, options),
         'summary': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
-        'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))
+        'parameters': tmp.concat(swaggerParameters(action.parameters, uriTemplate))
     };
     var produces = {}, producesExist = false;
     for (var key in operation.responses) {
