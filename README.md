@@ -55,6 +55,13 @@ apib2swagger.convert(apib, options, function (error, result) {
 });
 ```
 
+## npx
+
+You can run apib2swagger via `npx` (without first needing to install it) like so:
+```
+cat api.md | npx apib2swagger > swagger.json
+```
+
 ## Docker
 You can also run apib2swagger inside a docker container. (Unofficial image, use it carefully)
 
