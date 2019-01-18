@@ -65,6 +65,7 @@
   "definitions": {
     "My Message": {}
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Messages",

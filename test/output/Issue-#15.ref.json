@@ -228,6 +228,7 @@
       ]
     }
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Settings"

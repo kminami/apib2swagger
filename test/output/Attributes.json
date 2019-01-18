@@ -42,5 +42,6 @@
     }
   },
   "definitions": {},
+  "securityDefinitions": {},
   "tags": []
 }

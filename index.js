@@ -29,6 +29,8 @@ var apib2swagger = module.exports.convertParsed = function(apib, options) {
     });
     swagger.paths = {};
     swagger.definitions = {};
+    swagger.securityDefinitions = {};
+    var converterContext = { swagger: swagger, options: options };
     var tags = {};
     apib.content.filter(function(content) {
         return content.element === 'category';
@@ -41,7 +43,7 @@ var apib2swagger = module.exports.convertParsed = function(apib, options) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
                 swaggerDefinitions(swagger.definitions, content);
-                swaggerPaths(swagger.paths, groupName, content, options);
+                swaggerPaths(converterContext, groupName, content);
             } else if (content.element === 'copy') {
                 // group description here
                 tags[groupName].description = content.content;
@@ -83,7 +85,8 @@ var swaggerDefinitions = function (definitions, resource) {
     }
 };
 
-var swaggerPaths = function (paths, tag, resource, options) {
+var swaggerPaths = function (context, tag, resource) {
+    var paths = context.swagger.paths;
     var uriTemplate = UriTemplate.parse(resource.uriTemplate),
         pathName = swaggerPathName(uriTemplate);
     //path.parameters = swaggerParameters(resource.parameters, uriTemplate);
@@ -92,19 +95,19 @@ var swaggerPaths = function (paths, tag, resource, options) {
         var action = resource.actions[k];
         if (!action.attributes.uriTemplate) {
             if (!paths[pathName]) paths[pathName] = {};
-            paths[pathName][action.method.toLowerCase()] = swaggerOperation(pathParams, uriTemplate, action, tag, options);
+            paths[pathName][action.method.toLowerCase()] = swaggerOperation(context, pathParams, uriTemplate, action, tag);
             continue;
         }
         var attrUriTemplate = UriTemplate.parse(action.attributes.uriTemplate),
             attrPathName = swaggerPathName(attrUriTemplate);
         if (!paths[attrPathName]) paths[attrPathName] = {};
-        paths[attrPathName][action.method.toLowerCase()] = swaggerOperation([], attrUriTemplate, action, tag, options);
+        paths[attrPathName][action.method.toLowerCase()] = swaggerOperation(context, [], attrUriTemplate, action, tag);
     }
 };
 
-var swaggerOperation = function (pathParams, uriTemplate, action, tag, options) {
+var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
     var operation = {
-        'responses': swaggerResponses(action.examples, options),
+        'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
@@ -132,6 +135,18 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag, options) 
         var example = action.examples[j];
         for (var l = 0; l < example.requests.length; l++) {
             var request = example.requests[l];
+
+            // TODO should apply to Model Section?
+            var security = swaggerSecurity(context, request.headers);
+            if (security) {
+                if (!operation.security) {
+                    operation.security = [security];
+                } else {
+                    // TODO remove duplications
+                    operation.security.push(security);
+                }
+            }
+
             if (request.schema) { // Schema section in Request section
                 try {
                     // referencing Model's Schema is also here (no need to referencing defenitions)
@@ -190,6 +205,27 @@ var swaggerOperation = function (pathParams, uriTemplate, action, tag, options) 
         operation.parameters.push({name: 'body', in: 'body', schema: {anyOf: schema}});
     }
     return operation;
+}
+
+// generate security and securityDefinitions from authorization headers
+function swaggerSecurity(context, headers) {
+    var security = null;
+    headers.filter(function(header) {
+        return header.name.toLowerCase() === 'authorization';
+    }).forEach(function(header) {
+        if (header.value.match(/^Basic /)) {
+            if (!security) security = {};
+            security['basic'] = [];
+            context.swagger.securityDefinitions['basic'] = { type: 'basic' };
+        } else if (header.value.match(/^Bearer /)) {
+            if (!security) security = {};
+            security['oauth2'] = [];
+            context.swagger.securityDefinitions['oauth2'] = {
+                type: 'oauth2', flow: 'accessCode',
+                authorizationUrl: '', tokenUrl: '', scopes: {} };
+        }
+    });
+    return security;
 }
 
 function swaggerParameters(parameters, uriTemplate) {

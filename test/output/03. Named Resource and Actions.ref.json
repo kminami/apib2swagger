@@ -43,5 +43,6 @@
   "definitions": {
     "My Message": {}
   },
+  "securityDefinitions": {},
   "tags": []
 }

@@ -160,6 +160,7 @@
       }
     }
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Coupons"

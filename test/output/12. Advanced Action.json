@@ -112,5 +112,6 @@
   "definitions": {
     "Tasks": {}
   },
+  "securityDefinitions": {},
   "tags": []
 }

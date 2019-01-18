@@ -88,5 +88,6 @@
       }
     }
   },
+  "securityDefinitions": {},
   "tags": []
 }

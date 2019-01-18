@@ -28,5 +28,6 @@
     }
   },
   "definitions": {},
+  "securityDefinitions": {},
   "tags": []
 }

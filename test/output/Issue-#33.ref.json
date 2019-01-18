@@ -126,6 +126,7 @@
       ]
     }
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "People"

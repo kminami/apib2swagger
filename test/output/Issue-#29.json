@@ -224,5 +224,6 @@
       }
     }
   },
+  "securityDefinitions": {},
   "tags": []
 }
