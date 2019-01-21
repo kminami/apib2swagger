@@ -105,33 +105,14 @@ var swaggerPaths = function (context, tag, resource) {
     }
 };
 
-var swaggerHeaders = function(action) {
-    var params = [];
-    if (action.examples[0].requests[0]) {
-        for (let i = 0; i <  action.examples[0].requests[0].headers.length; i++) {
-            const element =  action.examples[0].requests[0].headers[i];
-            if (element.name === 'Content-Type') continue;
-            var param = {
-                'name': element.name,
-                'in': 'header',
-                'description': element.value,
-                'required': false,
-                'x-example': element.value
-            };
-        params.push(param);
-        }
-    }
-    return params;
-};
-
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
-    const tmp = pathParams.concat(swaggerHeaders(action, pathParams));
+    // const tmp = pathParams.concat(swaggerHeaders(action, pathParams));
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
-        'parameters': tmp.concat(swaggerParameters(action.parameters, uriTemplate))
+        'parameters': swaggerParameters(action.parameters, uriTemplate)
     };
     var produces = {}, producesExist = false;
     for (var key in operation.responses) {
@@ -165,6 +146,11 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     // TODO remove duplications
                     operation.security.push(security);
                 }
+            }
+
+            var headers = swaggerHeaders(context, request.headers);
+            if (headers) {
+                operation.parameters = operation.parameters.concat(headers);
             }
 
             if (request.schema) { // Schema section in Request section
@@ -226,6 +212,23 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     }
     return operation;
 }
+
+var swaggerHeaders = function(context, headers) {
+    var params = [];
+    for (let i = 0; i < headers.length; i++) {
+        const element =  headers[i];
+        if (['content-type', 'authorization'].includes(element.name.toLowerCase())) continue;
+        var param = {
+            'name': element.name,
+            'in': 'header',
+            'description': element.value,
+            'required': false,
+            'x-example': element.value
+        };
+        params.push(param);
+    }
+    return params;
+};
 
 // generate security and securityDefinitions from authorization headers
 function swaggerSecurity(context, headers) {
