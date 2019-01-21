@@ -169,5 +169,6 @@
     "Some resource 2Model": {},
     "Some resource 3": {}
   },
+  "securityDefinitions": {},
   "tags": []
 }

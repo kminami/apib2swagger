@@ -291,6 +291,7 @@
       ]
     }
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Settings"

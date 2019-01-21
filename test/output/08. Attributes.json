@@ -47,6 +47,7 @@
   "definitions": {
     "Coupon": {}
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Coupons"

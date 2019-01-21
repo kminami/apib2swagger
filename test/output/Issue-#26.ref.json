@@ -158,6 +158,7 @@
     "Get/Update Store": {},
     "Get/Update StoreModel": {}
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Stores"

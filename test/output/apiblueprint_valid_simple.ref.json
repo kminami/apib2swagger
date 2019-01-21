@@ -345,7 +345,12 @@
         "tags": [
           "Access Authorization and Control"
         ],
-        "parameters": []
+        "parameters": [],
+        "security": [
+          {
+            "basic": []
+          }
+        ]
       },
       "post": {
         "responses": {
@@ -381,6 +386,11 @@
               }
             }
           }
+        ],
+        "security": [
+          {
+            "basic": []
+          }
         ]
       },
       "delete": {
@@ -396,7 +406,12 @@
         "tags": [
           "Access Authorization and Control"
         ],
-        "parameters": []
+        "parameters": [],
+        "security": [
+          {
+            "basic": []
+          }
+        ]
       }
     }
   },
@@ -410,6 +425,11 @@
     "StarModel": {},
     "Authorization": {},
     "AuthorizationModel": {}
+  },
+  "securityDefinitions": {
+    "basic": {
+      "type": "basic"
+    }
   },
   "tags": [
     {

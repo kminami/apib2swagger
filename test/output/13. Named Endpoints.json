@@ -85,6 +85,7 @@
     "Create message": {},
     "Create a new task": {}
   },
+  "securityDefinitions": {},
   "tags": [
     {
       "name": "Quick start"
