@@ -106,7 +106,6 @@ var swaggerPaths = function (context, tag, resource) {
 };
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
-    // const tmp = pathParams.concat(swaggerHeaders(action, pathParams));
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
