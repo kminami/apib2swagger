@@ -24,7 +24,24 @@
         "tags": [
           "Messages"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "text/plain",
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "x-example": "text/plain",
+            "type": "string"
+          },
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "x-example": "application/json",
+            "type": "string"
+          }
+        ],
         "produces": [
           "application/json"
         ]

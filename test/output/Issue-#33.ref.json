@@ -107,6 +107,22 @@
             "required": false,
             "x-example": "2018-08-30",
             "type": "string"
+          },
+          {
+            "description": "<here comes some key>",
+            "in": "header",
+            "name": "some-key",
+            "required": false,
+            "type": "string",
+            "x-example": "<here comes some key>"
+          },
+          {
+            "description": "<here comes some token>",
+            "in": "header",
+            "name": "auth",
+            "required": false,
+            "type": "string",
+            "x-example": "<here comes some token>"
           }
         ],
         "produces": [

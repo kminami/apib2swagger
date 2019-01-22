@@ -112,7 +112,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
         'summary': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
-        'parameters': swaggerParameters(action.parameters, uriTemplate)
+        'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))
     };
     var produces = {}, producesExist = false;
     for (var key in operation.responses) {
@@ -219,11 +219,12 @@ var swaggerHeaders = function(context, headers) {
         const element =  headers[i];
         if (['content-type', 'authorization'].includes(element.name.toLowerCase())) continue;
         var param = {
-            'name': element.name,
+            'name': element.name, 
             'in': 'header',
             'description': element.value,
             'required': false,
-            'x-example': element.value
+            'x-example': element.value,
+            'type': 'string' // TODO: string, number, boolean, integer, array
         };
         params.push(param);
     }

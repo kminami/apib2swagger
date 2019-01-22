@@ -33,6 +33,22 @@
             "required": true,
             "x-example": "1",
             "type": "number"
+          },
+          {
+            "description": "text/plain",
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "type": "string",
+            "x-example": "text/plain"
+          },
+          {
+            "description": "application/json",
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "type": "string",
+            "x-example": "application/json"
           }
         ],
         "produces": [
