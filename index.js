@@ -147,6 +147,15 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 }
             }
 
+            var headers = swaggerHeaders(context, request.headers);
+            if (headers) {
+                const existingHeaders = operation.parameters
+                    .filter(param => param.in === 'header')
+                    .map(param => param.name.toLowerCase());
+                const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
+                operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+            }
+
             if (request.schema) { // Schema section in Request section
                 try {
                     // referencing Model's Schema is also here (no need to referencing defenitions)
@@ -206,6 +215,25 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     }
     return operation;
 }
+
+var swaggerHeaders = function(context, headers) {
+    var params = [];
+    const skipParams = ['content-type', 'authorization']; // handled in another way
+    for (let i = 0; i < headers.length; i++) {
+        const element =  headers[i];
+        if (skipParams.includes(element.name.toLowerCase())) continue;
+        var param = {
+            'name': element.name, 
+            'in': 'header',
+            'description': `e.g. ${element.value}`,
+            'required': false,
+            'x-example': element.value,
+            'type': 'string' // TODO: string, number, boolean, integer, array
+        };
+        params.push(param);
+    }
+    return params;
+};
 
 // generate security and securityDefinitions from authorization headers
 function swaggerSecurity(context, headers) {

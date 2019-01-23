@@ -33,6 +33,14 @@
             "required": true,
             "x-example": "1",
             "type": "number"
+          },
+          {
+            "description": "e.g. text/plain",
+            "in": "header",
+            "name": "Accept",
+            "required": false,
+            "type": "string",
+            "x-example": "text/plain"
           }
         ],
         "produces": [
