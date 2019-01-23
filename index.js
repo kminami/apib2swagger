@@ -247,10 +247,10 @@ function swaggerSecurity(context, headers) {
             context.swagger.securityDefinitions['basic'] = { type: 'basic' };
         } else if (header.value.match(/^Bearer /)) {
             if (!security) security = {};
-            security['oauth2'] = [];
-            context.swagger.securityDefinitions['oauth2'] = {
-                type: 'oauth2', flow: 'accessCode',
-                authorizationUrl: '', tokenUrl: '', scopes: {} };
+            security['bearer'] = [];
+            context.swagger.securityDefinitions['bearer'] = {
+                type: 'apiKey', in: 'header', name: 'Authorization'
+            };
         }
     });
     return security;
