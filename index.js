@@ -149,7 +149,11 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
             var headers = swaggerHeaders(context, request.headers);
             if (headers) {
-                operation.parameters = operation.parameters.concat(headers);
+                const existingHeaders = operation.parameters
+                    .filter(param => param.in === 'header')
+                    .map(param => param.name.toLowerCase());
+                const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
+                operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
             }
 
             if (request.schema) { // Schema section in Request section
@@ -214,9 +218,10 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
 var swaggerHeaders = function(context, headers) {
     var params = [];
+    const skipParams = ['content-type', 'authorization']; // handled in another way
     for (let i = 0; i < headers.length; i++) {
         const element =  headers[i];
-        if (['content-type', 'authorization'].includes(element.name.toLowerCase())) continue;
+        if (skipParams.includes(element.name.toLowerCase())) continue;
         var param = {
             'name': element.name, 
             'in': 'header',

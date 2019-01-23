@@ -41,14 +41,6 @@
             "required": false,
             "type": "string",
             "x-example": "text/plain"
-          },
-          {
-            "description": "application/json",
-            "in": "header",
-            "name": "Accept",
-            "required": false,
-            "type": "string",
-            "x-example": "application/json"
           }
         ],
         "produces": [
