@@ -33,7 +33,7 @@
             "basic": []
           },
           {
-            "oauth2": []
+            "bearer": []
           }
         ]
       }
@@ -46,12 +46,10 @@
     "basic": {
       "type": "basic"
     },
-    "oauth2": {
-      "type": "oauth2",
-      "flow": "accessCode",
-      "authorizationUrl": "",
-      "tokenUrl": "",
-      "scopes": {}
+    "bearer": {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey"
     }
   },
   "tags": []
