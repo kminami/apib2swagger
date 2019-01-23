@@ -119,7 +119,7 @@
             "type": "string"
           },
           {
-            "description": "<here comes some key>",
+            "description": "e.g. <here comes some key>",
             "in": "header",
             "name": "some-key",
             "required": false,
@@ -127,7 +127,7 @@
             "x-example": "<here comes some key>"
           },
           {
-            "description": "<here comes some token>",
+            "description": "e.g. <here comes some token>",
             "in": "header",
             "name": "auth",
             "required": false,

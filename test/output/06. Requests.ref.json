@@ -26,7 +26,7 @@
         ],
         "parameters": [
           {
-            "description": "text/plain",
+            "description": "e.g. text/plain",
             "in": "header",
             "name": "Accept",
             "required": false,

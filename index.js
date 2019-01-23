@@ -225,7 +225,7 @@ var swaggerHeaders = function(context, headers) {
         var param = {
             'name': element.name, 
             'in': 'header',
-            'description': element.value,
+            'description': `e.g. ${element.value}`,
             'required': false,
             'x-example': element.value,
             'type': 'string' // TODO: string, number, boolean, integer, array
