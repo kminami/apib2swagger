@@ -29,6 +29,7 @@ $ apib2swagger -i api.md
 $ apib2swagger -i api.md -o swagger.json
 $ apib2swagger -i api.md --yaml -o swagger.yaml
 $ apib2swagger -i api.md --prefer-reference
+$ apib2swagger -i api.md --bearer-apikey
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.
@@ -48,7 +49,7 @@ Use as a library.
 ```javascript
 var apib2swagger = require('apib2swagger'),
     apib = '...',
-    options = { preferReference: true };
+    options = { preferReference: true, bearerAsApikey: false };
 
 apib2swagger.convert(apib, options, function (error, result) {
     if (!error) console.log(result.swagger);

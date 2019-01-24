@@ -18,6 +18,7 @@ var options = nopt({
     'port': Number,
     'yaml': Boolean,
     'prefer-reference': Boolean,
+    'bearer-apikey': Boolean,
     'help': Boolean
 }, {
     'i': ['--input'],
@@ -47,6 +48,7 @@ if (options.help) {
     console.log("  -p --port <port> Use port for the http server.");
     console.log("  -y --yaml Output YAML");
     console.log("  --prefer-reference Refer to definitions as possible");
+    console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
     process.exit();
 }
 
@@ -86,7 +88,7 @@ function processBlueprint(blueprint, opts) {
         return;
     }
 
-    var options = { preferReference: opts['prefer-reference'] };
+    var options = { preferReference: opts['prefer-reference'], bearerAsApikey: opts['bearer-apikey'] };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
             console.log(error);
