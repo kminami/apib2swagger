@@ -60,6 +60,30 @@ var fetch = function (file) {
     });
 };
 
+/**
+ * Checks if the result obtained from the input file is the same as reference output
+ * 
+ * @param {string} result Conversion output
+ * @param {string} file Input file of conversion
+ * @param {string} originalExtension Original extension of input file
+ * @param {string} newExtension Extension of test assertion file
+ */
+const checkResultByFile = (result, file, originalExtension, newExtension) => {
+    if (prepare) {
+        fs.writeFileSync(localOutput + file.replace(originalExtension, newExtension), JSON.stringify(result.swagger, 0, 2));
+        assert.ok(true);
+    } else {
+        var f = fs.readFileSync(localOutput + file.replace(originalExtension, newExtension));
+        var expected_answer = JSON.parse(f);
+        assert.deepEqual(result.swagger, expected_answer);
+        var validation_result = tv4.validateResult(result.swagger, schema);
+        if (validation_result.error) {
+            console.log(validation_result);
+        }
+        assert(validation_result.valid);
+        assert(validation_result.missing.length === 0)
+    }
+}
 
 describe("apib2swagger", function () {
     describe("#convert()", function () {
@@ -82,20 +106,7 @@ describe("apib2swagger", function () {
                         return done(error);
                     }
 
-                    if (prepare) {
-                        fs.writeFileSync(localOutput + file.replace('.md', '.json'), JSON.stringify(result.swagger, 0, 2));
-                        assert.ok(true);
-                    } else {
-                        var f = fs.readFileSync(localOutput + file.replace('.md', '.json'));
-                        var expected_answer = JSON.parse(f);
-                        assert.deepEqual(result.swagger, expected_answer);
-                        var validation_result = tv4.validateResult(result.swagger, schema);
-                        if (validation_result.error) {
-	                        console.log(validation_result);
-                        }
-                        assert(validation_result.valid);
-                        assert(validation_result.missing.length === 0)
-                    }
+                    checkResultByFile(result, file, '.md', '.json');
                     done();
                 });
             });
@@ -108,20 +119,7 @@ describe("apib2swagger", function () {
                         return done(error);
                     }
 
-                    if (prepare) {
-                        fs.writeFileSync(localOutput + file.replace('.md', '.ref.json'), JSON.stringify(result.swagger, 0, 2));
-                        assert.ok(true);
-                    } else {
-                        var f = fs.readFileSync(localOutput + file.replace('.md', '.ref.json'));
-                        var expected_answer = JSON.parse(f);
-                        assert.deepEqual(result.swagger, expected_answer);
-                        var validation_result = tv4.validateResult(result.swagger, schema);
-                        if (validation_result.error) {
-                            console.log(validation_result);
-                        }
-                        assert(validation_result.valid);
-                        assert(validation_result.missing.length === 0)
-                    }
+                    checkResultByFile(result, file, '.md', '.ref.json');
                     done();
                 });
             });
@@ -147,6 +145,20 @@ describe("apib2swagger", function () {
                     assert(validation_result.missing.length === 0)
                     done();
                 });                    
+            });
+        });
+
+        it('Issue-#38.md (--bearer-apikey', function(done) {
+            const file = 'Issue-#38.md';
+            this.timeout(10000); // 10s
+            var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
+            apib2swagger.convert(apib, { bearerAsApikey: true }, function (error, result) {
+                if (error) {
+                    return done(error);
+                }
+
+                checkResultByFile(result, file, '.md', '.bearer.json');
+                done();
             });
         });
     });
