@@ -1,0 +1,56 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "",
+      "version": "",
+      "description": ""
+    },
+    "paths": {
+      "/whatever": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK",
+              "headers": {},
+              "examples": {}
+            }
+          },
+          "summary": "Whatever",
+          "description": "",
+          "tags": [],
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "The maximum number of results to return.",
+              "required": false,
+              "type": "number",
+              "default": 10
+            }
+          ],
+          "security": [
+            {
+              "basic": []
+            },
+            {
+              "bearer": []
+            }
+          ]
+        }
+      }
+    },
+    "definitions": {
+      "Whatever": {}
+    },
+    "securityDefinitions": {
+      "basic": {
+        "type": "basic"
+      },
+      "bearer": {
+        "in": "header",
+        "name": "Authorization",
+        "type": "apiKey"
+      }
+    },
+    "tags": []
+  }
