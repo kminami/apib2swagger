@@ -167,7 +167,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     if(scheme['type'] === 'object'){
                         scheme.example = body;
                     } else if (scheme['type'] === 'array'){
-                        scheme.items.example = body;
+                        request.example = body;
                     }
                     if (scheme) schema.push(scheme);
                 } catch (e) {}
@@ -195,7 +195,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                                         if(scheme['type'] === 'object'){
                                             scheme.example = body;
                                         } else if (scheme['type'] === 'array'){
-                                            scheme.items.example = body;
+                                            request.example = body;
                                         }
                                         schema.push(scheme);
                                     }
