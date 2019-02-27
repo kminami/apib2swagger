@@ -8,6 +8,7 @@
   "paths": {
     "/posts/{id}": {
       "get": {
+        "operationId": "Retrieve-A-Post-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -58,6 +59,7 @@
     },
     "/posts": {
       "post": {
+        "operationId": "Create-Post-POST",
         "responses": {
           "200": {
             "description": "OK",

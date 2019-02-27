@@ -8,6 +8,7 @@
   "paths": {
     "/hoge": {
       "get": {
+        "operationId": "hoge-GET",
         "responses": {
           "200": {
             "description": "OK",

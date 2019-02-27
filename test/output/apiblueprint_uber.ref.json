@@ -8,6 +8,7 @@
   "paths": {
     "/v1/products": {
       "get": {
+        "operationId": "Product-Types-GET",
         "responses": {
           "200": {
             "description": "An array of products",
@@ -72,6 +73,7 @@
     },
     "/v1/estimates/price": {
       "get": {
+        "operationId": "Price-Estimates-GET",
         "responses": {
           "200": {
             "description": "An array of price estimates by product",
@@ -162,6 +164,7 @@
     },
     "/v1/estimates/time": {
       "get": {
+        "operationId": "Time-Estimates-GET",
         "responses": {
           "200": {
             "description": "An array of products",
@@ -244,6 +247,7 @@
     },
     "/v1/me": {
       "get": {
+        "operationId": "User-Profile-GET",
         "responses": {
           "200": {
             "description": "Profile information for a user",
@@ -286,6 +290,7 @@
     },
     "/v1/history": {
       "get": {
+        "operationId": "User-Activity-GET",
         "responses": {
           "200": {
             "description": "History information for the given user",

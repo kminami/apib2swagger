@@ -8,6 +8,7 @@
   "paths": {
     "/": {
       "get": {
+        "operationId": "Retrieve-the-Entry-Point-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -41,6 +42,7 @@
     },
     "/gists/{id}": {
       "get": {
+        "operationId": "Retrieve-a-Single-Gist-GET",
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
@@ -71,6 +73,7 @@
         ]
       },
       "patch": {
+        "operationId": "Edit-a-Gist-PATCH",
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
@@ -116,6 +119,7 @@
         ]
       },
       "delete": {
+        "operationId": "Delete-a-Gist-DELETE",
         "responses": {
           "204": {
             "description": "No Content",
@@ -148,6 +152,7 @@
     },
     "/gists": {
       "get": {
+        "operationId": "List-All-Gists-GET",
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Collection Resource. The Gist resources in collections are embedded. Note the embedded Gists resource are incomplete representations of the Gist in question. Use the respective Gist link to retrieve its full representation.",
@@ -197,6 +202,7 @@
         ]
       },
       "post": {
+        "operationId": "Create-a-Gist-POST",
         "responses": {
           "201": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
@@ -241,6 +247,7 @@
     },
     "/gists/{id}/star": {
       "put": {
+        "operationId": "Star-a-Gist-PUT",
         "responses": {
           "204": {
             "description": "No Content",
@@ -271,6 +278,7 @@
         ]
       },
       "delete": {
+        "operationId": "Unstar-a-Gist-DELETE",
         "responses": {
           "204": {
             "description": "No Content",
@@ -301,6 +309,7 @@
         ]
       },
       "get": {
+        "operationId": "Check-if-a-Gist-is-Starred-GET",
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Star Resource.",
@@ -333,6 +342,7 @@
     },
     "/authorization": {
       "get": {
+        "operationId": "Retrieve-Authorization-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -353,6 +363,7 @@
         ]
       },
       "post": {
+        "operationId": "Create-Authorization-POST",
         "responses": {
           "201": {
             "description": "Created",
@@ -394,6 +405,7 @@
         ]
       },
       "delete": {
+        "operationId": "Remove-an-Authorization-DELETE",
         "responses": {
           "204": {
             "description": "No Content",

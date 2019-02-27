@@ -106,7 +106,15 @@ var swaggerPaths = function (context, tag, resource) {
 };
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
+    const operationIdBase = action.name.split(' ').join('-');
+
+    let operationId = `${action.name.split(' ').join('-')}-${action.method}`;
+    if (!operationIdBase) {
+        operationId = `${Object.keys(context.swagger.paths)[0].split('/').join('')}-${action.method}`;
+    }
+
     var operation = {
+        "operationId": operationId,
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
         'description': action.description,

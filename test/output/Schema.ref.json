@@ -8,6 +8,7 @@
   "paths": {
     "/some/resource": {
       "post": {
+        "operationId": "Some-resource-POST",
         "responses": {
           "200": {
             "description": "OK",
@@ -50,6 +51,7 @@
     },
     "/some/resource/2": {
       "post": {
+        "operationId": "someresource-POST",
         "responses": {
           "200": {
             "description": "OK",
@@ -89,6 +91,7 @@
     },
     "/some/resource/3": {
       "post": {
+        "operationId": "someresource-POST",
         "responses": {
           "200": {
             "description": "OK",

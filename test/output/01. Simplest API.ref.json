@@ -8,6 +8,7 @@
   "paths": {
     "/message": {
       "get": {
+        "operationId": "message-GET",
         "responses": {
           "200": {
             "description": "OK",

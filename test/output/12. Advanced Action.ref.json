@@ -8,6 +8,7 @@
   "paths": {
     "/tasks/tasks": {
       "get": {
+        "operationId": "List-All-Tasks-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -56,6 +57,7 @@
     },
     "/task/{id}": {
       "get": {
+        "operationId": "Retrieve-Task-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -87,6 +89,7 @@
         ]
       },
       "delete": {
+        "operationId": "Delete-Task-DELETE",
         "responses": {
           "204": {
             "description": "No Content",

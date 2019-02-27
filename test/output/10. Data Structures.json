@@ -8,6 +8,7 @@
   "paths": {
     "/coupons/{id}": {
       "get": {
+        "operationId": "Retrieve-a-Coupon-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -63,6 +64,7 @@
     },
     "/coupons": {
       "get": {
+        "operationId": "List-all-Coupons-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -103,6 +105,7 @@
         ]
       },
       "post": {
+        "operationId": "Create-a-Coupon-POST",
         "responses": {
           "200": {
             "description": "OK",

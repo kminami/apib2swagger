@@ -8,6 +8,7 @@
   "paths": {
     "/myapp/people/plans": {
       "get": {
+        "operationId": "Get-Plans-of-People-GET",
         "responses": {
           "200": {
             "description": "OK",

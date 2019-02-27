@@ -13,6 +13,7 @@
   "paths": {
     "/server_settings": {
       "get": {
+        "operationId": "Get-Server-Settings-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -53,6 +54,7 @@
     },
     "/users": {
       "get": {
+        "operationId": "List-all-users-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -94,6 +96,7 @@
     },
     "/users/{user_id}": {
       "get": {
+        "operationId": "Get-a-specific-user-GET",
         "responses": {
           "200": {
             "description": "OK",

@@ -8,6 +8,7 @@
   "paths": {
     "/message": {
       "get": {
+        "operationId": "message-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -26,6 +27,7 @@
         ]
       },
       "put": {
+        "operationId": "message-PUT",
         "responses": {
           "204": {
             "description": "No Content",

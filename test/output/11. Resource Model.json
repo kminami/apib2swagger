@@ -8,6 +8,7 @@
   "paths": {
     "/message": {
       "get": {
+        "operationId": "Retrieve-a-Message-GET",
         "responses": {
           "200": {
             "description": "This is the `application/vnd.siren+json` message resource representation.",
@@ -41,6 +42,7 @@
         ]
       },
       "put": {
+        "operationId": "Update-a-Message-PUT",
         "responses": {
           "204": {
             "description": "No Content",

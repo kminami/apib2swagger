@@ -8,6 +8,7 @@
   "paths": {
     "/stores/{storeId}": {
       "get": {
+        "operationId": "Get-Store-GET",
         "responses": {
           "200": {
             "description": "OK",
@@ -77,6 +78,7 @@
         ]
       },
       "put": {
+        "operationId": "Update-Store-PUT",
         "responses": {
           "200": {
             "description": "OK",

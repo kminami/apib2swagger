@@ -8,6 +8,7 @@
   "paths": {
     "/messages": {
       "post": {
+        "operationId": "Create-message-POST",
         "responses": {
           "201": {
             "description": "Created",
@@ -41,6 +42,7 @@
     },
     "/tasks": {
       "post": {
+        "operationId": "Create-a-new-task-POST",
         "responses": {
           "201": {
             "description": "Created",

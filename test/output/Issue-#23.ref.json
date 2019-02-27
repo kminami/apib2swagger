@@ -8,6 +8,7 @@
   "paths": {
     "/path": {
       "post": {
+        "operationId": "path-POST",
         "responses": {
           "200": {
             "description": "OK",
