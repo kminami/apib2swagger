@@ -75,7 +75,53 @@
   },
   "definitions": {
     "My Message": {},
-    "My MessageModel": {}
+    "My MessageModel": {
+      "type": "object",
+      "properties": {
+        "class": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rel": {
+                "type": "string"
+              },
+              "href": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "example": {
+        "class": [
+          "message"
+        ],
+        "properties": {
+          "message": "Hello World!"
+        },
+        "links": [
+          {
+            "rel": "self",
+            "href": "/message"
+          }
+        ]
+      }
+    }
   },
   "securityDefinitions": {},
   "tags": [

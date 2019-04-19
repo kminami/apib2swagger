@@ -21,7 +21,9 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         '10. Data Structures.md',
         '11. Resource Model.md',
         '12. Advanced Action.md',
-        '13. Named Endpoints.md'
+        '13. Named Endpoints.md',
+        'Gist Fox API + Auth.md'
+
     ],
     includedFiles = [
         'Attributes.md',

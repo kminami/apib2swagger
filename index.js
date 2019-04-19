@@ -79,9 +79,14 @@ var swaggerDefinitions = function (definitions, resource) {
         scheme = searchDataStructure(resource.content); // Attributes 1
         definitions[resource.name] = scheme ? scheme : {};
     }
-    if (resource.model.content && resource.model.name) {
-        scheme = searchDataStructure(resource.model.content); // Attribute 2
-        definitions[resource.model.name + 'Model'] = scheme ? scheme : {};
+    const model = resource.model;
+    if (model.content && model.name) {
+        scheme = searchDataStructure(model.content); // Attribute 2
+        // fall back to body
+        if (!scheme && model.content.length > 0) {
+            scheme = generateSchemaFromExample(model.headers, model.content[0].content);
+        }
+        definitions[model.name + 'Model'] = scheme ? scheme : {};
     }
 };
 
@@ -179,31 +184,8 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 }
                 // fall back to body
                 if (request.body && (schema == null || schema.length == 0)) {
-                    for (var n = 0; n < request.headers.length; n++) {
-                        var header = request.headers[n];
-                        //swaggerResponse.headers[header.name] = {'type':'string'}
-                        if (header.name === 'Content-Type') {
-                            if (header.value.match(/application\/.*json/)) {
-                                try {
-                                    scheme = GenerateSchema.json("", JSON.parse(request.body));
-                                    if (scheme) {
-                                        delete scheme.title;
-                                        delete scheme.$schema;
-
-                                        // if we have example values in the body then insert them into the json schema
-                                        var body = JSON.parse(request.body);
-                                        if(scheme['type'] === 'object'){
-                                            scheme.example = body;
-                                        } else if (scheme['type'] === 'array'){
-                                            scheme.items.example = body;
-                                        }
-                                        schema.push(scheme);
-                                    }
-                                    break;
-                                } catch (e) {}
-                            }
-                        }
-                    }
+                    scheme = generateSchemaFromExample(request.headers, request.body);
+                    if (scheme) schema.push(scheme);
                 }
             }
         }
@@ -343,6 +325,32 @@ var searchDataStructure = function (contents) {
         return jsonSchemaFromMSON(content);
     }
 };
+
+function generateSchemaFromExample(headers, example) {
+    if (!headers || !headers.some(header => (
+        header.name === 'Content-Type' && header.value.match(/application\/.*json/)
+    ))) {
+        return null;
+    }
+    try {
+        const body = JSON.parse(example);
+        const scheme = GenerateSchema.json("", body);
+        if (!scheme) {
+            return null;
+        }
+        delete scheme.title;
+        delete scheme.$schema;
+        // if we have example values in the body then insert them into the json schema
+        if(scheme['type'] === 'object'){
+            scheme.example = body;
+        } else if (scheme['type'] === 'array'){
+            scheme.items.example = body;
+        }
+        return scheme;
+    } catch (e) {
+        return null;
+    }
+}
 
 function getParamType(name, uriTemplate) {
     if (!uriTemplate) return 'body';

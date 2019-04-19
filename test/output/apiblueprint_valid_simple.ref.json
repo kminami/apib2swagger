@@ -420,7 +420,84 @@
     "Gist": {},
     "GistModel": {},
     "Gists Collection": {},
-    "Gists CollectionModel": {},
+    "Gists CollectionModel": {
+      "type": "object",
+      "properties": {
+        "_links": {
+          "type": "object",
+          "properties": {
+            "self": {
+              "type": "object",
+              "properties": {
+                "href": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "_embedded": {
+          "type": "object",
+          "properties": {
+            "gists": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_links": {
+                    "type": "object",
+                    "properties": {
+                      "self": {
+                        "type": "object",
+                        "properties": {
+                          "href": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "total": {
+          "type": "number"
+        }
+      },
+      "example": {
+        "_links": {
+          "self": {
+            "href": "/gists"
+          }
+        },
+        "_embedded": {
+          "gists": [
+            {
+              "_links": {
+                "self": {
+                  "href": "/gists/42"
+                }
+              },
+              "id": "42",
+              "created_at": "2014-04-14T02:15:15Z",
+              "description": "Description of Gist"
+            }
+          ]
+        },
+        "total": 1
+      }
+    },
     "Star": {},
     "StarModel": {},
     "Authorization": {},

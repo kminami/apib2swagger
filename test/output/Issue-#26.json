@@ -156,7 +156,121 @@
   },
   "definitions": {
     "Get/Update Store": {},
-    "Get/Update StoreModel": {}
+    "Get/Update StoreModel": {
+      "type": "object",
+      "properties": {
+        "storeId": {
+          "type": "number"
+        },
+        "storeName": {
+          "type": "string"
+        },
+        "marketplaceId": {
+          "type": "number"
+        },
+        "marketplaceName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "null"
+        },
+        "email": {
+          "type": "null"
+        },
+        "integrationUrl": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "companyName": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "publicEmail": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string"
+        },
+        "refreshDate": {
+          "type": "string"
+        },
+        "lastRefreshAttempt": {
+          "type": "string"
+        },
+        "createDate": {
+          "type": "string"
+        },
+        "modifyDate": {
+          "type": "string"
+        },
+        "autoRefresh": {
+          "type": "boolean"
+        },
+        "statusMappings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "orderStatus": {
+                "type": "string"
+              },
+              "statusKey": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "orderStatus",
+              "statusKey"
+            ]
+          }
+        }
+      },
+      "example": {
+        "storeId": 12345,
+        "storeName": "WooCommerce Store",
+        "marketplaceId": 36,
+        "marketplaceName": "WooCommerce",
+        "accountName": null,
+        "email": null,
+        "integrationUrl": "http://shipstation-test.wpengine.com",
+        "active": true,
+        "companyName": "",
+        "phone": "",
+        "publicEmail": "",
+        "website": "",
+        "refreshDate": "2014-12-16T17:47:05.457",
+        "lastRefreshAttempt": "2014-12-16T09:47:05.457",
+        "createDate": "2014-11-06T15:21:13.223",
+        "modifyDate": "2014-11-10T08:02:19.117",
+        "autoRefresh": true,
+        "statusMappings": [
+          {
+            "orderStatus": "awaiting_payment",
+            "statusKey": "Pending"
+          },
+          {
+            "orderStatus": "awaiting_shipment",
+            "statusKey": "Processing"
+          },
+          {
+            "orderStatus": "shipped",
+            "statusKey": "Completed"
+          },
+          {
+            "orderStatus": "cancelled",
+            "statusKey": "Cancelled"
+          },
+          {
+            "orderStatus": "on_hold",
+            "statusKey": "On-hold"
+          }
+        ]
+      }
+    }
   },
   "securityDefinitions": {},
   "tags": [
