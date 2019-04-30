@@ -45,7 +45,10 @@
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "$ref": "#/definitions/GistModel"
+            }
           }
         },
         "summary": "Retrieve a Single Gist",
@@ -75,7 +78,10 @@
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "$ref": "#/definitions/GistModel"
+            }
           }
         },
         "summary": "Edit a Gist",
@@ -175,6 +181,9 @@
                 },
                 "total": 1
               }
+            },
+            "schema": {
+              "$ref": "#/definitions/Gists CollectionModel"
             }
           }
         },
@@ -201,7 +210,10 @@
           "201": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "$ref": "#/definitions/GistModel"
+            }
           }
         },
         "summary": "Create a Gist",
@@ -305,7 +317,10 @@
           "200": {
             "description": "HAL+JSON representation of Star Resource.",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "$ref": "#/definitions/StarModel"
+            }
           }
         },
         "summary": "Check if a Gist is Starred",
@@ -337,7 +352,10 @@
           "200": {
             "description": "OK",
             "headers": {},
-            "examples": {}
+            "examples": {},
+            "schema": {
+              "$ref": "#/definitions/AuthorizationModel"
+            }
           }
         },
         "summary": "Retrieve Authorization",

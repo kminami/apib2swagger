@@ -56,12 +56,7 @@
             "headers": {},
             "examples": {},
             "schema": {
-              "type": "object",
-              "properties": {
-                "prop1": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/Some resource 2Model"
             }
           }
         },

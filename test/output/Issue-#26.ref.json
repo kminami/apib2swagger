@@ -54,6 +54,9 @@
                   }
                 ]
               }
+            },
+            "schema": {
+              "$ref": "#/definitions/Get~1Update StoreModel"
             }
           }
         },
@@ -123,6 +126,9 @@
                   }
                 ]
               }
+            },
+            "schema": {
+              "$ref": "#/definitions/Get~1Update StoreModel"
             }
           }
         },
