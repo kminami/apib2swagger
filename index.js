@@ -390,19 +390,19 @@ function swaggerResponses(examples, options) {
                 "examples": {}
             };
             if (options.preferReference) { // MSON then schema
-                swaggerResponse.schema = searchDataStructure(response.content); // Attributes in response
-                if (!swaggerResponse.schema) {
-                    if (response.reference) {
-                        swaggerResponse.schema = {
-                            '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
-                        };
-                    } else if (response.schema) {
-                        try {
-                            swaggerResponse.schema = JSON.parse(response.schema);
-                            delete swaggerResponse.schema['$schema'];
-                            fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
-                        } catch (e) {}
-                    }
+                var schema = searchDataStructure(response.content); // Attributes in response
+                if (schema) {
+                    swaggerResponse.schema = schema;
+                } else if (response.reference) {
+                    swaggerResponse.schema = {
+                        '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
+                    };
+                } else if (response.schema) {
+                    try {
+                        swaggerResponse.schema = JSON.parse(response.schema);
+                        delete swaggerResponse.schema['$schema'];
+                        fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
+                    } catch (e) {}
                 }
             } else { // schema then MSON
                 if (response.schema) {
@@ -413,7 +413,8 @@ function swaggerResponses(examples, options) {
                     } catch (e) {}
                 }
                 if (!swaggerResponse.schema) {
-                    swaggerResponse.schema = searchDataStructure(response.content); // Attributes in response
+                    var schema = searchDataStructure(response.content); // Attributes in response
+                    if (schema) swaggerResponse.schema = schema;
                 }
                 if (!swaggerResponse.schema && response.reference) {
                     swaggerResponse.schema = {
