@@ -13,7 +13,7 @@ Supported versions:
         - VERSION -> .info.version
     - [Include directive](https://github.com/danielgtaylor/aglio#including-files)
 - Swagger 2.0
-- Node.js 6.x, 8.x, 9.x, 10.x, 11.x or higher
+- Node.js 8.x, 10.x, 11.x, 12.x or higher
 
 ## Install
 
