@@ -11,7 +11,11 @@
         "responses": {
           "200": {
             "description": "OK",
-            "headers": {},
+            "headers": {
+              "X-My-Message-Header": {
+                "type": "string"
+              }
+            },
             "examples": {
               "application/json": {
                 "message": "Hello World!"

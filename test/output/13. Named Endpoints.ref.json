@@ -11,7 +11,11 @@
         "responses": {
           "201": {
             "description": "Created",
-            "headers": {},
+            "headers": {
+              "Location": {
+                "type": "string"
+              }
+            },
             "examples": {}
           }
         },
@@ -44,7 +48,11 @@
         "responses": {
           "201": {
             "description": "Created",
-            "headers": {},
+            "headers": {
+              "Location": {
+                "type": "string"
+              }
+            },
             "examples": {}
           }
         },

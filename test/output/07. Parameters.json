@@ -11,7 +11,11 @@
         "responses": {
           "200": {
             "description": "OK",
-            "headers": {},
+            "headers": {
+              "X-My-Message-Header": {
+                "type": "string"
+              }
+            },
             "examples": {
               "application/json": {
                 "id": 1,
@@ -35,12 +39,12 @@
             "type": "number"
           },
           {
-            "description": "e.g. text/plain",
-            "in": "header",
             "name": "Accept",
+            "in": "header",
+            "description": "e.g. text/plain",
             "required": false,
-            "type": "string",
-            "x-example": "text/plain"
+            "x-example": "text/plain",
+            "type": "string"
           }
         ],
         "produces": [

@@ -11,7 +11,11 @@
         "responses": {
           "200": {
             "description": "OK",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {
               "application/hal+json": {
                 "_links": {
@@ -44,7 +48,11 @@
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {},
             "schema": {
               "$ref": "#/definitions/GistModel"
@@ -77,7 +85,11 @@
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {},
             "schema": {
               "$ref": "#/definitions/GistModel"
@@ -157,7 +169,11 @@
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Gist Collection Resource. The Gist resources in collections are embedded. Note the embedded Gists resource are incomplete representations of the Gist in question. Use the respective Gist link to retrieve its full representation.",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {
               "application/hal+json": {
                 "_links": {
@@ -209,7 +225,11 @@
         "responses": {
           "201": {
             "description": "HAL+JSON representation of Gist Resource. In addition to representing its state in the JSON form it offers affordances in the form of the HTTP Link header and HAL links.",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {},
             "schema": {
               "$ref": "#/definitions/GistModel"
@@ -316,7 +336,11 @@
         "responses": {
           "200": {
             "description": "HAL+JSON representation of Star Resource.",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {},
             "schema": {
               "$ref": "#/definitions/StarModel"
@@ -351,7 +375,11 @@
         "responses": {
           "200": {
             "description": "OK",
-            "headers": {},
+            "headers": {
+              "Link": {
+                "type": "string"
+              }
+            },
             "examples": {},
             "schema": {
               "$ref": "#/definitions/AuthorizationModel"

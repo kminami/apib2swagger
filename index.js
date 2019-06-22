@@ -441,8 +441,7 @@ function swaggerResponses(examples, options) {
             }
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
-                //swaggerResponse.headers[header.name] = {'type':'string'}
-                if (header.name === 'Content-Type') {
+                if (header.name.toLowerCase() === 'content-type') {
                     if (header.value.match(/application\/.*json/)) {
                         try {
                             swaggerResponse.examples[header.value] = JSON.parse(response.body);
@@ -451,6 +450,8 @@ function swaggerResponses(examples, options) {
                         continue;
                     }
                     swaggerResponse.examples[header.value] = response.body;
+                } else if (header.name.toLowerCase() !== 'authorization') {
+                    swaggerResponse.headers[header.name] = { 'type': 'string' }
                 }
             }
             responses[response.name] = swaggerResponse;

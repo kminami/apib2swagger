@@ -11,7 +11,11 @@
         "responses": {
           "200": {
             "description": "This is the `application/vnd.siren+json` message resource representation.",
-            "headers": {},
+            "headers": {
+              "Location": {
+                "type": "string"
+              }
+            },
             "examples": {
               "application/vnd.siren+json": {
                 "class": [
