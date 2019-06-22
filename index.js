@@ -7,7 +7,7 @@ var url = require('url'),
 var jsonSchemaFromMSON = require('./src/mson_to_json_schema'),
     escapeJSONPointer = require('./src/escape_json_pointer');
 
-var apib2swagger = module.exports.convertParsed = function(apib, options) {
+var apib2swagger = module.exports.convertParsed = function (apib, options) {
     //console.log(JSON.stringify(apib, null, 4));
     var swagger = {};
     swagger.swagger = '2.0';
@@ -16,13 +16,13 @@ var apib2swagger = module.exports.convertParsed = function(apib, options) {
         'version': '',
         'description': apib.description
     }
-    apib.metadata.forEach(function(meta) {
+    apib.metadata.forEach(function (meta) {
         //console.log(meta);
         if (meta.name.toLowerCase() === 'host') {
             var urlParts = url.parse(meta.value);
             swagger.host = urlParts.host;
             swagger.basePath = urlParts.pathname;
-            swagger.schemes = [urlParts.protocol.replace(':','')];
+            swagger.schemes = [urlParts.protocol.replace(':', '')];
         } else if (meta.name.toLowerCase() === 'version') {
             swagger.info.version = meta.value;
         }
@@ -32,14 +32,14 @@ var apib2swagger = module.exports.convertParsed = function(apib, options) {
     swagger.securityDefinitions = {};
     var converterContext = { swagger: swagger, options: options };
     var tags = {};
-    apib.content.filter(function(content) {
+    apib.content.filter(function (content) {
         return content.element === 'category';
-    }).forEach(function(category) {
+    }).forEach(function (category) {
         var groupName = category.attributes ? category.attributes.name : '';
         if (groupName && !tags[groupName]) {
             tags[groupName] = { name: groupName };
         }
-        category.content.forEach(function(content) {
+        category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
                 swaggerDefinitions(swagger.definitions, content);
@@ -169,18 +169,18 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
                     // if we have example values in the body then insert them into the json schema
                     var body = JSON.parse(request.body);
-                    if(scheme['type'] === 'object'){
+                    if (scheme['type'] === 'object') {
                         scheme.example = body;
-                    } else if (scheme['type'] === 'array'){
+                    } else if (scheme['type'] === 'array') {
                         scheme.items.example = body;
                     }
                     if (scheme) schema.push(scheme);
-                } catch (e) {}
+                } catch (e) { }
             } else {
                 scheme = searchDataStructure(request.content); // Attributes 4
                 if (scheme) schema.push(scheme);
                 if (request.reference) {
-                    schema.push({'$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model')});
+                    schema.push({ '$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model') });
                 }
                 // fall back to body
                 if (request.body && (schema == null || schema.length == 0)) {
@@ -191,21 +191,21 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
         }
     }
     if (schema.length == 1) {
-        operation.parameters.push({name: 'body', in: 'body', schema: schema[0]});
+        operation.parameters.push({ name: 'body', in: 'body', schema: schema[0] });
     } else if (schema.length > 1) {
-        operation.parameters.push({name: 'body', in: 'body', schema: {anyOf: schema}});
+        operation.parameters.push({ name: 'body', in: 'body', schema: { anyOf: schema } });
     }
     return operation;
 }
 
-var swaggerHeaders = function(context, headers) {
+var swaggerHeaders = function (context, headers) {
     var params = [];
     const skipParams = ['content-type', 'authorization']; // handled in another way
     for (let i = 0; i < headers.length; i++) {
-        const element =  headers[i];
+        const element = headers[i];
         if (skipParams.includes(element.name.toLowerCase())) continue;
         var param = {
-            'name': element.name, 
+            'name': element.name,
             'in': 'header',
             'description': `e.g. ${element.value}`,
             'required': false,
@@ -220,9 +220,9 @@ var swaggerHeaders = function(context, headers) {
 // generate security and securityDefinitions from authorization headers
 function swaggerSecurity(context, headers) {
     var security = null;
-    headers.filter(function(header) {
+    headers.filter(function (header) {
         return header.name.toLowerCase() === 'authorization';
-    }).forEach(function(header) {
+    }).forEach(function (header) {
         if (header.value.match(/^Basic /)) {
             if (!security) security = {};
             security['basic'] = [];
@@ -238,7 +238,8 @@ function swaggerSecurity(context, headers) {
                 security['oauth2'] = [];
                 context.swagger.securityDefinitions['oauth2'] = {
                     type: 'oauth2', flow: 'accessCode',
-                    authorizationUrl: '', tokenUrl: '', scopes: {} };
+                    authorizationUrl: '', tokenUrl: '', scopes: {}
+                };
             }
         }
     });
@@ -267,7 +268,7 @@ function swaggerParameters(parameters, uriTemplate) {
             'required': parameter.required
         };
 
-        if (parameter.example){
+        if (parameter.example) {
             param['x-example'] = parameter.example
         }
 
@@ -301,17 +302,17 @@ function swaggerParameters(parameters, uriTemplate) {
                 param.schema.enum = allowedValues;
             }
             if (parameterDefault) {
-              param.schema.default = parameterDefault;
+                param.schema.default = parameterDefault;
             }
         }
         else {
-          param.type = paramType;
-          if (parameterDefault) {
-              param.default = parameterDefault;
-          }
-          if (allowedValues.length > 0) {
-            param.enum = allowedValues;
-          }
+            param.type = paramType;
+            if (parameterDefault) {
+                param.default = parameterDefault;
+            }
+            if (allowedValues.length > 0) {
+                param.enum = allowedValues;
+            }
         }
         params.push(param);
     }
@@ -341,9 +342,9 @@ function generateSchemaFromExample(headers, example) {
         delete scheme.title;
         delete scheme.$schema;
         // if we have example values in the body then insert them into the json schema
-        if(scheme['type'] === 'object'){
+        if (scheme['type'] === 'object') {
             scheme.example = body;
-        } else if (scheme['type'] === 'array'){
+        } else if (scheme['type'] === 'array') {
             scheme.items.example = body;
         }
         return scheme;
@@ -402,7 +403,7 @@ function swaggerResponses(examples, options) {
                         swaggerResponse.schema = JSON.parse(response.schema);
                         delete swaggerResponse.schema['$schema'];
                         fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
-                    } catch (e) {}
+                    } catch (e) { }
                 }
             } else { // schema then MSON
                 if (response.schema) {
@@ -410,7 +411,7 @@ function swaggerResponses(examples, options) {
                         swaggerResponse.schema = JSON.parse(response.schema);
                         delete swaggerResponse.schema['$schema'];
                         fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
-                    } catch (e) {}
+                    } catch (e) { }
                 }
                 if (!swaggerResponse.schema) {
                     var schema = searchDataStructure(response.content); // Attributes in response
@@ -446,7 +447,7 @@ function swaggerResponses(examples, options) {
                         try {
                             swaggerResponse.examples[header.value] = JSON.parse(response.body);
                             //swaggerResponse.schema = {type: "object"};
-                        } catch (e) {}
+                        } catch (e) { }
                         continue;
                     }
                     swaggerResponse.examples[header.value] = response.body;
@@ -460,7 +461,7 @@ function swaggerResponses(examples, options) {
 
 exports.noconvert = function (data, callback) {
     try {
-        var result = drafter.parse(data, {type: 'ast'});
+        var result = drafter.parse(data, { type: 'ast' });
         return callback(null, result);
     } catch (error) {
         return callback(error, {});
@@ -473,13 +474,13 @@ exports.convert = function (data, options, callback) {
         options = {};
     }
     try {
-        var result = drafter.parse(data, {type: 'ast'});
+        var result = drafter.parse(data, { type: 'ast' });
         //for (var i = 0; i < result.warnings.length; i++) {
         //    var warn = result.warnings[i];
         //    console.log(warn);
         //}
         var swagger = apib2swagger(result.ast, options);
-        return callback(null, {swagger: swagger});
+        return callback(null, { swagger: swagger });
     }
     catch (error) {
         return callback(error, {});
