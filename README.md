@@ -13,7 +13,7 @@ Supported versions:
         - VERSION -> .info.version
     - [Include directive](https://github.com/danielgtaylor/aglio#including-files)
 - Swagger 2.0
-- Node.js 8.x, 10.x, 11.x, 12.x or higher
+- Node.js 8.x, 10.x, 12.x or higher
 
 ## Install
 
@@ -64,10 +64,10 @@ cat api.md | npx apib2swagger > swagger.json
 ```
 
 ## Docker
-You can also run apib2swagger inside a docker container. (Unofficial image, use it carefully)
+You can also run apib2swagger inside a docker container.
 
 ```bash
-$ docker run -it --rm -v $(pwd):/docs cbarraford/apib2swagger -i api.md -o swagger.json
+$ docker run -it --rm -v $(pwd):/docs kminami/apib2swagger -i /docs/api.md -o /docs/swagger.json
 ```
 
 ## License
