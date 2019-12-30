@@ -61,6 +61,7 @@
           }
         },
         "summary": "Get Store",
+        "operationId": "Get Store",
         "description": "",
         "tags": [
           "Stores"
@@ -133,6 +134,7 @@
           }
         },
         "summary": "Update Store",
+        "operationId": "Update Store",
         "description": "Updates an existing store. This call does not currently support partial updates. The entire resource must be provided in the body of the request.",
         "tags": [
           "Stores"

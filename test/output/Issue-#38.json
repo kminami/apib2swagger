@@ -16,6 +16,7 @@
           }
         },
         "summary": "Whatever",
+        "operationId": "Whatever",
         "description": "",
         "tags": [],
         "parameters": [

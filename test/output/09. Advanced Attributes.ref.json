@@ -26,6 +26,7 @@
           }
         },
         "summary": "Retrieve a Coupon",
+        "operationId": "Retrieve a Coupon",
         "description": "Retrieves the coupon with the given ID.",
         "tags": [
           "Coupons"
@@ -66,6 +67,7 @@
           }
         },
         "summary": "List all Coupons",
+        "operationId": "List all Coupons",
         "description": "Returns a list of your coupons.",
         "tags": [
           "Coupons"
@@ -103,6 +105,7 @@
           }
         },
         "summary": "Create a Coupon",
+        "operationId": "Create a Coupon",
         "description": "Creates a new Coupon.",
         "tags": [
           "Coupons"

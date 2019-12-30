@@ -35,6 +35,7 @@
           }
         },
         "summary": "Retrieve the Entry Point",
+        "operationId": "Retrieve the Entry Point",
         "description": "",
         "tags": [],
         "parameters": [],
@@ -60,6 +61,7 @@
           }
         },
         "summary": "Retrieve a Single Gist",
+        "operationId": "Retrieve a Single Gist",
         "description": "",
         "tags": [
           "Gist"
@@ -97,6 +99,7 @@
           }
         },
         "summary": "Edit a Gist",
+        "operationId": "Edit a Gist",
         "description": "To update a Gist send a JSON with updated value for one or more of the Gist resource attributes. All attributes values (states) from the previous version of this Gist are carried over by default if not included in the hash.",
         "tags": [
           "Gist"
@@ -142,6 +145,7 @@
           }
         },
         "summary": "Delete a Gist",
+        "operationId": "Delete a Gist",
         "description": "",
         "tags": [
           "Gist"
@@ -204,6 +208,7 @@
           }
         },
         "summary": "List All Gists",
+        "operationId": "List All Gists",
         "description": "",
         "tags": [
           "Gist"
@@ -237,6 +242,7 @@
           }
         },
         "summary": "Create a Gist",
+        "operationId": "Create a Gist",
         "description": "To create a new Gist simply provide a JSON hash of the *description* and *content* attributes for the new Gist.\n\nThis action requires an `access_token` with `gist_write` scope.",
         "tags": [
           "Gist"
@@ -281,6 +287,7 @@
           }
         },
         "summary": "Star a Gist",
+        "operationId": "Star a Gist",
         "description": "This action requires an `access_token` with `gist_write` scope.",
         "tags": [
           "Gist"
@@ -311,6 +318,7 @@
           }
         },
         "summary": "Unstar a Gist",
+        "operationId": "Unstar a Gist",
         "description": "This action requires an `access_token` with `gist_write` scope.",
         "tags": [
           "Gist"
@@ -348,6 +356,7 @@
           }
         },
         "summary": "Check if a Gist is Starred",
+        "operationId": "Check if a Gist is Starred",
         "description": "",
         "tags": [
           "Gist"
@@ -387,6 +396,7 @@
           }
         },
         "summary": "Retrieve Authorization",
+        "operationId": "Retrieve Authorization",
         "description": "",
         "tags": [
           "Access Authorization and Control"
@@ -407,6 +417,7 @@
           }
         },
         "summary": "Create Authorization",
+        "operationId": "Create Authorization",
         "description": "",
         "tags": [
           "Access Authorization and Control"
@@ -448,6 +459,7 @@
           }
         },
         "summary": "Remove an Authorization",
+        "operationId": "Remove an Authorization",
         "description": "",
         "tags": [
           "Access Authorization and Control"

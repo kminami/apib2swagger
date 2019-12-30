@@ -20,6 +20,7 @@
           }
         },
         "summary": "Create message",
+        "operationId": "Create message",
         "description": "Start out by creating a message for the world to see.",
         "tags": [
           "Quick start"
@@ -57,6 +58,7 @@
           }
         },
         "summary": "Create a new task",
+        "operationId": "Create a new task",
         "description": "Now create a task that you need to do at a later date.",
         "tags": [
           "Quick start"

@@ -114,6 +114,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
+        'operationId': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
         'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))

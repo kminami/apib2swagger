@@ -97,6 +97,7 @@
           }
         },
         "summary": "Get Plans of People",
+        "operationId": "Get Plans of People",
         "description": "* Paginated &#10006;\n\n* Sortable &#10006;\n\n* Signable &#10006;\n\n#### Error Codes\n\nPossible error codes for this resource.\n\n| HTTP Status Code  | Error Code        | Purpose   |\n| ----------------- | ----------------- | --------- |\n| 400               | VALIDATION\\_ERROR | Validation error. |\n| 400               | FIELD\\_MISSING    | A required field is missing. |",
         "tags": [
           "People"
@@ -119,20 +120,20 @@
             "type": "string"
           },
           {
-            "description": "e.g. <here comes some key>",
-            "in": "header",
             "name": "some-key",
+            "in": "header",
+            "description": "e.g. <here comes some key>",
             "required": false,
-            "type": "string",
-            "x-example": "<here comes some key>"
+            "x-example": "<here comes some key>",
+            "type": "string"
           },
           {
-            "description": "e.g. <here comes some token>",
-            "in": "header",
             "name": "auth",
+            "in": "header",
+            "description": "e.g. <here comes some token>",
             "required": false,
-            "type": "string",
-            "x-example": "<here comes some token>"
+            "x-example": "<here comes some token>",
+            "type": "string"
           }
         ],
         "produces": [

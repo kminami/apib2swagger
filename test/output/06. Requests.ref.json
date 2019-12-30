@@ -24,6 +24,7 @@
           }
         },
         "summary": "Retrieve a Message",
+        "operationId": "Retrieve a Message",
         "description": "In API Blueprint requests can hold exactly the same kind of information and can be described by exactly the same structure as responses, only with different signature – using the `Request` keyword. The string that follows after the `Request` keyword is a request identifier. Again, using an explanatory and simple naming is the best way to go.",
         "tags": [
           "Messages"
@@ -51,6 +52,7 @@
           }
         },
         "summary": "Update a Message",
+        "operationId": "Update a Message",
         "description": "",
         "tags": [
           "Messages"

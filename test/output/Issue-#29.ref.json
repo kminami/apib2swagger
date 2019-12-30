@@ -39,6 +39,7 @@
           }
         },
         "summary": "Retrieve A Post",
+        "operationId": "Retrieve A Post",
         "description": "",
         "tags": [],
         "parameters": [
@@ -66,6 +67,7 @@
           }
         },
         "summary": "Create Post",
+        "operationId": "Create Post",
         "description": "",
         "tags": [],
         "parameters": [

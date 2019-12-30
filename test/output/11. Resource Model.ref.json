@@ -38,6 +38,7 @@
           }
         },
         "summary": "Retrieve a Message",
+        "operationId": "Retrieve a Message",
         "description": "At this point we will utilize our `Message` resource model and reference it in `Response 200`.",
         "tags": [
           "Messages"
@@ -56,6 +57,7 @@
           }
         },
         "summary": "Update a Message",
+        "operationId": "Update a Message",
         "description": "",
         "tags": [
           "Messages"

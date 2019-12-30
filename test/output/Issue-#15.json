@@ -41,6 +41,7 @@
           }
         },
         "summary": "Get Server Settings",
+        "operationId": "Get Server Settings",
         "description": "",
         "tags": [
           "Settings"
@@ -82,6 +83,7 @@
           }
         },
         "summary": "List all users",
+        "operationId": "List all users",
         "description": "Get a list of all users. Optionally, you can specify a `prefix` to search for a specific user.\n\n+ prefix (string - The prefix of a user (username, first name, or last name)",
         "tags": [
           "Users"
@@ -186,6 +188,7 @@
           }
         },
         "summary": "Get a specific user",
+        "operationId": "Get a specific user",
         "description": "",
         "tags": [
           "Users"

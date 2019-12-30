@@ -24,6 +24,7 @@
           }
         },
         "summary": "Retrieve a Message",
+        "operationId": "Retrieve a Message",
         "description": "This action has **two** responses defined: One returing a plain text and the other a JSON representation of our resource. Both has the same HTTP status code. Also both responses bear additional information in the form of a custom HTTP header. Note that both responses have set the `Content-Type` HTTP header just by specifying `(text/plain)` or `(application/json)` in their respective signatures.",
         "tags": [
           "Messages"
@@ -42,6 +43,7 @@
           }
         },
         "summary": "Update a Message",
+        "operationId": "Update a Message",
         "description": "",
         "tags": [
           "Messages"

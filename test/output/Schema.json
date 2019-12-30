@@ -24,6 +24,7 @@
           }
         },
         "summary": "Some resource",
+        "operationId": "Some resource",
         "description": "",
         "tags": [],
         "parameters": [
@@ -66,6 +67,7 @@
           }
         },
         "summary": "",
+        "operationId": "",
         "description": "",
         "tags": [],
         "parameters": [
@@ -101,6 +103,7 @@
           }
         },
         "summary": "",
+        "operationId": "",
         "description": "",
         "tags": [],
         "parameters": [

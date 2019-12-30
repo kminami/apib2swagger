@@ -31,6 +31,7 @@
           }
         },
         "summary": "List All Tasks",
+        "operationId": "List All Tasks",
         "description": "",
         "tags": [],
         "parameters": [
@@ -71,6 +72,7 @@
           }
         },
         "summary": "Retrieve Task",
+        "operationId": "Retrieve Task",
         "description": "This is a state transition to another resource",
         "tags": [],
         "parameters": [
@@ -95,6 +97,7 @@
           }
         },
         "summary": "Delete Task",
+        "operationId": "Delete Task",
         "description": "",
         "tags": [],
         "parameters": [

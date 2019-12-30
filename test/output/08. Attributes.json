@@ -36,6 +36,7 @@
           }
         },
         "summary": "Retrieve a Coupon",
+        "operationId": "Retrieve a Coupon",
         "description": "Retrieves the coupon with the given ID.",
         "tags": [
           "Coupons"
