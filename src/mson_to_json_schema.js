@@ -66,8 +66,8 @@ function convert(mson) {
                         schema.required.push(member.content.key.content);
                         break;
                     case 'nullable':
-                    schema.properties[member.content.key.content].type = [schema.properties[member.content.key.content].type, 'null']
-                    break;
+                        schema.properties[member.content.key.content].type = [schema.properties[member.content.key.content].type, 'null']
+                        break;
                 }
             });
         }

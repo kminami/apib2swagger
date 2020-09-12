@@ -70,6 +70,8 @@ You can also run apib2swagger inside a docker container.
 $ docker run -it --rm -v $(pwd):/docs kminami/apib2swagger -i /docs/api.md -o /docs/swagger.json
 ```
 
+You can use container images in GitHub Container Registory like `ghcr.io/kminami/apib2swagger` or `ghcr.io/kminami/apib2swagger:1.12.0` instead of Docker Hub.
+
 ## License
 
 Copyright (c) 2015 Keisuke Minami
