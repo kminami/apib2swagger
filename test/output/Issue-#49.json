@@ -1,0 +1,141 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/user": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "id": "",
+                "name": null
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Get one user",
+        "operationId": "Get one user",
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": [
+                {
+                  "id": "",
+                  "name": null
+                }
+              ]
+            },
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "Get a collection of users",
+        "operationId": "Get a collection of users",
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "A user": {},
+    "Some users": {},
+    "User": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Users": {
+      "type": "object",
+      "required": [
+        "users"
+      ],
+      "properties": {
+        "users": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {},
+  "tags": [
+    {
+      "name": "Users"
+    }
+  ]
+}

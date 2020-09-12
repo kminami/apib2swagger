@@ -37,6 +37,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#35.md',
         'Issue-#36.md',
         'Issue-#38.md',
+        'Issue-#49.md',
         'apiblueprint_uber.md',
         'apiblueprint_valid_simple.md'
     ];
@@ -46,7 +47,7 @@ var fetch = function (file) {
         return Promise.resolve();
     }
     console.log('Downloading ' + remote + file + ')');
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         https.get(remote + file, function (res) {
             if (res.statusCode !== 200) {
             }
@@ -96,7 +97,7 @@ describe("apib2swagger", function () {
 
         schema = JSON.parse(fs.readFileSync('test/swagger_20_schema.json'));
         tv4.addSchema('http://swagger.io/v2/schema.json', schema);
-        meta_schema =  JSON.parse(fs.readFileSync('test/meta_schema.json'));
+        meta_schema = JSON.parse(fs.readFileSync('test/meta_schema.json'));
         tv4.addSchema('http://json-schema.org/draft-04/schema', meta_schema);
 
         files.concat(includedFiles).forEach(function (file) {
@@ -128,9 +129,9 @@ describe("apib2swagger", function () {
         });
 
         var versionTests = [
-            {input: 'VERSION: 1.0.0', output: '1.0.0'},
-            {input: 'Version: 2.0', output: '2.0'},
-            {input: 'version: 3', output: '3'},
+            { input: 'VERSION: 1.0.0', output: '1.0.0' },
+            { input: 'Version: 2.0', output: '2.0' },
+            { input: 'version: 3', output: '3' },
         ];
         versionTests.forEach(function (test) {
             it(test.input, function (done) {
@@ -146,11 +147,11 @@ describe("apib2swagger", function () {
                     assert(validation_result.valid);
                     assert(validation_result.missing.length === 0)
                     done();
-                });                    
+                });
             });
         });
 
-        it('Issue-#38.md (--bearer-apikey', function(done) {
+        it('Issue-#38.md (--bearer-apikey', function (done) {
             const file = 'Issue-#38.md';
             this.timeout(10000); // 10s
             var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
