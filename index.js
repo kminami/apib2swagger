@@ -163,11 +163,15 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
             }
 
             if (request.schema) { // Schema section in Request section
+                // referencing Model's Schema is also here (no need to referencing defenitions)
                 try {
-                    // referencing Model's Schema is also here (no need to referencing defenitions)
                     scheme = JSON.parse(request.schema);
                     delete scheme['$schema'];
-
+                } catch (e){
+                    // If we can't parse the request schema we have nothing left to do here. 
+                    continue;
+                }
+                try {
                     // if we have example values in the body then insert them into the json schema
                     var body = JSON.parse(request.body);
                     if (scheme['type'] === 'object') {
@@ -175,8 +179,10 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     } else if (scheme['type'] === 'array') {
                         scheme.items.example = body;
                     }
-                    if (scheme) schema.push(scheme);
-                } catch (e) { }
+                // Catch any error from parsing the request body. However, if there is an error 
+                // (ex. no request body given), we still want to keep the schema.
+                } catch (e) {}
+                if (scheme) schema.push(scheme);
             } else {
                 scheme = searchDataStructure(request.content); // Attributes 4
                 if (scheme) schema.push(scheme);

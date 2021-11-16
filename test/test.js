@@ -39,7 +39,8 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#38.md',
         'Issue-#49.md',
         'apiblueprint_uber.md',
-        'apiblueprint_valid_simple.md'
+        'apiblueprint_valid_simple.md',
+        'schema_without_body.md'
     ];
 
 var fetch = function (file) {

@@ -19,7 +19,8 @@ var options = nopt({
     'yaml': Boolean,
     'prefer-reference': Boolean,
     'bearer-apikey': Boolean,
-    'help': Boolean
+    'help': Boolean,
+    'open-api-3': Boolean
 }, {
     'i': ['--input'],
     'o': ['--output'],
@@ -49,6 +50,7 @@ if (options.help) {
     console.log("  -y --yaml Output YAML");
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
+    console.log("  --open-api-3 Output as OpenAPI 3.0 instead of the default Swagger 2.0")
     process.exit();
 }
 
@@ -88,7 +90,7 @@ function processBlueprint(blueprint, opts) {
         return;
     }
 
-    var options = { preferReference: opts['prefer-reference'], bearerAsApikey: opts['bearer-apikey'] };
+    var options = { preferReference: opts['prefer-reference'], bearerAsApikey: opts['bearer-apikey'], useOpenApi3: opts['open-api-3'] };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
             console.log(error);
