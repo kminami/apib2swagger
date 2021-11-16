@@ -9,28 +9,32 @@ var jsonSchemaFromMSON = require('./src/mson_to_json_schema'),
 
 var apib2swagger = module.exports.convertParsed = function (apib, options) {
     //console.log(JSON.stringify(apib, null, 4));
-    var swagger = {};
-    swagger.swagger = '2.0';
-    swagger.info = {
-        'title': apib.name,
-        'version': '',
+    var output = {};
+    if (options.useOpenApi3) {
+        output.openapi = '3.0.0';
+    } else {
+        output.swagger = '2.0';
+    }
+    output.info = {
+        'title': options.infoTitle || apib.name,
+        'version': '1.0.0',
         'description': apib.description
     }
     apib.metadata.forEach(function (meta) {
         //console.log(meta);
         if (meta.name.toLowerCase() === 'host') {
             var urlParts = url.parse(meta.value);
-            swagger.host = urlParts.host;
-            swagger.basePath = urlParts.pathname;
-            swagger.schemes = [urlParts.protocol.replace(':', '')];
+            output.host = urlParts.host;
+            output.basePath = urlParts.pathname;
+            output.schemes = [urlParts.protocol.replace(':', '')];
         } else if (meta.name.toLowerCase() === 'version') {
-            swagger.info.version = meta.value;
+            output.info.version = meta.value || '1.0.0'
         }
     });
-    swagger.paths = {};
-    swagger.definitions = {};
-    swagger.securityDefinitions = {};
-    var converterContext = { swagger: swagger, options: options };
+    output.paths = {};
+    output.definitions = {};
+    output.securityDefinitions = {};
+    var converterContext = { swagger: output, options: options };
     var tags = {};
     apib.content.filter(function (content) {
         return content.element === 'category';
@@ -42,21 +46,21 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                swaggerDefinitions(swagger.definitions, content);
+                swaggerDefinitions(output.definitions, content);
                 swaggerPaths(converterContext, groupName, content);
             } else if (content.element === 'copy') {
                 // group description here
                 tags[groupName].description = content.content;
             } else if (content.element === 'dataStructure') {
-                swagger.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
+                output.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
             }
         });
     });
-    swagger.tags = [];
+    output.tags = [];
     for (var key in tags) {
-        swagger.tags.push(tags[key]);
+        output.tags.push(tags[key]);
     }
-    return swagger;
+    return output;
 }
 
 function swaggerPathName(uriTemplate) {
