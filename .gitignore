@@ -34,3 +34,6 @@ swagger-ui-master.tar.gz
 # IDE
 .vscode
 .idea
+
+# tests
+test/output/swagger.json
