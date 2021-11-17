@@ -20,7 +20,8 @@ var options = nopt({
     'prefer-reference': Boolean,
     'bearer-apikey': Boolean,
     'help': Boolean,
-    'open-api-3': Boolean
+    'open-api-3': Boolean,
+    'infoTitle': String,
 }, {
     'i': ['--input'],
     'o': ['--output'],
@@ -51,6 +52,7 @@ if (options.help) {
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
     console.log("  --open-api-3 Output as OpenAPI 3.0 instead of the default Swagger 2.0")
+    console.log("  --infoTitle Optional info.title")
     process.exit();
 }
 
@@ -90,7 +92,12 @@ function processBlueprint(blueprint, opts) {
         return;
     }
 
-    var options = { preferReference: opts['prefer-reference'], bearerAsApikey: opts['bearer-apikey'], useOpenApi3: opts['open-api-3'] };
+    var options = {
+        preferReference: opts['prefer-reference'],
+        bearerAsApikey: opts['bearer-apikey'],
+        useOpenApi3: opts['open-api-3'],
+        infoTitle: opts['infoTitle'],
+    };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
             console.log(error);
