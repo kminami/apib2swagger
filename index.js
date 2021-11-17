@@ -24,11 +24,20 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
     apib.metadata.forEach(function (meta) {
         //console.log(meta);
         if (meta.name.toLowerCase() === 'host') {
-            var urlParts = url.parse(meta.value);
-            output.host = urlParts.host;
-            output.basePath = urlParts.pathname;
-            output.schemes = [urlParts.protocol.replace(':', '')];
-        } else if (meta.name.toLowerCase() === 'version') {
+            if (options.useOpenApi3) {
+                output.servers = [
+                    {
+                        url: meta.value
+                    }
+                ];
+            } else {
+                var urlParts = url.parse(meta.value);
+                output.host = urlParts.host;
+                output.basePath = urlParts.pathname;
+                output.schemes = [urlParts.protocol.replace(':', '')];
+            }
+        }
+        if (meta.name.toLowerCase() === 'version') {
             output.info.version = meta.value || '1.0.0'
         }
     });
