@@ -1,3 +1,5 @@
+HOST: https://www.testhost.com
+
 # Some resource [GET /some/resource]
 
 + Request

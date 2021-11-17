@@ -5,6 +5,11 @@
         "version": "1.0.0",
         "description": ""
     },
+    "servers": [
+        {
+          "url": "https://www.testhost.com"
+        }
+    ],
     "paths": {
         "/some/resource": {
             "get": {
