@@ -2,7 +2,8 @@ var url = require('url'),
     http = require('http'),
     drafter = require('drafter.js'),
     UriTemplate = require('uritemplate'),
-    GenerateSchema = require('generate-schema');
+    GenerateSchema = require('generate-schema'),
+    isEqual = require('lodash.isequal');
 
 var jsonSchemaFromMSON = require('./src/mson_to_json_schema'),
     escapeJSONPointer = require('./src/escape_json_pointer');
@@ -385,6 +386,8 @@ function fixArraySchema(schema) {
 
 function swaggerResponses(examples, options) {
     var responses = {};
+    const { useOpenApi3 } = options;
+    const counts = {}
     //console.log(examples);
     for (var l = 0; l < examples.length; l++) {
         var example = examples[l];
@@ -392,76 +395,134 @@ function swaggerResponses(examples, options) {
         for (var m = 0; m < example.responses.length; m++) {
             var response = example.responses[m];
             //console.log(response);
-            var swaggerResponse = {
-                "description": response.description || http.STATUS_CODES[response.name],
-                "headers": {},
-                "examples": {}
-            };
+
+            if (!responses[response.name]) {
+                responses[response.name] = { description: {}, headers: {} }
+            }
+           
+            responses[response.name].description = response.description || http.STATUS_CODES[response.name];
+            if (useOpenApi3) {
+                // Since openAPI3 allows multiple examples, we don't want to overwrite content every time.
+                // This theme repeats itself throughout this module.
+                if (!responses[response.name].content){
+                    responses[response.name].content = {};
+                }
+            } else {
+                responses[response.name].examples = {}
+            }
+
+            /* Prepare schema */
+            let outputSchema = {}
             if (options.preferReference) { // MSON then schema
-                var schema = searchDataStructure(response.content); // Attributes in response
-                if (schema) {
-                    swaggerResponse.schema = schema;
+                const inputSchema = searchDataStructure(response.content); // Attributes in response
+                if (inputSchema) {
+                    outputSchema.schema = inputSchema
                 } else if (response.reference) {
-                    swaggerResponse.schema = {
+                    outputSchema.schema = {
                         '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
                     };
                 } else if (response.schema) {
                     try {
-                        swaggerResponse.schema = JSON.parse(response.schema);
-                        delete swaggerResponse.schema['$schema'];
-                        fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
+                        outputSchema.schema = JSON.parse(response.schema);
+                        delete outputSchema.schema['$schema'];
+                        fixArraySchema(outputSchema.schema); // work around for Swagger UI / Editor
                     } catch (e) { }
                 }
             } else { // schema then MSON
                 if (response.schema) {
                     try {
-                        swaggerResponse.schema = JSON.parse(response.schema);
-                        delete swaggerResponse.schema['$schema'];
-                        fixArraySchema(swaggerResponse.schema); // work around for Swagger UI / Editor
+                        outputSchema.schema = JSON.parse(response.schema);
+                        delete outputSchema.schema['$schema'];
+                        fixArraySchema(outputSchema.schema); // work around for Swagger UI / Editor
                     } catch (e) { }
                 }
-                if (!swaggerResponse.schema) {
-                    var schema = searchDataStructure(response.content); // Attributes in response
-                    if (schema) swaggerResponse.schema = schema;
+                if (!outputSchema.schema) {
+                    const inputSchema = searchDataStructure(response.content); // Attributes in response
+                    if (inputSchema) outputSchema.schema = inputSchema;
                 }
-                if (!swaggerResponse.schema && response.reference) {
-                    swaggerResponse.schema = {
+                if (!outputSchema.schema && response.reference) {
+                    outputSchema.schema = {
                         '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
                     };
                 }
             }
-            if (!swaggerResponse.schema) {
-                // fall back to body
-                // if (response.body) {
-                //     schema = GenerateSchema.json("", JSON.parse(response.body));
-                //     if (schema) {
-                //         delete schema.title;
-                //         delete schema.$schema;
-                //         swaggerResponse.schema = schema;
-                //     }
-                // }
 
-                // use object
-                // if (response.body) {
-                //     swaggerResponse.schema = {type: "object"};
-                // }
+            /* set schema */
+            if (outputSchema.schema){
+                if (useOpenApi3) {
+                    const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')
+                    // In openAPI 3 the schema lives under the content type
+                    if (contentTypeHeader && contentTypeHeader.value) {
+                        if (!responses[response.name].content[contentTypeHeader.value]){
+                            responses[response.name].content[contentTypeHeader.value] = {}
+                        }
+                        // If a schema already exists, we need to use oneOf for additional unique schemas.
+                        if (responses[response.name].content[contentTypeHeader.value].schema) {
+                            let existingSchema = { ...responses[response.name].content[contentTypeHeader.value].schema }
+                            // It is possible that the given schema is a duplicate. If that's the case, we don't add it.
+                            if (!isEqual(existingSchema, outputSchema.schema)){
+                                if (existingSchema.oneOf){
+                                    if (!existingSchema.oneOf.find((s) => isEqual(s, outputSchema.schema))){
+                                        responses[response.name].content[contentTypeHeader.value].schema.oneOf.push(outputSchema.schema)
+                                    }
+                                } else {
+                                    responses[response.name].content[contentTypeHeader.value].schema = { oneOf: [existingSchema, outputSchema.schema] }
+                                }
+                            }
+                        } else {
+                            responses[response.name].content[contentTypeHeader.value].schema = outputSchema.schema
+                        }
+                    }
+                } else {
+                    responses[response.name].schema = outputSchema.schema
+                }
             }
+            
+            /* set examples */
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
                 if (header.name.toLowerCase() === 'content-type') {
+                    let body
                     if (header.value.match(/application\/.*json/)) {
                         try {
-                            swaggerResponse.examples[header.value] = JSON.parse(response.body);
-                            //swaggerResponse.schema = {type: "object"};
+                            body = JSON.parse(response.body);
                         } catch (e) { }
-                        continue;
+                    } else {
+                        body = response.body
                     }
-                    swaggerResponse.examples[header.value] = response.body;
+                    if (body || body === '') {
+                        if (useOpenApi3) {
+                            const key = response.name + header.value
+                            if (!counts[key]){
+                                counts[key] = 1
+                            } else {
+                                counts[key]++
+                            }
+                            const exampleName = 'example' + counts[key]
+                            if (!responses[response.name].content[header.value]){
+                                responses[response.name].content[header.value] = { examples: {} };
+                            // If it already exists we don't want to override it.
+                            } else if (!responses[response.name].content[header.value].examples){
+                                responses[response.name].content[header.value].examples = {}
+                            }
+                            // Sample path to example:  
+                            // responses -> 200 -> content -> application/json -> examples -> example1 -> { }
+                            if (body) {
+                                responses[response.name].content[header.value].examples[exampleName] = body;
+                            } else {
+                                // If the body is an empty string, create a response path without an example.
+                                responses[response.name].content[header.value] = {}
+                            }
+                        } else {
+                            // Sample path to example:  
+                            // responses -> 200 -> examples -> application/json -> { }
+                            responses[response.name].examples[header.value] = body;
+                        }
+                    }
                 } else if (header.name.toLowerCase() !== 'authorization') {
-                    swaggerResponse.headers[header.name] = { 'type': 'string' }
+                    responses[response.name].headers[header.name] = { 'type': 'string' }
                 }
             }
-            responses[response.name] = swaggerResponse;
         }
     }
     return responses;
