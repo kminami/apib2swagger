@@ -11,7 +11,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
     //console.log(JSON.stringify(apib, null, 4));
     var output = {};
     if (options.useOpenApi3) {
-        output.openapi = '3.0.0';
+        output.openapi = '3.0.3';
     } else {
         output.swagger = '2.0';
     }
