@@ -151,7 +151,7 @@ describe("apib2swagger", function () {
                         return done(error);
                     }
                     assert.equal(result.swagger.info.version, test.output);
-                    var validation_result = tv4.validateResult(result.swagger, schema);
+                    var validation_result = tv4.validateResult(result.swagger, swaggerSchema);
                     if (validation_result.error) {
                         console.log(validation_result);
                     }
