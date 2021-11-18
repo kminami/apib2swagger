@@ -183,7 +183,7 @@ const processRequestSchema = (request, useOpenApi3) => {
     return schema
 }
 
-const processRequestAttributes = (request, useOpenApi3, contentType, existingSchema) => {
+const processRequestAttributes = (request, useOpenApi3, contentType) => {
     const schema = []
     scheme = searchDataStructure(request.content, useOpenApi3); // Attributes 4
     if (scheme) schema.push({ scheme, contentType });
@@ -195,11 +195,6 @@ const processRequestAttributes = (request, useOpenApi3, contentType, existingSch
             }, 
             contentType 
         });
-    }
-    // fall back to body
-    if (request.body && existingSchema.length === 0 && schema.length === 0) {
-        scheme = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
-        if (scheme) schema.push({ scheme, contentType });
     }
     return schema
 }
@@ -259,12 +254,20 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 const existingHeaders = operation.parameters
                     .filter(param => param.in === 'header')
                     .map(param => param.name.toLowerCase());
+                
+                let nonDuplicateHeaders
                 if (useOpenApi3) {
-                    operation.parameters = operation.parameters.concat(headers);
+                    // We are comparing the whole object instead of just the name to allow duplicate names.
+                    // In doing so, we allow multiple types of Authorization headers to be specified.
+                    nonDuplicateHeaders = headers.filter(header => 
+                        !operation.parameters.find(p => isEqual(p, header))
+                    )
                 } else {
-                    const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
-                    operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+                    nonDuplicateHeaders = headers.filter(header => 
+                        !existingHeaders.includes(header.name.toLowerCase())
+                    );
                 }
+                operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
             }
          
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
@@ -308,6 +311,11 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 } else {
                     const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
                     schema.push(...attributes)
+                    // fall back to body
+                    if (request.body && schema.length === 0) {
+                        scheme = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
+                        if (scheme) schema.push({ scheme, contentType });
+                    }
                 }
             } else {
                 /* 
@@ -315,12 +323,13 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     on the schema object and therefore, we don't lose our examples when we use 
                     Attributes as the schema definition.
                 */
+                const contentTypeScheme = {}
                 if (!preferReference) {
                     if (request.schema) { // Schema section in Request section
-                        scheme = processRequestSchema(request, useOpenApi3)
+                        contentTypeScheme[contentType] = processRequestSchema(request, useOpenApi3)
                     } 
-                    if (scheme) {
-                        schema.push({ scheme, contentType });
+                    if (contentTypeScheme[contentType]) {
+                        schema.push({ scheme: contentTypeScheme[contentType], contentType });
                     } else {
                         const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
                         schema.push(...attributes)
@@ -330,8 +339,18 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     if (attributes.length) {
                         schema.push(...attributes)
                     } else {
-                        scheme = processRequestSchema(request, useOpenApi3)
-                        if (scheme) schema.push({ scheme, contentType });
+                        contentTypeScheme[contentType] = processRequestSchema(request, useOpenApi3)
+                        if (contentTypeScheme[contentType]) {
+                            schema.push({  scheme: contentTypeScheme[contentType], contentType });
+                        }
+                    }
+                }
+                // If there are no schema but we have a body example, try to generate a schema from it.
+                // We stop at 1 auto-generated schema.
+                if (request.body && schema.length === 0) {
+                    contentTypeScheme[contentType] = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
+                    if (contentTypeScheme[contentType]){
+                        schema.push({ scheme: contentTypeScheme[contentType], contentType });
                     }
                 }
             }
@@ -412,9 +431,14 @@ var swaggerHeaders = function (context, headers) {
             'in': 'header',
             'description': `e.g. ${element.value}`,
             'required': false,
-            'x-example': element.value,
-            'type': 'string' // TODO: string, number, boolean, integer, array
+            'x-example': element.value
         };
+        if (context.options.useOpenApi3) {
+            param.schema = { type: 'string' }
+        } else {
+            param.type = 'string' // TODO: string, number, boolean, integer, array
+        }
+        if (!params.find(p => isEqual(p, param)))
         params.push(param);
     }
     return params;
@@ -725,7 +749,13 @@ function swaggerResponses(examples, options) {
                         }
                     }
                 } else if (header.name.toLowerCase() !== 'authorization') {
-                    responses[response.name].headers[header.name] = { 'type': 'string' }
+                    if (useOpenApi3) {
+                        responses[response.name].headers[header.name] = { 
+                            schema: { 'type': 'string' }
+                        }
+                    } else {
+                        responses[response.name].headers[header.name] = { 'type': 'string' }
+                    }
                 }
             }
         }

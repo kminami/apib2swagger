@@ -178,12 +178,7 @@
                                         }
                                     },
                                     {
-                                        "type": "object",
-                                        "properties": {
-                                            "message": {
-                                                "type": "string"
-                                            }
-                                        }
+                                        "$ref": "#/components/schemas/Message"
                                     }
                                 ]
                             }
@@ -308,6 +303,5 @@
             }
         }
     },
-    "securityDefinitions": {},
     "tags": []
 }

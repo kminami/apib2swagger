@@ -18,7 +18,9 @@
                         "description": "Array schema",
                         "headers": {
                             "X-My-Message-Header": {
-                                "type": "string"
+                                "schema": {
+                                    "type": "string"
+                                }
                             }
                         },
                         "content": {
@@ -112,7 +114,9 @@
                         "description": "OK",
                         "headers": {
                             "X-My-Message-Header": {
-                                "type": "string"
+                                "schema": {
+                                    "type": "string"
+                                }
                             }
                         },
                         "content": {
@@ -221,6 +225,5 @@
             }
         }
     },
-    "securityDefinitions": {},
     "tags": []
 }
