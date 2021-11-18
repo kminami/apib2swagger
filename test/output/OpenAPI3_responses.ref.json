@@ -59,19 +59,27 @@
                                 },
                                 "examples": {
                                     "example1": {
-                                        "message": "Hello World!"
-                                    },
-                                    "example2": {
-                                        "other": "Hello World!"
-                                    },
-                                    "example3": {
-                                        "other": "Hello World!"
-                                    },
-                                    "example4": [
-                                        {
+                                        "value": {
                                             "message": "Hello World!"
                                         }
-                                    ]
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "other": "Hello World!"
+                                        }
+                                    },
+                                    "example3": {
+                                        "value": {
+                                            "other": "Hello World!"
+                                        }
+                                    },
+                                    "example4": {
+                                        "value": [
+                                            {
+                                                "message": "Hello World!"
+                                            }
+                                        ]
+                                    }
                                 }
                             }
                         }
@@ -83,7 +91,9 @@
                             "application/json": {
                                 "examples": {
                                     "example1": {
-                                        "message": "Invalid data"
+                                        "value": {
+                                            "message": "Invalid data"
+                                        }
                                     }
                                 }
                             }
@@ -118,10 +128,14 @@
                                 },
                                 "examples": {
                                     "example1": {
-                                        "message": "Hello World!"
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
                                     },
                                     "example2": {
-                                        "message": "Hello World!"
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
                                     }
                                 }
                             }
@@ -146,19 +160,23 @@
                                 "schema": {
                                     "oneOf": [
                                         {
-                                            "$ref": "#/definitions/Message"
+                                            "$ref": "#/components/schemas/Message"
                                         },
                                         {
-                                            "$ref": "#/definitions/OtherMessage"
+                                            "$ref": "#/components/schemas/OtherMessage"
                                         }
                                     ]
                                 },
                                 "examples": {
                                     "example1": {
-                                        "message": "Hello World!"
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
                                     },
                                     "example2": {
-                                        "otherMessage": "Hello World!"
+                                        "value": {
+                                            "otherMessage": "Hello World!"
+                                        }
                                     }
                                 }
                             }
@@ -173,21 +191,22 @@
             }
         }
     },
-    "definitions": {
-        "Some resource": {},
-        "Message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
+    "components": {
+        "schemas":{
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
                 }
-            }
-        },
-        "OtherMessage": {
-            "type": "object",
-            "properties": {
-                "otherMessage": {
-                    "type": "string"
+            },
+            "OtherMessage": {
+                "type": "object",
+                "properties": {
+                    "otherMessage": {
+                        "type": "string"
+                    }
                 }
             }
         }

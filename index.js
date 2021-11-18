@@ -10,8 +10,9 @@ var jsonSchemaFromMSON = require('./src/mson_to_json_schema'),
 
 var apib2swagger = module.exports.convertParsed = function (apib, options) {
     //console.log(JSON.stringify(apib, null, 4));
+    const { useOpenApi3 } = options
     var output = {};
-    if (options.useOpenApi3) {
+    if (useOpenApi3) {
         output.openapi = '3.0.3';
     } else {
         output.swagger = '2.0';
@@ -42,10 +43,14 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         }
     });
     output.paths = {};
-    output.definitions = {};
-    if (!options.useOpenApi3) {
+
+    if (useOpenApi3) {
+        output.components = { schemas: {} }
+    } else {
+        output.definitions = {}
         output.securityDefinitions = {};
     }
+
     var converterContext = { swagger: output, options: options };
     var tags = {};
     apib.content.filter(function (content) {
@@ -58,13 +63,24 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                swaggerDefinitions(output.definitions, content);
+                const definitions = swaggerDefinitions(content, options.useOpenApi3);
+                if (useOpenApi3) {
+                    output.components.schemas = { ...output.components.schemas, ...definitions }
+                } else {
+                    output.definitions = { ...output.definitions, ...definitions }
+                }
                 swaggerPaths(converterContext, groupName, content);
             } else if (content.element === 'copy') {
                 // group description here
                 tags[groupName].description = content.content;
             } else if (content.element === 'dataStructure') {
-                output.definitions[content.content[0].meta.id] = jsonSchemaFromMSON(content);
+                const { id } = content.content[0].meta
+                const schema = jsonSchemaFromMSON(content, useOpenApi3);
+                if (useOpenApi3) {
+                    output.components.schemas[id] = schema
+                } else {
+                    output.definitions[id] = schema
+                }
             }
         });
     });
@@ -89,21 +105,35 @@ function swaggerPathName(uriTemplate) {
     return decodeURIComponent(uriTemplate.expand(params));
 }
 
-var swaggerDefinitions = function (definitions, resource) {
+var swaggerDefinitions = function (resource, useOpenApi3) {
     var scheme;
+    const result = {}
     if (resource.name) {
-        scheme = searchDataStructure(resource.content); // Attributes 1
-        definitions[resource.name] = scheme ? scheme : {};
+        scheme = searchDataStructure(resource.content, useOpenApi3); // Attributes 1
+        if (useOpenApi3) {
+            if (scheme) {
+                result[resource.name] = scheme
+            }
+        } else {
+            result[resource.name] = scheme ? scheme : {};
+        }
     }
     const model = resource.model;
     if (model.content && model.name) {
-        scheme = searchDataStructure(model.content); // Attribute 2
+        scheme = searchDataStructure(model.content, useOpenApi3); // Attribute 2
         // fall back to body
         if (!scheme && model.content.length > 0) {
             scheme = generateSchemaFromExample(model.headers, model.content[0].content);
         }
-        definitions[model.name + 'Model'] = scheme ? scheme : {};
+        if (useOpenApi3) {
+            if (scheme) {
+                result[model.name + 'Model'] = scheme
+            }
+        } else {
+            result[model.name + 'Model'] = scheme ? scheme : {};
+        }
     }
+    return result
 };
 
 var swaggerPaths = function (context, tag, resource) {
@@ -126,8 +156,56 @@ var swaggerPaths = function (context, tag, resource) {
     }
 };
 
+const processRequestSchema = (request, useOpenApi3) => {
+    let schema
+    // referencing Model's Schema is also here (no need to reference definitions)
+    try {
+        schema = JSON.parse(request.schema);
+        delete schema['$schema'];
+    } catch (e){
+        // If we can't parse the request schema we have nothing left to do here. 
+        return
+    }
+    try {
+        // if we have example values in the body then insert them into the json schema
+        if (!useOpenApi3) {
+            var body = JSON.parse(request.body);
+
+            if (schema['type'] === 'object') {
+                schema.example = body;
+            } else if (schema['type'] === 'array') {
+                schema.items.example = body;
+            }
+        }
+    // Catch any error from parsing the request body. However, if there is an error 
+    // (ex. no request body given), we still want to keep the schema.
+    } catch (e) {}
+    return schema
+}
+
+const processRequestAttributes = (request, useOpenApi3, contentType, existingSchema) => {
+    const schema = []
+    scheme = searchDataStructure(request.content, useOpenApi3); // Attributes 4
+    if (scheme) schema.push({ scheme, contentType });
+    if (request.reference) {
+        const componentsPath = useOpenApi3 ? '#/components/schemas' : '#/definitions/'
+        schema.push({ 
+            scheme: { 
+                '$ref': componentsPath + escapeJSONPointer(request.reference.id + 'Model') 
+            }, 
+            contentType 
+        });
+    }
+    // fall back to body
+    if (request.body && existingSchema.length === 0 && schema.length === 0) {
+        scheme = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
+        if (scheme) schema.push({ scheme, contentType });
+    }
+    return schema
+}
+
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
-    const { useOpenApi3 } = context.options
+    const { useOpenApi3, preferReference } = context.options
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
@@ -152,7 +230,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     }
     // body parameter (schema)
     var schema = [],
-        scheme = searchDataStructure(action.content); // Attributes 3
+        scheme = searchDataStructure(action.content, useOpenApi3); // Attributes 3
     if (scheme) schema.push({ contentType: 'application/json', scheme });
 
     const exampleBodies = {}
@@ -223,45 +301,38 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 } catch (e) {}
             }
 
-            if (request.schema) { // Schema section in Request section
-                // referencing Model's Schema is also here (no need to reference definitions)
-                try {
-                    scheme = JSON.parse(request.schema);
-                    delete scheme['$schema'];
-                } catch (e){
-                    // If we can't parse the request schema we have nothing left to do here. 
-                    continue;
-                }
-                try {
-                    // if we have example values in the body then insert them into the json schema
-                    if (!useOpenApi3) {
-                        var body = JSON.parse(request.body);
-
-                        if (scheme['type'] === 'object') {
-                            scheme.example = body;
-                        } else if (scheme['type'] === 'array') {
-                            scheme.items.example = body;
-                        }
-                    }
-                // Catch any error from parsing the request body. However, if there is an error 
-                // (ex. no request body given), we still want to keep the schema.
-                } catch (e) {}
-                if (scheme) schema.push({ scheme, contentType });
-            } else {
-                scheme = searchDataStructure(request.content); // Attributes 4
-                if (scheme) schema.push({ scheme, contentType });
-                if (request.reference) {
-                    schema.push({ 
-                        scheme: { 
-                            '$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model') 
-                        }, 
-                        contentType 
-                    });
-                }
-                // fall back to body
-                if (request.body && (schema == null || schema.length == 0)) {
-                    scheme = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
+            if (!useOpenApi3) {
+                if (request.schema) { // Schema section in Request section
+                    scheme = processRequestSchema(request, useOpenApi3)
                     if (scheme) schema.push({ scheme, contentType });
+                } else {
+                    const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                    schema.push(...attributes)
+                }
+            } else {
+                /* 
+                    With OpenAPI3 we can make full use of Attributes because examples no longer live
+                    on the schema object and therefore, we don't lose our examples when we use 
+                    Attributes as the schema definition.
+                */
+                if (!preferReference) {
+                    if (request.schema) { // Schema section in Request section
+                        scheme = processRequestSchema(request, useOpenApi3)
+                    } 
+                    if (scheme) {
+                        schema.push({ scheme, contentType });
+                    } else {
+                        const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                        schema.push(...attributes)
+                    }
+                } else {
+                    const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                    if (attributes.length) {
+                        schema.push(...attributes)
+                    } else {
+                        scheme = processRequestSchema(request, useOpenApi3)
+                        if (scheme) schema.push({ scheme, contentType });
+                    }
                 }
             }
         }
@@ -464,11 +535,11 @@ function swaggerParameters(parameters, uriTemplate, useOpenApi3) {
     return params;
 }
 
-var searchDataStructure = function (contents) {
+var searchDataStructure = function (contents, useOpenApi3) {
     for (var i = 0; i < contents.length; i++) {
         var content = contents[i];
         if (content.element !== "dataStructure") continue;
-        return jsonSchemaFromMSON(content);
+        return jsonSchemaFromMSON(content, useOpenApi3);
     }
 };
 
@@ -526,7 +597,6 @@ function fixArraySchema(schema) {
 function swaggerResponses(examples, options) {
     var responses = {};
     const { useOpenApi3 } = options;
-    const counts = {}
     //console.log(examples);
     for (var l = 0; l < examples.length; l++) {
         var example = examples[l];
@@ -552,13 +622,14 @@ function swaggerResponses(examples, options) {
 
             /* Prepare schema */
             let outputSchema = {}
+            const componentsPath = useOpenApi3 ? '#/components/schemas' : '#/definitions/'
             if (options.preferReference) { // MSON then schema
-                const inputSchema = searchDataStructure(response.content); // Attributes in response
+                const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
                 if (inputSchema) {
                     outputSchema.schema = inputSchema
                 } else if (response.reference) {
                     outputSchema.schema = {
-                        '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
+                        '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
                     };
                 } else if (response.schema) {
                     try {
@@ -576,12 +647,12 @@ function swaggerResponses(examples, options) {
                     } catch (e) { }
                 }
                 if (!outputSchema.schema) {
-                    const inputSchema = searchDataStructure(response.content); // Attributes in response
+                    const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
                     if (inputSchema) outputSchema.schema = inputSchema;
                 }
                 if (!outputSchema.schema && response.reference) {
                     outputSchema.schema = {
-                        '$ref': '#/definitions/' + escapeJSONPointer(response.reference.id + 'Model')
+                        '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
                     };
                 }
             }
@@ -589,7 +660,7 @@ function swaggerResponses(examples, options) {
             /* set schema */
             if (outputSchema.schema){
                 if (useOpenApi3) {
-                    const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')
+                    const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type') || 'application/json'
                     // In openAPI 3 the schema lives under the content type
                     if (contentTypeHeader && contentTypeHeader.value) {
                         if (!responses[response.name].content[contentTypeHeader.value]){
@@ -631,29 +702,24 @@ function swaggerResponses(examples, options) {
                     }
                     if (body || body === '') {
                         if (useOpenApi3) {
-                            const key = response.name + header.value
-                            if (!counts[key]){
-                                counts[key] = 1
-                            } else {
-                                counts[key]++
-                            }
-                            const exampleName = 'example' + counts[key]
                             if (!responses[response.name].content[header.value]){
                                 responses[response.name].content[header.value] = { examples: {} };
                             // If it already exists we don't want to override it.
                             } else if (!responses[response.name].content[header.value].examples){
                                 responses[response.name].content[header.value].examples = {}
                             }
-                            // Sample path to example:  
+                            // Sample path to OpenAPI 3.0 example:  
                             // responses -> 200 -> content -> application/json -> examples -> example1 -> { }
                             if (body) {
-                                responses[response.name].content[header.value].examples[exampleName] = body;
+                                const count = Object.keys(responses[response.name].content[header.value].examples).length + 1
+                                const exampleName = 'example' + count
+                                responses[response.name].content[header.value].examples[exampleName] = { value: body };
                             } else {
                                 // If the body is an empty string, create a response path without an example.
                                 responses[response.name].content[header.value] = {}
                             }
                         } else {
-                            // Sample path to example:  
+                            // Sample path to Swagger 2.0 example:  
                             // responses -> 200 -> examples -> application/json -> { }
                             responses[response.name].examples[header.value] = body;
                         }
