@@ -149,8 +149,12 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     }
     // body parameter (schema)
     var schema = [],
-        scheme = searchDataStructure(action.content); // Attributes 3
-    if (scheme) schema.push(scheme);
+        scheme = searchDataStructure(action.content), // Attributes 3
+        useOpenApi3 = context.options.useOpenApi3; 
+    if (scheme) schema.push({ contentType: 'application/json', scheme });
+
+    const exampleBodies = {}
+
     for (var j = 0; j < action.examples.length; j++) {
         var example = action.examples[j];
         for (var l = 0; l < example.requests.length; l++) {
@@ -162,8 +166,9 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 if (!operation.security) {
                     operation.security = [security];
                 } else {
-                    // TODO remove duplications
-                    operation.security.push(security);
+                    if (!operation.security.find(s => isEqual(s, security))){
+                        operation.security.push(security);
+                    }
                 }
             }
 
@@ -175,9 +180,43 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
                 operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
             }
+         
+            const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
+            const contentType = contentTypeHeader ? contentTypeHeader.value : 'application/json'
+
+            if (request.body) {
+                try {
+                    let body
+                    if (typeof(request.body) === 'string') {
+                        try {
+                            body = JSON.parse(request.body);
+                        } catch (e) {
+                            if (contentType === 'text/plain') {
+                                body = request.body
+                            }
+                        }
+                    }
+
+                    if (typeof(body) === 'object' || typeof(body) === 'array' || typeof(body) === 'string') {
+                        if (!exampleBodies[contentType]) {
+                            exampleBodies[contentType] = { example: body }
+                        } else if (exampleBodies[contentType].examples) {
+                            const count = Object.keys(exampleBodies[contentType].examples).length
+                            const name = example + count
+                            exampleBodies[contentType].examples[name].value = body
+                        } else {
+                            exampleBodies[contentType].examples = {
+                                example1: { value: exampleBodies[contentType].example },
+                                example2: { value: body }
+                            }
+                            delete exampleBodies[contentType].example
+                        }
+                    }
+                } catch (e) {}
+            }
 
             if (request.schema) { // Schema section in Request section
-                // referencing Model's Schema is also here (no need to referencing defenitions)
+                // referencing Model's Schema is also here (no need to reference definitions)
                 try {
                     scheme = JSON.parse(request.schema);
                     delete scheme['$schema'];
@@ -187,34 +226,98 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 }
                 try {
                     // if we have example values in the body then insert them into the json schema
-                    var body = JSON.parse(request.body);
-                    if (scheme['type'] === 'object') {
-                        scheme.example = body;
-                    } else if (scheme['type'] === 'array') {
-                        scheme.items.example = body;
+                    if (!useOpenApi3) {
+                        var body = JSON.parse(request.body);
+
+                        if (scheme['type'] === 'object') {
+                            scheme.example = body;
+                        } else if (scheme['type'] === 'array') {
+                            scheme.items.example = body;
+                        }
                     }
                 // Catch any error from parsing the request body. However, if there is an error 
                 // (ex. no request body given), we still want to keep the schema.
                 } catch (e) {}
-                if (scheme) schema.push(scheme);
+                if (scheme) schema.push({ scheme, contentType });
             } else {
                 scheme = searchDataStructure(request.content); // Attributes 4
-                if (scheme) schema.push(scheme);
+                if (scheme) schema.push({ scheme, contentType });
                 if (request.reference) {
-                    schema.push({ '$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model') });
+                    schema.push({ 
+                        scheme: { 
+                            '$ref': '#/definitions/' + escapeJSONPointer(request.reference.id + 'Model') 
+                        }, 
+                        contentType 
+                    });
                 }
                 // fall back to body
                 if (request.body && (schema == null || schema.length == 0)) {
-                    scheme = generateSchemaFromExample(request.headers, request.body);
-                    if (scheme) schema.push(scheme);
+                    scheme = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
+                    if (scheme) schema.push({ scheme, contentType });
                 }
             }
         }
     }
-    if (schema.length == 1) {
-        operation.parameters.push({ name: 'body', in: 'body', schema: schema[0] });
+    if (useOpenApi3 && (schema.length || Object.keys(exampleBodies).length)){  
+        operation.requestBody = { content: {} }
+        if (Object.keys(exampleBodies).length) {
+            operation.requestBody.content = exampleBodies
+        }
+    }
+    // Make sure all content types exist to make setting the schemes easier.
+    if (useOpenApi3) {
+        schema.forEach(s => {
+            if (!operation.requestBody.content[s.contentType]) {
+                operation.requestBody.content[s.contentType] = {}
+            }
+        })
+    }
+    if (schema.length === 1) {
+        if (useOpenApi3) {
+            if (!operation.requestBody.content[schema[0].contentType]){
+                operation.requestBody.content[schema[0].contentType] = schema[0].scheme 
+            } else {
+                operation.requestBody.content[schema[0].contentType].schema = schema[0].scheme 
+            }
+        } else {
+            operation.parameters.push({ name: 'body', in: 'body', schema: schema[0].scheme });
+        }
     } else if (schema.length > 1) {
-        operation.parameters.push({ name: 'body', in: 'body', schema: { anyOf: schema } });
+        if (useOpenApi3){
+            schema.forEach(s => {
+                if (!operation.requestBody.content[s.contentType].schema){
+                    operation.requestBody.content[s.contentType].schema = s.scheme
+                } else {  
+                    // If a schema exist for this content type, 
+                    // we need to use oneOf because we have an additional schema to add.
+                    const { oneOf } = operation.requestBody.content[s.contentType].schema
+                    if (oneOf){
+                        // If oneOf already exists we can just add the new schema if its not a duplicate.
+                        if (!oneOf.find(sc => isEqual(sc, s.scheme))){
+                            operation.requestBody.content[s.contentType].schema.oneOf.push(s.scheme)
+                        }
+                    } else {
+                        // If oneOf does not exist and its not a duplicate, we need to create it, 
+                        // making sure to include the existing schema.
+                        if (!oneOf) {
+                            const existing = operation.requestBody.content[s.contentType].schema
+                            if (!isEqual(existing, s.scheme)){
+                                operation.requestBody.content[s.contentType].schema = { 
+                                    oneOf: [
+                                        operation.requestBody.content[s.contentType].schema, // existing
+                                        s.scheme // additional
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        } else {
+            operation.parameters.push({ name: 'body', in: 'body', schema: { 
+                anyOf: schema.map((s) => s.scheme)
+            } });
+        }
     }
     return operation;
 }
@@ -348,7 +451,7 @@ var searchDataStructure = function (contents) {
     }
 };
 
-function generateSchemaFromExample(headers, example) {
+function generateSchemaFromExample(headers, example, useOpenApi3) {
     if (!headers || !headers.some(header => (
         header.name === 'Content-Type' && header.value.match(/application\/.*json/)
     ))) {
@@ -363,10 +466,12 @@ function generateSchemaFromExample(headers, example) {
         delete scheme.title;
         delete scheme.$schema;
         // if we have example values in the body then insert them into the json schema
-        if (scheme['type'] === 'object') {
-            scheme.example = body;
-        } else if (scheme['type'] === 'array') {
-            scheme.items.example = body;
+        if (!useOpenApi3) {
+            if (scheme['type'] === 'object') {
+                scheme.example = body;
+            } else if (scheme['type'] === 'array') {
+                scheme.items.example = body;
+            }
         }
         return scheme;
     } catch (e) {
