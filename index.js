@@ -43,12 +43,14 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         }
     });
     output.paths = {};
+
     if (useOpenApi3) {
         output.components = { schemas: {} }
     } else {
         output.definitions = {}
+        output.securityDefinitions = {};
     }
-    output.securityDefinitions = {};
+
     var converterContext = { swagger: output, options: options };
     var tags = {};
     apib.content.filter(function (content) {
@@ -238,14 +240,16 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
         for (var l = 0; l < example.requests.length; l++) {
             var request = example.requests[l];
 
-            // TODO should apply to Model Section?
-            var security = swaggerSecurity(context, request.headers);
-            if (security) {
-                if (!operation.security) {
-                    operation.security = [security];
-                } else {
-                    if (!operation.security.find(s => isEqual(s, security))){
-                        operation.security.push(security);
+            if (!useOpenApi3) {
+                // TODO should apply to Model Section?
+                var security = swaggerSecurity(context, request.headers);
+                if (security) {
+                    if (!operation.security) {
+                        operation.security = [security];
+                    } else {
+                        if (!operation.security.find(s => isEqual(s, security))){
+                            operation.security.push(security);
+                        }
                     }
                 }
             }
@@ -255,8 +259,12 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 const existingHeaders = operation.parameters
                     .filter(param => param.in === 'header')
                     .map(param => param.name.toLowerCase());
-                const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
-                operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+                if (useOpenApi3) {
+                    operation.parameters = operation.parameters.concat(headers);
+                } else {
+                    const nonDuplicateHeaders = headers.filter(header => !existingHeaders.includes(header.name.toLowerCase()));
+                    operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+                }
             }
          
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
@@ -395,7 +403,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
 var swaggerHeaders = function (context, headers) {
     var params = [];
-    const skipParams = ['content-type', 'authorization']; // handled in another way
+    const skipParams = context.options.useOpenApi3 ? ['content-type'] : ['content-type', 'authorization']; // handled in another way
     for (let i = 0; i < headers.length; i++) {
         const element = headers[i];
         if (skipParams.includes(element.name.toLowerCase())) continue;
