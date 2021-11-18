@@ -203,7 +203,7 @@ const processRequestAttributes = (request, useOpenApi3, contentType, existingSch
 }
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
-    const { useOpenApi3 } = context.options
+    const { useOpenApi3, preferReference } = context.options
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
@@ -293,12 +293,39 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                 } catch (e) {}
             }
 
-            if (request.schema) { // Schema section in Request section
-                scheme = processRequestSchema(request, useOpenApi3)
-                if (scheme) schema.push({ scheme, contentType });
+            if (!useOpenApi3) {
+                if (request.schema) { // Schema section in Request section
+                    scheme = processRequestSchema(request, useOpenApi3)
+                    if (scheme) schema.push({ scheme, contentType });
+                } else {
+                    const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                    schema.push(...attributes)
+                }
             } else {
-                const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
-                schema.push(...attributes)
+                /* 
+                    With OpenAPI3 we can make full use of Attributes because examples no longer live
+                    on the schema object and therefore, we don't lose our examples when we use 
+                    Attributes as the schema definition.
+                */
+                if (!preferReference) {
+                    if (request.schema) { // Schema section in Request section
+                        scheme = processRequestSchema(request, useOpenApi3)
+                    } 
+                    if (scheme) {
+                        schema.push({ scheme, contentType });
+                    } else {
+                        const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                        schema.push(...attributes)
+                    }
+                } else {
+                    const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
+                    if (attributes.length) {
+                        schema.push(...attributes)
+                    } else {
+                        scheme = processRequestSchema(request, useOpenApi3)
+                        if (scheme) schema.push({ scheme, contentType });
+                    }
+                }
             }
         }
     }
