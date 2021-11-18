@@ -105,11 +105,11 @@ var swaggerDefinitions = function (definitions, resource) {
 };
 
 var swaggerPaths = function (context, tag, resource) {
+    const { useOpenApi3 } = context.options
     var paths = context.swagger.paths;
     var uriTemplate = UriTemplate.parse(resource.uriTemplate),
         pathName = swaggerPathName(uriTemplate);
-    //path.parameters = swaggerParameters(resource.parameters, uriTemplate);
-    var pathParams = swaggerParameters(resource.parameters, uriTemplate); // for swagger ui
+    var pathParams = swaggerParameters(resource.parameters, uriTemplate, useOpenApi3); // for swagger ui
     for (var k = 0; k < resource.actions.length; k++) {
         var action = resource.actions[k];
         if (!action.attributes.uriTemplate) {
@@ -125,13 +125,14 @@ var swaggerPaths = function (context, tag, resource) {
 };
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
+    const { useOpenApi3 } = context.options
     var operation = {
         'responses': swaggerResponses(action.examples, context.options),
         'summary': action.name,
         'operationId': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
-        'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate))
+        'parameters': pathParams.concat(swaggerParameters(action.parameters, uriTemplate, useOpenApi3))
     };
     var produces = {}, producesExist = false;
     for (var key in operation.responses) {
@@ -149,8 +150,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
     }
     // body parameter (schema)
     var schema = [],
-        scheme = searchDataStructure(action.content), // Attributes 3
-        useOpenApi3 = context.options.useOpenApi3; 
+        scheme = searchDataStructure(action.content); // Attributes 3
     if (scheme) schema.push({ contentType: 'application/json', scheme });
 
     const exampleBodies = {}
@@ -370,7 +370,7 @@ function swaggerSecurity(context, headers) {
     return security;
 }
 
-function swaggerParameters(parameters, uriTemplate) {
+function swaggerParameters(parameters, uriTemplate, useOpenApi3) {
     var PARAM_TYPES = {
         'string': 'string',
         'number': 'number',
@@ -393,7 +393,11 @@ function swaggerParameters(parameters, uriTemplate) {
         };
 
         if (parameter.example) {
-            param['x-example'] = parameter.example
+            if (useOpenApi3) {
+                param.example = parameter.example
+            } else {
+                param['x-example'] = parameter.example
+            }
         }
 
         var paramType = undefined;
@@ -428,14 +432,23 @@ function swaggerParameters(parameters, uriTemplate) {
             if (parameterDefault) {
                 param.schema.default = parameterDefault;
             }
-        }
-        else {
-            param.type = paramType;
-            if (parameterDefault) {
-                param.default = parameterDefault;
-            }
-            if (allowedValues.length > 0) {
-                param.enum = allowedValues;
+        } else {
+            if (useOpenApi3) {
+                param.schema = { type: paramType }
+                if (parameterDefault) {
+                    param.schema.default = parameterDefault;
+                }
+                if (allowedValues.length > 0) {
+                    param.schema.enum = allowedValues;
+                }
+            } else {
+                param.type = paramType;
+                if (parameterDefault) {
+                    param.default = parameterDefault;
+                }
+                if (allowedValues.length > 0) {
+                    param.enum = allowedValues;
+                }
             }
         }
         params.push(param);

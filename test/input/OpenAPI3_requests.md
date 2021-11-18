@@ -2,9 +2,12 @@ HOST: https://www.testhost.com
 
 # Some resource [GET /some/resource/{pathParam}{?queryParam}]
 + Parameters
-    + pathParam (required, string)
-    + queryParam (required, string)
-
+    + pathParam: exampleValue (required, string)
+        + Default: defaultValue
+    + queryParam: value1 (required, enum[string])
+        + Members
+            + value1
+            + value2
 + Request (application/json)
     + Schema
         {
@@ -91,6 +94,8 @@ HOST: https://www.testhost.com
             "message2": "Hello world"
         }
 
++ Response 200 (application/json)
+
 # Some resource [GET /withAttributes]
 + Request (application/json)
     + Schema
@@ -140,6 +145,8 @@ HOST: https://www.testhost.com
     {
         "message": "test2"
     }
+
++ Response 200 (application/json)
 
 ## Data structures
 
