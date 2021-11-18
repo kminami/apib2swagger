@@ -210,7 +210,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Message"
+                                "$ref": "#/components/schemas/Message"
                             }
                         }
                     }
@@ -296,14 +296,14 @@
             }
         }
     },
-    "definitions": {
-        "Some resource": {},
-        "Another resource": {},
-        "Message": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
+    "components": {
+        "schemas": {
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
                 }
             }
         }
