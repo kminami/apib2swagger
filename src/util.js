@@ -8,18 +8,18 @@ module.exports.hasFileRef = (section) => section
 // Return a reference object to the file path from the include statement.
 module.exports.getRefFromInclude = (include) => {
     var path
-    if (include.includes('(') && include.includes(')')) {
+    if (include.includes('(') && include.includes('-->')) {
         path = include.substring(
             include.indexOf('(') + 1,
-            include.indexOf(')')
-        )
+            include.indexOf('-->')
+        ).replace(')', '') // make the closing paren optional
     } else if (include.includes(':') && include.includes('-->')) {
         path = include.substring(
             include.indexOf(':') + 1,
             include.indexOf('-->')
         )
     } else {
-        throw Error('Invalid include syntax.', include)
+        throw Error('Invalid include syntax:' + include)
     }
 
     return { $ref: path.trim() }
