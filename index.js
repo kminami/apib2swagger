@@ -462,12 +462,13 @@ var swaggerHeaders = function (context, headers) {
             'name': element.name,
             'in': 'header',
             'description': `e.g. ${element.value}`,
-            'required': false,
-            'x-example': element.value
+            'required': false
         };
         if (context.options.useOpenApi3) {
             param.schema = { type: 'string' }
+            param.example = element.value
         } else {
+            param['x-example'] = element.value
             param.type = 'string' // TODO: string, number, boolean, integer, array
         }
         if (!params.find(p => isEqual(p, param)))
