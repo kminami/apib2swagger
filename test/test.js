@@ -113,7 +113,7 @@ describe("apib2swagger", function () {
         files.concat(includedFiles).forEach(function (file) {
             const options = {}
             if (file.includes('OpenAPI3')){
-                options.useOpenApi3 = true
+                options.openApi3 = true
             }
 
             it(file, function (done) {

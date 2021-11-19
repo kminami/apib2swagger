@@ -99,7 +99,7 @@ function processBlueprint(blueprint, opts) {
     var options = {
         preferReference: opts['prefer-reference'],
         bearerAsApikey: opts['bearer-apikey'],
-        useOpenApi3: opts['open-api-3'],
+        openApi3: opts['open-api-3'],
         infoTitle: opts['info-title'],
         preferFileRef: opts['prefer-file-ref']
     };

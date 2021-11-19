@@ -1,9 +1,9 @@
 var escapeJSONPointer = require('./escape_json_pointer');
 
-function convertMsonToJsonSchema(content, useOpenApi3) {
+function convertMsonToJsonSchema(content, openApi3) {
     // for apib._version = "4.0"
     var mson = content.content[0];
-    var schema = convert(mson, useOpenApi3);
+    var schema = convert(mson, openApi3);
     if (schema.type === 'array') {
         var fixedType = false;
         if (mson.attributes && mson.attributes.typeAttributes) {
@@ -18,17 +18,17 @@ function convertMsonToJsonSchema(content, useOpenApi3) {
     return schema;
 }
 
-function convert(mson, useOpenApi3) {
-    const componentsPath = useOpenApi3 ? '#/components/schemas/' : '#/definitions/'
+function convert(mson, openApi3) {
+    const componentsPath = openApi3 ? '#/components/schemas/' : '#/definitions/'
     // mson.element = "boolean", "string", "number", "array", "enum", "object", CustomType
     switch (mson.element) {
         case 'array':
             if (!mson.content || mson.content.length === 0) {
                 return { type: 'array', items: {} };
             } else if (mson.content.length === 1) {
-                return { type: 'array', items: convert(mson.content[0], useOpenApi3) };
+                return { type: 'array', items: convert(mson.content[0], openApi3) };
             } else if (mson.content.length > 1) {
-                return { type: 'array', items: { 'anyOf': mson.content.map((m) => convert(m, useOpenApi3)) } };
+                return { type: 'array', items: { 'anyOf': mson.content.map((m) => convert(m, openApi3)) } };
             }
         case 'enum':
             return convertEnum(mson.content);
@@ -52,7 +52,7 @@ function convert(mson, useOpenApi3) {
     for (var j = 0; mson.content && j < mson.content.length; j++) {
         var member = mson.content[j];
         if (member.element !== "member") continue;
-        schema.properties[member.content.key.content] = convert(member.content.value, useOpenApi3);
+        schema.properties[member.content.key.content] = convert(member.content.value, openApi3);
         if (member.meta && member.meta.description) {
             schema.properties[member.content.key.content].description = member.meta.description;
         }
