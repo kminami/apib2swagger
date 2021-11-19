@@ -83,19 +83,15 @@
                                         }
                                     }
                                 },
-                                "examples": {
-                                    "example1": {
-                                        "value": [
-                                            {
-                                                "path": "/files",
-                                                "otherMessage": {
-                                                    "otherMessage": "",
-                                                    "someNum": 0
-                                                }
-                                            }
-                                        ]
+                                "example": [
+                                    {
+                                        "path": "/files",
+                                        "otherMessage": {
+                                            "otherMessage": "",
+                                            "someNum": 0
+                                        }
                                     }
-                                }
+                                ]
                             }
                         }
                     }
@@ -133,15 +129,11 @@
                                         "$ref": "#/components/schemas/Message"
                                     }
                                 },
-                                "examples": {
-                                    "example1": {
-                                        "value": [
-                                            {
-                                                "message": ""
-                                            }
-                                        ]
+                                "example":  [
+                                    {
+                                        "message": ""
                                     }
-                                }
+                                ]
                             }
                         }
                     }

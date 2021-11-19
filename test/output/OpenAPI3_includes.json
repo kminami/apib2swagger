@@ -22,12 +22,8 @@
                                 "schema": {
                                     "$ref": "../includes/resource-response-schema.json"
                                 },
-                                "examples": {
-                                    "example1": {
-                                        "value": {
-                                            "$ref": "../includes/resource-response-body.json"
-                                        }
-                                    }
+                                "example": {
+                                    "$ref": "../includes/resource-response-body.json"
                                 }
                             }
                         }

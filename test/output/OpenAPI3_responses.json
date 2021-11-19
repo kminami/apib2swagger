@@ -91,12 +91,8 @@
                         "headers": {},
                         "content": {
                             "application/json": {
-                                "examples": {
-                                    "example1": {
-                                        "value": {
-                                            "message": "Invalid data"
-                                        }
-                                    }
+                                "example": {
+                                    "message": "Invalid data"
                                 }
                             }
                         }

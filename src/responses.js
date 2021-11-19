@@ -100,23 +100,28 @@ const setResponseExample = (responses, response, header, body, openApi3) => {
         responses[response.name].examples[header.value] = body;
         return responses
     }
-
-    if (!responses[response.name].content[header.value]){
-        responses[response.name].content[header.value] = { examples: {} };
-    } else if (!responses[response.name].content[header.value].examples){
-        // If it already exists we don't want to override it.
-        responses[response.name].content[header.value].examples = {}
+    if (!body) {
+        return responses
     }
 
-    // Sample path to OpenAPI 3.0 example:  
+    // Sample path to OpenAPI 3.0 examples:  
+    // responses -> 200 -> content -> application/json -> example -> { }
     // responses -> 200 -> content -> application/json -> examples -> example1 -> { }
-    if (body) {
-        const count = Object.keys(responses[response.name].content[header.value].examples).length + 1
+    const existingContainer = responses[response.name].content[header.value]
+    if (!existingContainer){
+        responses[response.name].content[header.value] = { example: body };
+    } else if (existingContainer.examples) {
+        const count = Object.keys(existingContainer.examples).length + 1
         const exampleName = 'example' + count
         responses[response.name].content[header.value].examples[exampleName] = { value: body };
-    } else {
-        // If the body is an empty string, create a response path without an example.
-        responses[response.name].content[header.value] = {}
+    } else if (existingContainer.example) {
+        responses[response.name].content[header.value].examples = {
+            example1: { value: existingContainer.example },
+            example2: { value: body }
+        }
+        delete responses[response.name].content[header.value].example
+    } else if (!existingContainer.example) {
+        responses[response.name].content[header.value].example = body
     }
     return responses
 }
