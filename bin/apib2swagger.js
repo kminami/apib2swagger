@@ -21,7 +21,8 @@ var options = nopt({
     'bearer-apikey': Boolean,
     'help': Boolean,
     'open-api-3': Boolean,
-    'infoTitle': String,
+    'info-title': String,
+    'prefer-file-ref': Boolean
 }, {
     'i': ['--input'],
     'o': ['--output'],
@@ -52,7 +53,8 @@ if (options.help) {
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
     console.log("  --open-api-3 Output as OpenAPI 3.0 instead of the default Swagger 2.0")
-    console.log("  --infoTitle Optional info.title")
+    console.log("  --info-title Optional info.title")
+    console.log("  --prefer-file-ref Create refs to given file paths instead of importing the content.")
     process.exit();
 }
 
@@ -67,7 +69,9 @@ on('data', (chunk) => {
     apibData += chunk;
 }).on('end', () => {
     try {
-      apibData = apibIncludeDirective.includeDirective(includePath, apibData);
+        if (!options['prefer-file-ref']){
+            apibData = apibIncludeDirective.includeDirective(includePath, apibData);
+        }
     } catch(e) {
       console.log(e.toString());
       return;
@@ -96,7 +100,8 @@ function processBlueprint(blueprint, opts) {
         preferReference: opts['prefer-reference'],
         bearerAsApikey: opts['bearer-apikey'],
         useOpenApi3: opts['open-api-3'],
-        infoTitle: opts['infoTitle'],
+        infoTitle: opts['info-title'],
+        preferFileRef: opts['prefer-file-ref']
     };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {

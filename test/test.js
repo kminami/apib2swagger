@@ -52,6 +52,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'OpenAPI3_responses.md',
         'OpenAPI3_requests.md',
         'OpenAPI3_headers.md',
+        'OpenAPI3_includes.md',
         'OpenAPI3_attributes.md'
     ];
 

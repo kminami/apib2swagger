@@ -156,8 +156,36 @@ var swaggerPaths = function (context, tag, resource) {
     }
 };
 
+// Return a reference object to the file path from the include statement.
+const getRefFromInclude = (include) => {
+    var path
+    if (include.includes('(') && include.includes(')')) {
+        path = include.substring(
+            include.indexOf('(') + 1,
+            include.indexOf(')')
+        )
+    } else if (include.includes(':') && include.includes('-->')) {
+        path = include.substring(
+            include.indexOf(':') + 1,
+            include.indexOf('-->')
+        )
+    } else {
+        throw Error('Invalid include syntax.', include)
+    }
+
+    return { $ref: path.trim() }
+}
+
+const hasFileRef = (section) => section
+    .replace(/\s+/g, '') // remove spaces
+    .includes('<!--include')
+
 const processRequestSchema = (request, useOpenApi3) => {
     let schema
+    if (useOpenApi3 && hasFileRef(request.schema)) {
+        return getRefFromInclude(request.schema)
+    }
+
     // referencing Model's Schema is also here (no need to reference definitions)
     try {
         schema = JSON.parse(request.schema);
@@ -276,17 +304,21 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
             if (request.body) {
                 try {
                     let body
-                    if (typeof(request.body) === 'string') {
-                        try {
-                            body = JSON.parse(request.body);
-                        } catch (e) {
-                            if (contentType === 'text/plain') {
-                                body = request.body
+                    if (typeof request.body === 'string') {
+                        if (useOpenApi3 && hasFileRef(request.body)){
+                            body = getRefFromInclude(request.body)
+                        } else {
+                            try {
+                                body = JSON.parse(request.body);
+                            } catch (e) {
+                                if (contentType === 'text/plain') {
+                                    body = request.body
+                                }
                             }
                         }
                     }
 
-                    if (typeof(body) === 'object' || typeof(body) === 'array' || typeof(body) === 'string') {
+                    if (typeof body  === 'object' || typeof body  === 'array' || typeof body  === 'string') {
                         if (!exampleBodies[contentType]) {
                             exampleBodies[contentType] = { example: body }
                         } else if (exampleBodies[contentType].examples) {
@@ -618,6 +650,31 @@ function fixArraySchema(schema) {
     }
 }
 
+const parseResponseSchema = (schema, useOpenApi3) => {
+    if (!schema) return
+    if (useOpenApi3 && hasFileRef(schema)){
+        return getRefFromInclude(schema) 
+    }
+    try {
+        const result = JSON.parse(schema);
+        delete result['$schema'];
+        fixArraySchema(result); // work around for Swagger UI / Editor
+        return result
+    } catch (e) { }
+}
+
+const parseResponseBody = (body, header, useOpenApi3) => {
+    if (useOpenApi3 && hasFileRef(body)){
+        return getRefFromInclude(body)
+    }
+    if (!header.value.match(/application\/.*json/)) {
+        return body
+    } 
+    try {
+        return JSON.parse(body);
+    } catch (e) { }
+}
+
 function swaggerResponses(examples, options) {
     var responses = {};
     const { useOpenApi3 } = options;
@@ -656,19 +713,11 @@ function swaggerResponses(examples, options) {
                         '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
                     };
                 } else if (response.schema) {
-                    try {
-                        outputSchema.schema = JSON.parse(response.schema);
-                        delete outputSchema.schema['$schema'];
-                        fixArraySchema(outputSchema.schema); // work around for Swagger UI / Editor
-                    } catch (e) { }
+                    outputSchema.schema = parseResponseSchema(response.schema, useOpenApi3)
                 }
             } else { // schema then MSON
                 if (response.schema) {
-                    try {
-                        outputSchema.schema = JSON.parse(response.schema);
-                        delete outputSchema.schema['$schema'];
-                        fixArraySchema(outputSchema.schema); // work around for Swagger UI / Editor
-                    } catch (e) { }
+                    outputSchema.schema = parseResponseSchema(response.schema, useOpenApi3)
                 }
                 if (!outputSchema.schema) {
                     const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
@@ -716,14 +765,7 @@ function swaggerResponses(examples, options) {
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
                 if (header.name.toLowerCase() === 'content-type') {
-                    let body
-                    if (header.value.match(/application\/.*json/)) {
-                        try {
-                            body = JSON.parse(response.body);
-                        } catch (e) { }
-                    } else {
-                        body = response.body
-                    }
+                    let body = parseResponseBody(response.body, header, useOpenApi3)
                     if (body || body === '') {
                         if (useOpenApi3) {
                             if (!responses[response.name].content[header.value]){

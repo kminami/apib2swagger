@@ -1,0 +1,60 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/some/resource": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "../includes/resource-response-schema.json"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "$ref": "../includes/resource-response-body.json"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "$ref": "../includes/resource-request-body.json"
+                            },
+                            "schema": {
+                                "$ref": "../includes/resource-request-schema.json"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {}
+    },
+    "tags": []
+}
