@@ -227,8 +227,8 @@ const processRequestAttributes = (request, useOpenApi3, contentType) => {
     return schema
 }
 
-const setHeaders = (headers, operation, useOpenApi3) => {
-    const existingHeaders = operation.parameters
+const mergeHeaders = (headers, parameters, useOpenApi3) => {
+    const existingHeaders = parameters
         .filter(param => param.in === 'header')
         .map(param => param.name.toLowerCase());
     
@@ -237,15 +237,89 @@ const setHeaders = (headers, operation, useOpenApi3) => {
         // We are comparing the whole object instead of just the name to allow duplicate names.
         // In doing so, we allow multiple types of Authorization headers to be specified.
         nonDuplicateHeaders = headers.filter(header => 
-            !operation.parameters.find(p => isEqual(p, header))
+            !parameters.find(p => isEqual(p, header))
         )
     } else {
         nonDuplicateHeaders = headers.filter(header => 
             !existingHeaders.includes(header.name.toLowerCase())
         );
     }
-    operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
-    return operation
+    return parameters.concat(nonDuplicateHeaders);
+}
+
+const buildBodyExamples = (requestBody, bodyExamples, contentType) => {
+    let body
+    if (typeof requestBody === 'string') {
+        if (hasFileRef(requestBody)){
+            body = getRefFromInclude(requestBody)
+        } else {
+            try {
+                body = JSON.parse(requestBody);
+            } catch (e) {
+                if (contentType === 'text/plain') {
+                    body = requestBody 
+                }
+            }
+        }
+    }
+
+    if (typeof body !== 'object' && typeof body !== 'array' && typeof body !== 'string') {
+        return bodyExamples
+    }
+
+    if (!bodyExamples[contentType]) {
+        bodyExamples[contentType] = { example: body }
+    } else if (bodyExamples[contentType].examples) {
+        const count = Object.keys(bodyExamples[contentType].examples).length
+        const name = example + count
+        bodyExamples[contentType].examples[name].value = body
+    } else {
+        bodyExamples[contentType].examples = {
+            example1: { value: bodyExamples[contentType].example },
+            example2: { value: body }
+        }
+        delete bodyExamples[contentType].example
+    }
+    return bodyExamples
+}
+
+const getOpenApiRequestSchema = (request, schema, contentType, preferReference) => {
+    /* 
+        With OpenAPI3 we can make full use of Attributes because examples no longer live
+        on the schema object and therefore, we don't lose our examples when we use 
+        Attributes as the schema definition.
+    */
+    const contentTypeScheme = {}
+    if (!preferReference) {
+        if (request.schema) { // Schema section in Request section
+            contentTypeScheme[contentType] = processRequestSchema(request, true)
+        } 
+        if (contentTypeScheme[contentType]) {
+            schema.push({ scheme: contentTypeScheme[contentType], contentType });
+        } else {
+            const attributes = processRequestAttributes(request, true, contentType, schema) 
+            schema.push(...attributes)
+        }
+    } else {
+        const attributes = processRequestAttributes(request, true, contentType, schema) 
+        if (attributes.length) {
+            schema.push(...attributes)
+        } else {
+            contentTypeScheme[contentType] = processRequestSchema(request, true)
+            if (contentTypeScheme[contentType]) {
+                schema.push({ scheme: contentTypeScheme[contentType], contentType });
+            }
+        }
+    }
+    // If there are no schema but we have a body example, try to generate a schema from it.
+    // We stop at 1 auto-generated schema.
+    if (request.body && schema.length === 0) {
+        contentTypeScheme[contentType] = generateSchemaFromExample(request.headers, request.body, true);
+        if (contentTypeScheme[contentType]){
+            schema.push({ scheme: contentTypeScheme[contentType], contentType });
+        }
+    }
+    return schema
 }
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
@@ -277,7 +351,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
         scheme = searchDataStructure(action.content, useOpenApi3); // Attributes 3
     if (scheme) schema.push({ contentType: 'application/json', scheme });
 
-    const exampleBodies = {}
+    let bodyExamples = {}
 
     for (var j = 0; j < action.examples.length; j++) {
         var example = action.examples[j];
@@ -300,49 +374,19 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
             var headers = swaggerHeaders(context, request.headers);
             if (headers) {
-                operation = setHeaders(headers, operation, useOpenApi3)
+                operation.parameters = mergeHeaders(headers, operation.parameters, useOpenApi3)
             }
          
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
             const contentType = contentTypeHeader ? contentTypeHeader.value : 'application/json'
 
-            if (request.body) {
-                try {
-                    let body
-                    if (typeof request.body === 'string') {
-                        if (useOpenApi3 && hasFileRef(request.body)){
-                            body = getRefFromInclude(request.body)
-                        } else {
-                            try {
-                                body = JSON.parse(request.body);
-                            } catch (e) {
-                                if (contentType === 'text/plain') {
-                                    body = request.body
-                                }
-                            }
-                        }
-                    }
-
-                    if (typeof body  === 'object' || typeof body  === 'array' || typeof body  === 'string') {
-                        if (!exampleBodies[contentType]) {
-                            exampleBodies[contentType] = { example: body }
-                        } else if (exampleBodies[contentType].examples) {
-                            const count = Object.keys(exampleBodies[contentType].examples).length
-                            const name = example + count
-                            exampleBodies[contentType].examples[name].value = body
-                        } else {
-                            exampleBodies[contentType].examples = {
-                                example1: { value: exampleBodies[contentType].example },
-                                example2: { value: body }
-                            }
-                            delete exampleBodies[contentType].example
-                        }
-                    }
-                } catch (e) {}
+            if (request.body && useOpenApi3) {
+                bodyExamples = buildBodyExamples(request.body, bodyExamples, contentType)
             }
 
             if (!useOpenApi3) {
-                if (request.schema) { // Schema section in Request section
+                // Build schemas and examples for swagger 2.0
+                if (request.schema) {
                     scheme = processRequestSchema(request, useOpenApi3)
                     if (scheme) schema.push({ scheme, contentType });
                 } else {
@@ -355,48 +399,14 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
                     }
                 }
             } else {
-                /* 
-                    With OpenAPI3 we can make full use of Attributes because examples no longer live
-                    on the schema object and therefore, we don't lose our examples when we use 
-                    Attributes as the schema definition.
-                */
-                const contentTypeScheme = {}
-                if (!preferReference) {
-                    if (request.schema) { // Schema section in Request section
-                        contentTypeScheme[contentType] = processRequestSchema(request, useOpenApi3)
-                    } 
-                    if (contentTypeScheme[contentType]) {
-                        schema.push({ scheme: contentTypeScheme[contentType], contentType });
-                    } else {
-                        const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
-                        schema.push(...attributes)
-                    }
-                } else {
-                    const attributes = processRequestAttributes(request, useOpenApi3, contentType, schema) 
-                    if (attributes.length) {
-                        schema.push(...attributes)
-                    } else {
-                        contentTypeScheme[contentType] = processRequestSchema(request, useOpenApi3)
-                        if (contentTypeScheme[contentType]) {
-                            schema.push({  scheme: contentTypeScheme[contentType], contentType });
-                        }
-                    }
-                }
-                // If there are no schema but we have a body example, try to generate a schema from it.
-                // We stop at 1 auto-generated schema.
-                if (request.body && schema.length === 0) {
-                    contentTypeScheme[contentType] = generateSchemaFromExample(request.headers, request.body, useOpenApi3);
-                    if (contentTypeScheme[contentType]){
-                        schema.push({ scheme: contentTypeScheme[contentType], contentType });
-                    }
-                }
+                schema = getOpenApiRequestSchema(request, schema, contentType, preferReference)
             }
         }
     }
-    if (useOpenApi3 && (schema.length || Object.keys(exampleBodies).length)){  
+    if (useOpenApi3 && (schema.length || Object.keys(bodyExamples).length)){  
         operation.requestBody = { content: {} }
-        if (Object.keys(exampleBodies).length) {
-            operation.requestBody.content = exampleBodies
+        if (Object.keys(bodyExamples).length) {
+            operation.requestBody.content = bodyExamples
         }
     }
     // Make sure all content types exist to make setting the schemes easier.
