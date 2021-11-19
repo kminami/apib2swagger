@@ -675,16 +675,106 @@ const parseResponseBody = (body, header, useOpenApi3) => {
     } catch (e) { }
 }
 
+const getResponseSchema = (response, options) => {
+    const { preferReference, useOpenApi3 } = options
+    const componentsPath = useOpenApi3 ? '#/components/schemas' : '#/definitions/'
+    if (preferReference) { // MSON then schema
+        const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
+        if (inputSchema) {
+            return inputSchema
+        } else if (response.reference) {
+            return {
+                '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
+            };
+        } else if (response.schema) {
+            return parseResponseSchema(response.schema, useOpenApi3)
+        }
+    } else { // schema then MSON
+        if (response.schema) {
+            return parseResponseSchema(response.schema, useOpenApi3)
+        }
+       
+        const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
+        if (inputSchema) return inputSchema;
+        if (response.reference) {
+            return {
+                '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
+            };
+        }
+    }
+}
+
+const setResponseSchema = (responses, response, schema, useOpenApi3) => {
+    if (!useOpenApi3){
+        responses[response.name].schema = schema
+        return responses
+    }
+    // In openAPI 3 the schema lives under the content type
+    const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')
+    if (!contentTypeHeader.value) {
+        return responses
+    }
+    if (!responses[response.name].content[contentTypeHeader.value]){
+        responses[response.name].content[contentTypeHeader.value] = {}
+    }
+    
+    if (!responses[response.name].content[contentTypeHeader.value].schema){
+        responses[response.name].content[contentTypeHeader.value].schema = schema
+        return responses
+    }
+
+    // If a schema already exists, we need to use oneOf for additional unique schemas.
+    let existingSchema = { ...responses[response.name].content[contentTypeHeader.value].schema }
+    // It is possible that the given schema is a duplicate. If that's the case, we don't add it.
+    if (isEqual(existingSchema, schema)){
+        return responses
+    }
+
+    if (existingSchema.oneOf){
+        if (!existingSchema.oneOf.find((s) => isEqual(s, schema))){
+            responses[response.name].content[contentTypeHeader.value].schema.oneOf.push(schema)
+        }
+    } else {
+        responses[response.name].content[contentTypeHeader.value].schema = { oneOf: [existingSchema, schema] }
+    }
+    return responses
+}
+
+const setResponseExample = (responses, response, header, body, useOpenApi3) => {
+    if (!useOpenApi3) {
+        // Sample path to Swagger 2.0 example:  
+        // responses -> 200 -> examples -> application/json -> { }
+        responses[response.name].examples[header.value] = body;
+        return responses
+    }
+
+    if (!responses[response.name].content[header.value]){
+        responses[response.name].content[header.value] = { examples: {} };
+    } else if (!responses[response.name].content[header.value].examples){
+        // If it already exists we don't want to override it.
+        responses[response.name].content[header.value].examples = {}
+    }
+
+    // Sample path to OpenAPI 3.0 example:  
+    // responses -> 200 -> content -> application/json -> examples -> example1 -> { }
+    if (body) {
+        const count = Object.keys(responses[response.name].content[header.value].examples).length + 1
+        const exampleName = 'example' + count
+        responses[response.name].content[header.value].examples[exampleName] = { value: body };
+    } else {
+        // If the body is an empty string, create a response path without an example.
+        responses[response.name].content[header.value] = {}
+    }
+    return responses
+}
+
 function swaggerResponses(examples, options) {
     var responses = {};
     const { useOpenApi3 } = options;
-    //console.log(examples);
     for (var l = 0; l < examples.length; l++) {
         var example = examples[l];
-        //console.log(example);
         for (var m = 0; m < example.responses.length; m++) {
             var response = example.responses[m];
-            //console.log(response);
 
             if (!responses[response.name]) {
                 responses[response.name] = { description: {}, headers: {} }
@@ -692,103 +782,27 @@ function swaggerResponses(examples, options) {
            
             responses[response.name].description = response.description || http.STATUS_CODES[response.name];
             if (useOpenApi3) {
-                // Since openAPI3 allows multiple examples, we don't want to overwrite content every time.
-                // This theme repeats itself throughout this module.
+                // Does not overwrite and allows multiple examples.
                 if (!responses[response.name].content){
                     responses[response.name].content = {};
                 }
             } else {
+                // Overwrites every time
                 responses[response.name].examples = {}
             }
 
-            /* Prepare schema */
-            let outputSchema = {}
-            const componentsPath = useOpenApi3 ? '#/components/schemas' : '#/definitions/'
-            if (options.preferReference) { // MSON then schema
-                const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
-                if (inputSchema) {
-                    outputSchema.schema = inputSchema
-                } else if (response.reference) {
-                    outputSchema.schema = {
-                        '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
-                    };
-                } else if (response.schema) {
-                    outputSchema.schema = parseResponseSchema(response.schema, useOpenApi3)
-                }
-            } else { // schema then MSON
-                if (response.schema) {
-                    outputSchema.schema = parseResponseSchema(response.schema, useOpenApi3)
-                }
-                if (!outputSchema.schema) {
-                    const inputSchema = searchDataStructure(response.content, useOpenApi3); // Attributes in response
-                    if (inputSchema) outputSchema.schema = inputSchema;
-                }
-                if (!outputSchema.schema && response.reference) {
-                    outputSchema.schema = {
-                        '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
-                    };
-                }
-            }
+            const schema = getResponseSchema(response, options)
 
-            /* set schema */
-            if (outputSchema.schema){
-                if (useOpenApi3) {
-                    const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type') || 'application/json'
-                    // In openAPI 3 the schema lives under the content type
-                    if (contentTypeHeader && contentTypeHeader.value) {
-                        if (!responses[response.name].content[contentTypeHeader.value]){
-                            responses[response.name].content[contentTypeHeader.value] = {}
-                        }
-                        // If a schema already exists, we need to use oneOf for additional unique schemas.
-                        if (responses[response.name].content[contentTypeHeader.value].schema) {
-                            let existingSchema = { ...responses[response.name].content[contentTypeHeader.value].schema }
-                            // It is possible that the given schema is a duplicate. If that's the case, we don't add it.
-                            if (!isEqual(existingSchema, outputSchema.schema)){
-                                if (existingSchema.oneOf){
-                                    if (!existingSchema.oneOf.find((s) => isEqual(s, outputSchema.schema))){
-                                        responses[response.name].content[contentTypeHeader.value].schema.oneOf.push(outputSchema.schema)
-                                    }
-                                } else {
-                                    responses[response.name].content[contentTypeHeader.value].schema = { oneOf: [existingSchema, outputSchema.schema] }
-                                }
-                            }
-                        } else {
-                            responses[response.name].content[contentTypeHeader.value].schema = outputSchema.schema
-                        }
-                    }
-                } else {
-                    responses[response.name].schema = outputSchema.schema
-                }
+            if (schema){
+                responses = setResponseSchema(responses, response, schema, useOpenApi3)
             }
             
-            /* set examples */
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
                 if (header.name.toLowerCase() === 'content-type') {
                     let body = parseResponseBody(response.body, header, useOpenApi3)
                     if (body || body === '') {
-                        if (useOpenApi3) {
-                            if (!responses[response.name].content[header.value]){
-                                responses[response.name].content[header.value] = { examples: {} };
-                            // If it already exists we don't want to override it.
-                            } else if (!responses[response.name].content[header.value].examples){
-                                responses[response.name].content[header.value].examples = {}
-                            }
-                            // Sample path to OpenAPI 3.0 example:  
-                            // responses -> 200 -> content -> application/json -> examples -> example1 -> { }
-                            if (body) {
-                                const count = Object.keys(responses[response.name].content[header.value].examples).length + 1
-                                const exampleName = 'example' + count
-                                responses[response.name].content[header.value].examples[exampleName] = { value: body };
-                            } else {
-                                // If the body is an empty string, create a response path without an example.
-                                responses[response.name].content[header.value] = {}
-                            }
-                        } else {
-                            // Sample path to Swagger 2.0 example:  
-                            // responses -> 200 -> examples -> application/json -> { }
-                            responses[response.name].examples[header.value] = body;
-                        }
+                        responses = setResponseExample(responses, response, header, body, useOpenApi3) 
                     }
                 } else if (header.name.toLowerCase() !== 'authorization') {
                     if (useOpenApi3) {
