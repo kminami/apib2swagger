@@ -32,10 +32,17 @@ module.exports.processParameters = (parameters, uriTemplate, openApi3) => {
         var param = {
             'name': parameter.name,
             'in': getParamType(parameter.name, uriTemplate),
-            'description': parameter.description,
-            'required': parameter.required
+            'description': parameter.description
         };
-
+        if (openApi3) {
+            if (parameter.required) {
+                // Only add required if the value is true. False is not an accepted value.
+                param.required = true
+          
+            }
+        } else {
+            param.required = parameter.required
+        }
         if (parameter.example) {
             if (openApi3) {
                 param.example = parameter.example

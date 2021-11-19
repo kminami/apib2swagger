@@ -51,4 +51,5 @@ test/output/swagger.json
 /test/input/12. Advanced Action.md
 /test/input/13. Named Endpoints.md
 /test/input/Gist Fox API + Auth.md
+/test/input/test.md
 .nyc_output
