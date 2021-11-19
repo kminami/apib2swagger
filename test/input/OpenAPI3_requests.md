@@ -8,6 +8,7 @@ HOST: https://www.testhost.com
         + Members
             + value1
             + value2
+    + additionalQueryParam (string)
 
 + Request (application/json)
     + Schema

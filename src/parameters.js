@@ -1,6 +1,7 @@
 
-const getParamType = (name, uriTemplate) => {
-    if (!uriTemplate) return 'body';
+const getParamType = (name, uriTemplate, openApi3) => {
+    const defaultType = openApi3 ? 'query' : 'body'
+    if (!uriTemplate) return defaultType;
     for (var i = 0; i < uriTemplate.expressions.length; i++) {
         var exp = uriTemplate.expressions[i];
         if (!exp.varspecs) continue;
@@ -11,7 +12,7 @@ const getParamType = (name, uriTemplate) => {
             }
         }
     }
-    return 'body'; // TODO: decide 'header', 'formData', 'body'
+    return defaultType;
 }
 
 module.exports.processParameters = (parameters, uriTemplate, openApi3) => {
@@ -31,7 +32,7 @@ module.exports.processParameters = (parameters, uriTemplate, openApi3) => {
         // in = ["query", "header", "path", "formData", "body"]
         var param = {
             'name': parameter.name,
-            'in': getParamType(parameter.name, uriTemplate),
+            'in': getParamType(parameter.name, uriTemplate, openApi3),
             'description': parameter.description
         };
         if (openApi3) {

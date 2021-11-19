@@ -49,6 +49,15 @@
                                 "value2"
                             ]
                         }
+                    },
+                    {
+                        "name": "additionalQueryParam",
+                        "in": "query",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "requestBody": {
