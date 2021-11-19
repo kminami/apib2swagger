@@ -227,6 +227,27 @@ const processRequestAttributes = (request, useOpenApi3, contentType) => {
     return schema
 }
 
+const setHeaders = (headers, operation, useOpenApi3) => {
+    const existingHeaders = operation.parameters
+        .filter(param => param.in === 'header')
+        .map(param => param.name.toLowerCase());
+    
+    let nonDuplicateHeaders
+    if (useOpenApi3) {
+        // We are comparing the whole object instead of just the name to allow duplicate names.
+        // In doing so, we allow multiple types of Authorization headers to be specified.
+        nonDuplicateHeaders = headers.filter(header => 
+            !operation.parameters.find(p => isEqual(p, header))
+        )
+    } else {
+        nonDuplicateHeaders = headers.filter(header => 
+            !existingHeaders.includes(header.name.toLowerCase())
+        );
+    }
+    operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+    return operation
+}
+
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
     const { useOpenApi3, preferReference } = context.options
     var operation = {
@@ -279,23 +300,7 @@ var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) 
 
             var headers = swaggerHeaders(context, request.headers);
             if (headers) {
-                const existingHeaders = operation.parameters
-                    .filter(param => param.in === 'header')
-                    .map(param => param.name.toLowerCase());
-                
-                let nonDuplicateHeaders
-                if (useOpenApi3) {
-                    // We are comparing the whole object instead of just the name to allow duplicate names.
-                    // In doing so, we allow multiple types of Authorization headers to be specified.
-                    nonDuplicateHeaders = headers.filter(header => 
-                        !operation.parameters.find(p => isEqual(p, header))
-                    )
-                } else {
-                    nonDuplicateHeaders = headers.filter(header => 
-                        !existingHeaders.includes(header.name.toLowerCase())
-                    );
-                }
-                operation.parameters = operation.parameters.concat(nonDuplicateHeaders);
+                operation = setHeaders(headers, operation, useOpenApi3)
             }
          
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
