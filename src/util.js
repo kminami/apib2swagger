@@ -15,7 +15,7 @@ module.exports.hasFileRef = (section) => section
   Includes output format <!-- include(path/to/file) -->
 */
 module.exports.normalizeIncludes = (str) => str
-    .split("<!-- include")
+    .split('<!-- include')
     .map((f, i) => {
         if (i === 0) {
             return f;
@@ -33,7 +33,7 @@ module.exports.normalizeIncludes = (str) => str
         const restOfStr = f.substr(f.indexOf('-->') + 3, f.length)         
         return include.trim() + ') -->' + restOfStr
     })
-    .join("<!-- include("); 
+    .join('<!-- include('); 
 
 // Return a reference object to the file path from the include statement.
 // Even though includes should now be normalized, this handles a scenario where they may not be.
