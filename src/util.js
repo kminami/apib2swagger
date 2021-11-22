@@ -5,19 +5,55 @@ module.exports.hasFileRef = (section) => section
     .replace(/\s+/g, '') // remove spaces
     .includes('<!--include')
 
+/* 
+  Takes a string with many includes and normalizes all of the includes so that the contents
+  can be imported or references to files can be created properly.
+  Includes input formats
+     <!-- include: path/to/file -->
+     <!-- include(path/to/file) -->
+     <!-- include(path/to/file -->
+  Includes output format <!-- include(path/to/file) -->
+*/
+module.exports.normalizeIncludes = (str) => str
+    .split("<!-- include")
+    .map((f, i) => {
+        if (i === 0) {
+            return f;
+        }
+        let include = f
+            .substr(0, f.indexOf('-->')) 
+            .trim()
+      
+        if (include.slice(-1) === ')'){
+            include = include.substr(0, include.length - 1)
+        }
+        if (include.slice(0, 1) === '(' || include.slice(0, 1) === ':'){
+            include = include.substr(1, include.length)
+        }
+        const restOfStr = f.substr(f.indexOf('-->') + 3, f.length)         
+        return include.trim() + ') -->' + restOfStr
+    })
+    .join("<!-- include("); 
+
 // Return a reference object to the file path from the include statement.
+// Even though includes should now be normalized, this handles a scenario where they may not be.
 module.exports.getRefFromInclude = (include) => {
     var path
     if (include.includes('(') && include.includes('-->')) {
         path = include.substring(
             include.indexOf('(') + 1,
             include.indexOf('-->')
-        ).replace(')', '') // make the closing paren optional
+        ).trim()
+        // the closing paren is optional so we remove it if it is there.
+        const lastChar = path.slice(-1)
+        if (lastChar === ')'){
+            path = path.substring(0, path.length - 1)
+        }
     } else if (include.includes(':') && include.includes('-->')) {
         path = include.substring(
             include.indexOf(':') + 1,
             include.indexOf('-->')
-        )
+        ).trim()
     } else {
         throw Error('Invalid include syntax:' + include)
     }

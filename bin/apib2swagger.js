@@ -8,7 +8,8 @@ var fs = require('fs'),
     nopt = require('nopt'),
     yaml = require('js-yaml'),
     apibIncludeDirective = require('apib-include-directive'),
-    apib2swagger = require('../index.js');
+    apib2swagger = require('../index.js'),
+    util = require('../src/util');
 
 var options = nopt({
     'input': String,
@@ -69,6 +70,8 @@ on('data', (chunk) => {
     apibData += chunk;
 }).on('end', () => {
     try {
+        apibData = util.normalizeIncludes(apibData)
+        
         if (!options['prefer-file-ref']){
             apibData = apibIncludeDirective.includeDirective(includePath, apibData);
         }
