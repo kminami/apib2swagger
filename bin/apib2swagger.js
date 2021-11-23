@@ -143,7 +143,7 @@ function processBlueprint(blueprint, opts) {
     });
 }
 
-function serveApiFiles (response, filePath){
+function serveApiFiles(response, filePath){
     const sd = options['serve-directory']
     const directory = sd ? path.normalize(sd) : ''
     process.cwd()
@@ -163,10 +163,7 @@ function serveApiFiles (response, filePath){
     response.end();
     return;
 }
-// if file path given
-    // try to serve from given file path
-    // else try to serve from given file path relative to execution directory
-// try to serve from execution directory 
+
 function runServer(swagger) {
     var server = http.createServer(function(request, response) {
         var filePath = request.url.split('?')[0];
