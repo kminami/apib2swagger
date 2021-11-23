@@ -16,12 +16,12 @@ module.exports.hasFileRef = (section) => section
 */
 module.exports.normalizeIncludes = (str) => str
     .split('<!-- include')
-    .map((f, i) => {
+    .map((s, i) => {
         if (i === 0) {
-            return f;
+            return s;
         }
-        let include = f
-            .substr(0, f.indexOf('-->')) 
+        let include = s
+            .substr(0, s.indexOf('-->')) 
             .trim()
       
         if (include.slice(-1) === ')'){
@@ -30,7 +30,7 @@ module.exports.normalizeIncludes = (str) => str
         if (include.slice(0, 1) === '(' || include.slice(0, 1) === ':'){
             include = include.substr(1, include.length)
         }
-        const restOfStr = f.substr(f.indexOf('-->') + 3, f.length)         
+        const restOfStr = s.substr(s.indexOf('-->') + 3, s.length)         
         return include.trim() + ') -->' + restOfStr
     })
     .join('<!-- include('); 
