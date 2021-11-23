@@ -34,11 +34,6 @@ $ apib2swagger -i api.md --bearer-apikey
 $ apib2swagger -i api.md --open-api-3
 $ apib2swagger -i api.md --info-title
 $ apib2swagger -i api.md --prefer-file-ref
-
-# When using file references and running the SwaggerUI server, you can specify the source
-# directory with the -sd flag. It will check the input directory and execution directory
-# if -sd is not given.
-$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/projects/src/
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.
@@ -52,6 +47,11 @@ SwaggerUI will be automatically downloaded to current dir.
 ```shell
 $ apib2swagger -i api.md -s
 $ apib2swagger -i api.md -s -p 3000
+
+# When using file references and running the SwaggerUI server, you can specify the source
+# directory with the -sd flag. It will check the input directory and execution directory
+# if -sd is not given.
+$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/projects/src/
 ```
 
 Use as a library.
