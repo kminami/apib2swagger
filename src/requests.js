@@ -182,11 +182,12 @@ const buildBodyExamples = (requestBody, bodyExamples, contentType) => {
     } else if (bodyExamples[contentType].examples) {
         const count = Object.keys(bodyExamples[contentType].examples).length
         const name = example + count
-        bodyExamples[contentType].examples[name].value = body
+        bodyExamples[contentType].examples[name] = body.$ref ? body : { value: body }
     } else {
+        const existingExample = bodyExamples[contentType].example
         bodyExamples[contentType].examples = {
-            example1: { value: bodyExamples[contentType].example },
-            example2: { value: body }
+            example1: existingExample.$ref ? existingExample : { value: existingExample },
+            example2: body.$ref ? body : { value: body }
         }
         delete bodyExamples[contentType].example
     }

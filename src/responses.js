@@ -113,11 +113,12 @@ const setResponseExample = (responses, response, header, body, openApi3) => {
     } else if (existingContainer.examples) {
         const count = Object.keys(existingContainer.examples).length + 1
         const exampleName = 'example' + count
-        responses[response.name].content[header.value].examples[exampleName] = { value: body };
+        responses[response.name].content[header.value].examples[exampleName] = body.$ref ? body : { value: body };
     } else if (existingContainer.example) {
+        const existingExample = existingContainer.example
         responses[response.name].content[header.value].examples = {
-            example1: { value: existingContainer.example },
-            example2: { value: body }
+            example1: existingExample.$ref ? existingExample : { value: existingExample },
+            example2: body.$ref ? body : { value: body }
         }
         delete responses[response.name].content[header.value].example
     } else if (!existingContainer.example) {
