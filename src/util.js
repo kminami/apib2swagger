@@ -38,27 +38,27 @@ module.exports.normalizeIncludes = (str) => str
 // Return a reference object to the file path from the include statement.
 // Even though includes should now be normalized, this handles a scenario where they may not be.
 module.exports.getRefFromInclude = (include) => {
-    var path
-    if (include.includes('(') && include.includes('-->')) {
-        path = include.substring(
-            include.indexOf('(') + 1,
-            include.indexOf('-->')
-        ).trim()
+    let path = include.replace(/\s+/g, '') 
+    if (path.includes('include(') && path.includes('-->')) {
+        path = path.substring(
+            path.indexOf('(') + 1,
+            path.indexOf('-->')
+        )
         // the closing paren is optional so we remove it if it is there.
         const lastChar = path.slice(-1)
         if (lastChar === ')'){
             path = path.substring(0, path.length - 1)
         }
-    } else if (include.includes(':') && include.includes('-->')) {
-        path = include.substring(
-            include.indexOf(':') + 1,
-            include.indexOf('-->')
-        ).trim()
+    } else if (path.includes('include:') && path.includes('-->')) {
+        path = path.substring(
+            path.indexOf(':') + 1,
+            path.indexOf('-->')
+        )
     } else {
         throw Error('Invalid include syntax:' + include)
     }
 
-    return { $ref: path.trim() }
+    return { $ref: path }
 }
 
 module.exports.searchDataStructure = function (contents, openApi3) {
