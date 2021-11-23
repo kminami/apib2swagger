@@ -34,6 +34,11 @@ $ apib2swagger -i api.md --bearer-apikey
 $ apib2swagger -i api.md --open-api-3
 $ apib2swagger -i api.md --info-title
 $ apib2swagger -i api.md --prefer-file-ref
+
+# When using file references and running the SwaggerUI server, you can specify the source
+# directory with the -sd flag. It will check the input directory and execution directory
+# if -sd is not given.
+$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/projects/src/
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.
@@ -65,7 +70,6 @@ var apib2swagger = require('apib2swagger'),
 
         // optional (Open API 3 only). 
         // will set a $ref to the given file path instead of including the file contents.
-        // FYI: relative file path references require additional steps to work with Swagger UI -s option.
         preferFileRef: true 
     };
 

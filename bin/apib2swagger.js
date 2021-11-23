@@ -24,7 +24,7 @@ var options = nopt({
     'open-api-3': Boolean,
     'info-title': String,
     'prefer-file-ref': Boolean,
-    'serve-directory': String
+    'source-dir': String
 }, {
     'i': ['--input'],
     'o': ['--output'],
@@ -32,7 +32,7 @@ var options = nopt({
     'p': ['--port'],
     'y': ['--yaml'],
     'h': ['--help'],
-    'sd': ['--serve-directory']
+    'sd': ['--source-dir']
 });
 
 if (options.help) {
@@ -53,7 +53,7 @@ if (options.help) {
     console.log("  -s --server Run http server with SwaggerUI.");
     console.log("  -p --port <port> Use port for the http server.");
     console.log("  -y --yaml Output YAML");
-    console.log("  -sd --serve-directory Specify a directory to serve file references from.");
+    console.log("  -sd --source-dir Specify a source directory to serve file references from.");
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
     console.log("  --open-api-3 Output as OpenAPI 3.0 instead of the default Swagger 2.0")
@@ -144,7 +144,7 @@ function processBlueprint(blueprint, opts) {
 }
 
 function serveApiFiles(response, filePath){
-    const sd = options['serve-directory']
+    const sd = options['source-dir']
     const directory = sd ? path.normalize(sd) : ''
     process.cwd()
     let fullPath = path.join(directory, filePath) // Try given path
