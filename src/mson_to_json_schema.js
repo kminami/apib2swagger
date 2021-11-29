@@ -1,9 +1,9 @@
 var escapeJSONPointer = require('./escape_json_pointer');
 
-function convertMsonToJsonSchema(content) {
+function convertMsonToJsonSchema(content, openApi3) {
     // for apib._version = "4.0"
     var mson = content.content[0];
-    var schema = convert(mson);
+    var schema = convert(mson, openApi3);
     if (schema.type === 'array') {
         var fixedType = false;
         if (mson.attributes && mson.attributes.typeAttributes) {
@@ -18,16 +18,17 @@ function convertMsonToJsonSchema(content) {
     return schema;
 }
 
-function convert(mson) {
+function convert(mson, openApi3) {
+    const componentsPath = openApi3 ? '#/components/schemas/' : '#/definitions/'
     // mson.element = "boolean", "string", "number", "array", "enum", "object", CustomType
     switch (mson.element) {
         case 'array':
             if (!mson.content || mson.content.length === 0) {
                 return { type: 'array', items: {} };
             } else if (mson.content.length === 1) {
-                return { type: 'array', items: convert(mson.content[0]) };
+                return { type: 'array', items: convert(mson.content[0], openApi3) };
             } else if (mson.content.length > 1) {
-                return { type: 'array', items: { 'anyOf': mson.content.map(convert) } };
+                return { type: 'array', items: { 'anyOf': mson.content.map((m) => convert(m, openApi3)) } };
             }
         case 'enum':
             return convertEnum(mson.content);
@@ -39,7 +40,7 @@ function convert(mson) {
             return { type: mson.element };
         default:
             if (!mson.content) {
-                return { '$ref': '#/definitions/' + escapeJSONPointer(mson.element) };
+                return { '$ref': componentsPath + escapeJSONPointer(mson.element) };
             }
             break;
     }
@@ -51,7 +52,7 @@ function convert(mson) {
     for (var j = 0; mson.content && j < mson.content.length; j++) {
         var member = mson.content[j];
         if (member.element !== "member") continue;
-        schema.properties[member.content.key.content] = convert(member.content.value);
+        schema.properties[member.content.key.content] = convert(member.content.value, openApi3);
         if (member.meta && member.meta.description) {
             schema.properties[member.content.key.content].description = member.meta.description;
         }
@@ -82,7 +83,7 @@ function convert(mson) {
     }
 
     if (mson.element !== 'object') {
-        return { 'allOf': [{ '$ref': '#/definitions/' + escapeJSONPointer(mson.element) }, schema] };
+        return { 'allOf': [{ '$ref': componentsPath + escapeJSONPointer(mson.element) }, schema] };
     }
 
     return schema;

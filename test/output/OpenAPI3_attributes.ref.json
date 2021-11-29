@@ -1,0 +1,173 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/object": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/OtherMessage"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "message": ""
+                                        }
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "otherMessage": "",
+                                            "someNum": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        },
+        "/array/object": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "path"
+                                        ],
+                                        "properties": {
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "otherMessage": {
+                                                "$ref": "#/components/schemas/OtherMessage"
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "path": "/files",
+                                        "otherMessage": {
+                                            "otherMessage": "",
+                                            "someNum": 0
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "message": ""
+                            },
+                            "schema": {
+                                "$ref": "#/components/schemas/Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/messages": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Message"
+                                    }
+                                },
+                                "example":  [
+                                    {
+                                        "message": ""
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "OtherMessage": {
+                "type": "object",
+                "properties": {
+                    "otherMessage": {
+                        "type": "string"
+                    },
+                    "someNum": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    },
+    "tags": []
+}

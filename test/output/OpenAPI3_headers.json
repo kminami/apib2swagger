@@ -1,0 +1,169 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/some/resource": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {}
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "x-testhost-auth-sign",
+                        "in": "header",
+                        "description": "e.g. signed body",
+                        "required": false,
+                        "example": "signed body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "e.g. Bearer Admin",
+                        "required": false,
+                        "example": "Bearer Admin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "e.g. Bearer User",
+                        "required": false,
+                        "example": "Bearer User",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "someType": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/some/restricted/resource": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {}
+                    }
+                },
+                "summary": "Restricted resource",
+                "operationId": "Restricted resource",
+                "description": "Has a duplicate header within a single declaration",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "e.g. Bearer Admin",
+                        "required": false,
+                        "example": "Bearer Admin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message1": {
+                                        "type": "string",
+                                        "description": "This is the message description "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/additional/resource": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {}
+                    }
+                },
+                "summary": "Additional resource",
+                "operationId": "Additional resource",
+                "description": "",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "x-testhost-auth-sign",
+                        "in": "header",
+                        "description": "e.g. signed body",
+                        "required": false,
+                        "example": "signed body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "e.g. Bearer Admin",
+                        "required": false,
+                        "example": "Bearer Admin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "e.g. Bearer User",
+                        "required": false,
+                        "example": "Bearer User",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {}
+    },
+    "tags": []
+}

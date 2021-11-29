@@ -1,0 +1,52 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "",
+        "version": "",
+        "description": ""
+    },
+    "paths": {
+        "/some/resource": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "examples": {
+                            "text/plain": ""
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "prop1": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "prop1"
+                            ]
+                        }
+                    }
+                ],
+                "produces": [
+                    "text/plain"
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Some resource": {}
+    },
+    "securityDefinitions": {},
+    "tags": []
+}

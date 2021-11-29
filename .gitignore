@@ -33,3 +33,23 @@ swagger-ui-master.tar.gz
 
 # IDE
 .vscode
+.idea
+
+# tests
+test/output/swagger.json
+/test/input/01. Simplest API.md
+/test/input/02. Resource and Actions.md
+/test/input/03. Named Resource and Actions.md
+/test/input/04. Grouping Resources.md
+/test/input/05. Responses.md
+/test/input/06. Requests.md
+/test/input/07. Parameters.md
+/test/input/08. Attributes.md
+/test/input/09. Advanced Attributes.md
+/test/input/10. Data Structures.md
+/test/input/11. Resource Model.md
+/test/input/12. Advanced Action.md
+/test/input/13. Named Endpoints.md
+/test/input/Gist Fox API + Auth.md
+/test/input/test.md
+.nyc_output

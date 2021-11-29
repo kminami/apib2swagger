@@ -8,7 +8,8 @@ var fs = require('fs'),
     nopt = require('nopt'),
     yaml = require('js-yaml'),
     apibIncludeDirective = require('apib-include-directive'),
-    apib2swagger = require('../index.js');
+    apib2swagger = require('../index.js'),
+    util = require('../src/util');
 
 var options = nopt({
     'input': String,
@@ -19,14 +20,19 @@ var options = nopt({
     'yaml': Boolean,
     'prefer-reference': Boolean,
     'bearer-apikey': Boolean,
-    'help': Boolean
+    'help': Boolean,
+    'open-api-3': Boolean,
+    'info-title': String,
+    'prefer-file-ref': Boolean,
+    'source-dir': String
 }, {
     'i': ['--input'],
     'o': ['--output'],
     's': ['--server'],
     'p': ['--port'],
     'y': ['--yaml'],
-    'h': ['--help']
+    'h': ['--help'],
+    'sd': ['--source-dir']
 });
 
 if (options.help) {
@@ -47,8 +53,12 @@ if (options.help) {
     console.log("  -s --server Run http server with SwaggerUI.");
     console.log("  -p --port <port> Use port for the http server.");
     console.log("  -y --yaml Output YAML");
+    console.log("  -sd --source-dir Specify a source directory to serve file references from.");
     console.log("  --prefer-reference Refer to definitions as possible");
     console.log("  --bearer-apikey Convert Bearer headers to apiKey security schema instead of oauth2")
+    console.log("  --open-api-3 Output as OpenAPI 3.0 instead of the default Swagger 2.0")
+    console.log("  --info-title Optional info.title")
+    console.log("  --prefer-file-ref Create refs to file paths instead of importing the content.")
     process.exit();
 }
 
@@ -63,7 +73,11 @@ on('data', (chunk) => {
     apibData += chunk;
 }).on('end', () => {
     try {
-      apibData = apibIncludeDirective.includeDirective(includePath, apibData);
+        apibData = util.normalizeIncludes(apibData)
+        
+        if (!options['prefer-file-ref']){
+            apibData = apibIncludeDirective.includeDirective(includePath, apibData);
+        }
     } catch(e) {
       console.log(e.toString());
       return;
@@ -88,7 +102,13 @@ function processBlueprint(blueprint, opts) {
         return;
     }
 
-    var options = { preferReference: opts['prefer-reference'], bearerAsApikey: opts['bearer-apikey'] };
+    var options = {
+        preferReference: opts['prefer-reference'],
+        bearerAsApikey: opts['bearer-apikey'],
+        openApi3: opts['open-api-3'],
+        infoTitle: opts['info-title'],
+        preferFileRef: opts['prefer-file-ref']
+    };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
             console.log(error);
@@ -123,27 +143,45 @@ function processBlueprint(blueprint, opts) {
     });
 }
 
+function serveApiFiles(response, filePath){
+    const sd = options['source-dir']
+    const directory = sd ? path.normalize(sd) : ''
+    process.cwd()
+    let fullPath = path.join(directory, filePath) // Try given path
+    if (!fs.existsSync(fullPath)) {
+        fullPath = path.join(process.cwd, filePath) // Try execution path
+        if (!fs.existsSync(fullPath)) {
+            fullPath = path.join(path.dirname(options.input || ''), filePath) // Try input path
+            if (!fs.existsSync(fullPath)) {
+                response.statusCode = 404;
+                response.end();
+            }
+        }
+    }
+    response.statusCode = 200;
+    response.write(fs.readFileSync(fullPath));
+    response.end();
+    return;
+}
+
 function runServer(swagger) {
     var server = http.createServer(function(request, response) {
-        console.log(request.url);
-        var path = request.url.split('?')[0];
-        if (path === '/swagger.json') {
+        var filePath = request.url.split('?')[0];
+        if (filePath === '/swagger.json') {
             response.statusCode = 200;
             response.write(JSON.stringify(swagger));
             response.end();
-        } else if (path === '/') {
+        } else if (filePath === '/') {
             response.statusCode = 302;
             response.setHeader('Location', '/index.html?url=/swagger.json');
             response.end();
         } else {
-            var file = 'swagger-ui-master/dist' + path;
-            if (!fs.existsSync(file)) {
-                response.statusCode = 404;
-                response.end();
-                return;
+            const swaggerFile = 'swagger-ui-master/dist' + filePath;
+            if (!fs.existsSync(swaggerFile)) {
+                return serveApiFiles(response, filePath)
             }
             response.statusCode = 200;
-            response.write(fs.readFileSync(file));
+            response.write(fs.readFileSync(swaggerFile));
             response.end();
         }
     });

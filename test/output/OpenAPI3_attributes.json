@@ -1,0 +1,199 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/object": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "otherMessage": {
+                                                    "type": "string"
+                                                },
+                                                "someNum": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "message": ""
+                                        }
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "otherMessage": "",
+                                            "someNum": 0
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        },
+        "/array/object": {
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "otherMessage": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "otherMessage": {
+                                                        "type": "string"
+                                                    },
+                                                    "someNum": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "required": [
+                                            "path"
+                                        ]
+                                    }
+                                },
+                                "example":  [
+                                    {
+                                        "path": "/files",
+                                        "otherMessage": {
+                                            "otherMessage": "",
+                                            "someNum": 0
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "message": ""
+                            },
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/messages": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "message": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "message": ""
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "OtherMessage": {
+                "type": "object",
+                "properties": {
+                    "otherMessage": {
+                        "type": "string"
+                    },
+                    "someNum": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    },
+    "tags": []
+}
