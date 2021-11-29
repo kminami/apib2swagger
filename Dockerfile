@@ -1,5 +1,5 @@
 FROM node:10-alpine
 
-RUN npm install -g git+ssh://git@github.com:HBOCodeLabs/apib2swagger.git
+RUN npm install -g apib2swagger
 
 ENTRYPOINT ["apib2swagger"]
