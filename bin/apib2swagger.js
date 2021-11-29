@@ -146,15 +146,15 @@ function processBlueprint(blueprint, opts) {
 function serveApiFiles(response, filePath){
     const sd = options['source-dir']
     const directory = sd ? path.normalize(sd) : ''
-    process.cwd()
     let fullPath = path.join(directory, filePath) // Try given path
-    if (!fs.existsSync(fullPath)) {
-        fullPath = path.join(process.cwd, filePath) // Try execution path
+    if (!fs.existsSync(fullPath) || !directory) {
+        fullPath = path.join(process.cwd(), filePath) // Try execution path
         if (!fs.existsSync(fullPath)) {
             fullPath = path.join(path.dirname(options.input || ''), filePath) // Try input path
             if (!fs.existsSync(fullPath)) {
                 response.statusCode = 404;
                 response.end();
+                return;
             }
         }
     }

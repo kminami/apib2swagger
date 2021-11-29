@@ -51,7 +51,7 @@ $ apib2swagger -i api.md -s -p 3000
 # When using file references and running the SwaggerUI server, you can specify the source
 # directory with the -sd flag. It will check the input directory and execution directory
 # if -sd is not given.
-$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/projects/src/
+$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/project/src/
 ```
 
 Use as a library.
