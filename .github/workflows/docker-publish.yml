@@ -45,7 +45,7 @@ jobs:
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@8eba69932f928f2bc1b9837d16a095e7e1cb0845
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: us-west-2
           role-to-assume: arn:aws:iam::971383676178:role/gha-role-ecr-push-hbogo
