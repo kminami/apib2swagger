@@ -148,6 +148,12 @@ HOST: https://www.testhost.com
 
 - Response 200 (application/json)
     - Body
+        { "message": "Hello World2" }
+
+    - Attributes (Message)
+
+- Response 200 (application/json)
+    - Body
         { "otherMessage": "Hello World!" }
 
     - Attributes (OtherMessage)

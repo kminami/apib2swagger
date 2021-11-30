@@ -246,10 +246,15 @@
                             "examples": {
                                 "example1": {
                                     "value": {
-                                        "message": "test2"
+                                        "message": "test1"
                                     }
                                 },
                                 "example2": {
+                                    "value": {
+                                        "message": "test2"
+                                    }
+                                },
+                                "example3": {
                                     "value": {
                                         "message": "test3"
                                     }

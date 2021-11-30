@@ -126,6 +126,12 @@ HOST: https://www.testhost.com
 + Request (application/json)
     + Body
     {
+        "message": "test1"
+    }
+
++ Request (application/json)
+    + Body
+    {
         "message": "test2"
     }
 

@@ -185,6 +185,11 @@
                                     },
                                     "example2": {
                                         "value": {
+                                            "message": "Hello World2"
+                                        }
+                                    },
+                                    "example3": {
+                                        "value": {
                                             "otherMessage": "Hello World!"
                                         }
                                     }
