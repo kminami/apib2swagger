@@ -60,6 +60,8 @@ var apib2swagger = require('apib2swagger'),
     apib = '...',
     options = { 
         preferReference: true, 
+
+        // optional (Swagger 2.0 only).
         bearerAsApikey: false,
 
         // optional. swagger 2.0 is used by default.
