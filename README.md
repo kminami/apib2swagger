@@ -32,7 +32,7 @@ $ apib2swagger -i api.md --yaml -o swagger.yaml
 $ apib2swagger -i api.md --prefer-reference
 $ apib2swagger -i api.md --bearer-apikey
 $ apib2swagger -i api.md --open-api-3
-$ apib2swagger -i api.md --info-title
+$ apib2swagger -i api.md --info-title "My API Document Title"
 $ apib2swagger -i api.md --prefer-file-ref
 ```
 
