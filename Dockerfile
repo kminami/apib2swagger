@@ -1,5 +1,6 @@
 FROM node:10-alpine
 
-RUN npm install -g apib2swagger
+RUN apk add git
+RUN npm install -g HBOCodeLabs/apib2swagger
 
 ENTRYPOINT ["apib2swagger"]
