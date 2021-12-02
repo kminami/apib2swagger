@@ -143,23 +143,9 @@ function processBlueprint(blueprint, opts) {
     });
 }
 
-function serveApiFiles(response, filePath){
-    const sd = options['source-dir']
-    const directory = sd ? path.normalize(sd) : ''
-    let fullPath = path.join(directory, filePath) // Try given path
-    if (!fs.existsSync(fullPath) || !directory) {
-        fullPath = path.join(process.cwd(), filePath) // Try execution path
-        if (!fs.existsSync(fullPath)) {
-            fullPath = path.join(path.dirname(options.input || ''), filePath) // Try input path
-            if (!fs.existsSync(fullPath)) {
-                response.statusCode = 404;
-                response.end();
-                return;
-            }
-        }
-    }
+function serveFile(response, path){
     response.statusCode = 200;
-    response.write(fs.readFileSync(fullPath));
+    response.write(fs.readFileSync(path));
     response.end();
     return;
 }
@@ -177,12 +163,14 @@ function runServer(swagger) {
             response.end();
         } else {
             const swaggerFile = 'swagger-ui-master/dist' + filePath;
-            if (!fs.existsSync(swaggerFile)) {
-                return serveApiFiles(response, filePath)
-            }
-            response.statusCode = 200;
-            response.write(fs.readFileSync(swaggerFile));
+            if (fs.existsSync(swaggerFile)) return serveFile(response, swaggerFile)
+
+            const file = util.getAbsolutePath(options, filePath)
+            if (file && fs.existsSync(file)) return serveFile(response, file)
+
+            response.statusCode = 404;
             response.end();
+            return;
         }
     });
     console.log('Serving http://0.0.0.0:' + port + '/ ...');

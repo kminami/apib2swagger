@@ -1,5 +1,7 @@
 const jsonSchemaFromMSON = require('./mson_to_json_schema')
 const GenerateSchema = require('generate-schema')
+const path = require('path')
+const fs = require('fs')
 
 module.exports.hasFileRef = (section) => section
     .replace(/\s+/g, '') // remove spaces
@@ -105,3 +107,21 @@ const fixArraySchema = function (schema) {
     }
 }
 module.exports.fixArraySchema = fixArraySchema
+
+module.exports.getAbsolutePath = function (options, filePath) {
+    const sd = options['source-dir']
+    const directory = sd ? path.normalize(sd) : null
+    let absolutePath 
+    if (directory) {
+        absolutePath = path.join(directory, filePath) // Try given (source-dir) directory
+        if (fs.existsSync(absolutePath)) return absolutePath
+    }
+    
+    absolutePath = path.join(process.cwd(), filePath) // Try execution location's directory
+    if (fs.existsSync(absolutePath)) return absolutePath
+    
+    absolutePath = path.join(path.dirname(options.input || ''), filePath) // Try input file's directory
+    if (fs.existsSync(absolutePath)) return absolutePath
+
+    return null
+}

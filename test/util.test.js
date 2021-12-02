@@ -1,5 +1,7 @@
-const { hasFileRef, normalizeIncludes, getRefFromInclude } = require('../src/util')
+const { hasFileRef, normalizeIncludes, getRefFromInclude, getAbsolutePath } = require('../src/util')
 const assert = require('assert')
+const sinon = require('sinon')
+const fs = require('fs')
 
 describe('util', () => {
     describe('hasFileRef', () => {
@@ -85,4 +87,65 @@ describe('util', () => {
             })
         })
     });
+
+    describe('getAbsolutePath', () => {
+        const existsSync = sinon.stub(fs, 'existsSync')
+        const cwdStub = sinon.stub(process, 'cwd')
+        afterEach(() => {
+            existsSync.reset()
+            cwdStub.reset()
+        })
+
+        it('should return the path to the give source directory if the file exists', () => {
+            existsSync.returns(true)
+            const result = getAbsolutePath({ ['source-dir']: '~/source/dir/' }, '/file.json')
+            assert.equal(result, '~/source/dir/file.json')
+        })
+
+        it('should return the correct path when source is not given and execution path file exists', () => {
+            cwdStub.returns('~/cwd/dir/')
+            existsSync.returns(true)
+
+            const result = getAbsolutePath({}, '/file.json')
+            assert.equal(result, '~/cwd/dir/file.json')
+        })
+
+        it('should return the correct path when source path does not exist and execution path file exists', () => {
+            cwdStub.returns('~/cwd/dir/2/')
+            existsSync.onCall(0).returns(false)
+            existsSync.onCall(1).returns(true)
+
+            const result = getAbsolutePath({ ['source-dir']: '~/source/dir/' }, '/file.json')
+            assert.equal(result, '~/cwd/dir/2/file.json')
+        }) 
+
+        it('should return input path when other options do not exist and input path file exists', () => {
+            cwdStub.returns('~/cwd/dir/')
+            existsSync.onCall(0).returns(false)
+            existsSync.onCall(1).returns(false)
+            existsSync.onCall(2).returns(true)
+
+            const options = {
+                ['source-dir']: '~/source/dir/',
+                input: '~/input/api.md'
+            }
+            const result = getAbsolutePath(options, '/file.json')
+            assert.equal(result, '~/input/file.json')
+        })
+
+        it('should return null if the file does not exist at any of the paths', () => {
+            cwdStub.returns('~/cwd/dir/')
+            existsSync.onCall(0).returns(false)
+            existsSync.onCall(1).returns(false)
+            existsSync.onCall(2).returns(false)
+            existsSync.onCall(3).returns(true)
+
+            const options = {
+                ['source-dir']: '~/source/dir/',
+                input: '~/input/api.md'
+            }
+            const result = getAbsolutePath(options, '/file.json')
+            assert.equal(result, null)
+        })
+    })
 })
