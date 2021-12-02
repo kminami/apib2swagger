@@ -9,7 +9,7 @@ const { processResponses } = require('./src/responses')
 const { processParameters } = require('./src/parameters')
 
 var apib2swagger = module.exports.convertParsed = function (apib, options) {
-    const { openApi3 } = options
+    const { openApi3, infoTitle } = options
     var output = {};
     if (openApi3) {
         output.openapi = '3.0.3';
@@ -17,13 +17,13 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         output.swagger = '2.0';
     }
     output.info = {
-        'title': options.infoTitle || apib.name,
-        'version': options.openApi3 ? '1.0.0' : '',
+        'title': infoTitle || apib.name,
+        'version': openApi3 ? '1.0.0' : '',
         'description': apib.description
     }
     apib.metadata.forEach(function (meta) {
         if (meta.name.toLowerCase() === 'host') {
-            if (options.openApi3) {
+            if (openApi3) {
                 output.servers = [
                     {
                         url: meta.value
@@ -36,8 +36,8 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
                 output.schemes = [urlParts.protocol.replace(':', '')];
             }
         }
-        if (meta.name.toLowerCase() === 'version') {
-            output.info.version = meta.value || '1.0.0'
+        if (meta.name.toLowerCase() === 'version' && meta.value) {
+            output.info.version = meta.value
         }
     });
     output.paths = {};
@@ -61,7 +61,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                const definitions = swaggerDefinitions(content, options.openApi3);
+                const definitions = swaggerDefinitions(content, openApi3);
                 if (openApi3) {
                     output.components.schemas = { ...output.components.schemas, ...definitions }
                 } else {
