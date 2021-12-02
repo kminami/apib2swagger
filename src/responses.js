@@ -44,7 +44,10 @@ const getResponseSchema = (response, options) => {
         }
     } else { // schema then MSON
         if (response.schema) {
-            return parseResponseSchema(response.schema, openApi3)
+            const schema = parseResponseSchema(response.schema, openApi3)
+            if (schema) {
+                return schema
+            }
         }
        
         const inputSchema = searchDataStructure(response.content, openApi3); // Attributes in response

@@ -204,6 +204,31 @@
                 "tags": [],
                 "parameters": []
             }
+        },
+        "/message": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Unparsable schema should fall back to Attributes",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                },
+                                "example": {
+                                    "message": ""
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Message",
+                "operationId": "Message",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
         }
     },
     "components": {

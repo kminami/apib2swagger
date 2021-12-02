@@ -158,6 +158,16 @@ HOST: https://www.testhost.com
 
     - Attributes (OtherMessage)
 
+# Message [GET /message]
+
++ Response 200 (application/json)
+    Unparsable schema should fall back to Attributes
+
+    + Schema
+        {1234{}I'm unparsable}
+
+    + Attributes (Message)
+
 ## Data structures
 
 # Message
