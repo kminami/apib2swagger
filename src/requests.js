@@ -2,9 +2,9 @@ const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromEx
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
 
-const swaggerHeaders = function (context, headers) {
+const swaggerHeaders = function (options, headers) {
     var params = [];
-    const skipParams = context.options.openApi3 ? ['content-type'] : ['content-type', 'authorization']; // handled in another way
+    const skipParams = options.openApi3 ? ['content-type'] : ['content-type', 'authorization']; // handled in another way
     for (let i = 0; i < headers.length; i++) {
         const element = headers[i];
         if (skipParams.includes(element.name.toLowerCase())) continue;
@@ -14,7 +14,7 @@ const swaggerHeaders = function (context, headers) {
             'description': `e.g. ${element.value}`,
             'required': false
         };
-        if (context.options.openApi3) {
+        if (options.openApi3) {
             param.schema = { type: 'string' }
             param.example = element.value
         } else {
@@ -91,13 +91,13 @@ const setSwaggerRequestSchema = (operation, schema) => {
     return operation
 }
 
-const mergeHeaders = (headers, parameters, openApi3) => {
+const mergeHeaders = (headers, parameters, options) => {
     const existingHeaders = parameters
         .filter(param => param.in === 'header')
         .map(param => param.name.toLowerCase());
     
     let nonDuplicateHeaders
-    if (openApi3) {
+    if (options.openApi3) {
         // We are comparing the whole object instead of just the name to allow duplicate names.
         // In doing so, we allow multiple types of Authorization headers to be specified.
         nonDuplicateHeaders = headers.filter(header => 
@@ -111,8 +111,9 @@ const mergeHeaders = (headers, parameters, openApi3) => {
     return parameters.concat(nonDuplicateHeaders);
 }
 
-const processRequestSchema = (request, openApi3) => {
+const processRequestSchema = (request, options) => {
     let schema
+    const { openApi3 } = options
     if (openApi3 && hasFileRef(request.schema)) {
         return getRefFromInclude(request.schema)
     }
@@ -142,12 +143,12 @@ const processRequestSchema = (request, openApi3) => {
     return schema
 }
 
-const processRequestAttributes = (request, openApi3, contentType) => {
+const processRequestAttributes = (request, options, contentType) => {
     const schema = []
-    scheme = searchDataStructure(request.content, openApi3); // Attributes 4
+    const scheme = searchDataStructure(request.content, options); // Attributes 4
     if (scheme) schema.push({ scheme, contentType });
     if (request.reference) {
-        const componentsPath = openApi3 ? '#/components/schemas' : '#/definitions/'
+        const componentsPath = options.openApi3 ? '#/components/schemas' : '#/definitions/'
         schema.push({ 
             scheme: { 
                 '$ref': componentsPath + escapeJSONPointer(request.reference.id + 'Model') 
@@ -194,29 +195,29 @@ const buildBodyExamples = (requestBody, bodyExamples, contentType) => {
     return bodyExamples
 }
 
-const getOpenApiRequestSchema = (request, schema, contentType, preferReference) => {
+const getOpenApiRequestSchema = (request, schema, contentType, options) => {
     /* 
         With OpenAPI3 we can make full use of Attributes because examples no longer live
         on the schema object and therefore, we don't lose our examples when we use 
         Attributes as the schema definition.
     */
     const contentTypeScheme = {}
-    if (!preferReference) {
+    if (!options.preferReference) {
         if (request.schema) { // Schema section in Request section
-            contentTypeScheme[contentType] = processRequestSchema(request, true)
+            contentTypeScheme[contentType] = processRequestSchema(request, options)
         } 
         if (contentTypeScheme[contentType]) {
             schema.push({ scheme: contentTypeScheme[contentType], contentType });
         } else {
-            const attributes = processRequestAttributes(request, true, contentType, schema) 
+            const attributes = processRequestAttributes(request, options, contentType) 
             schema.push(...attributes)
         }
     } else {
-        const attributes = processRequestAttributes(request, true, contentType, schema) 
+        const attributes = processRequestAttributes(request, options, contentType) 
         if (attributes.length) {
             schema.push(...attributes)
         } else {
-            contentTypeScheme[contentType] = processRequestSchema(request, true)
+            contentTypeScheme[contentType] = processRequestSchema(request, options)
             if (contentTypeScheme[contentType]) {
                 schema.push({ scheme: contentTypeScheme[contentType], contentType });
             }
@@ -225,7 +226,7 @@ const getOpenApiRequestSchema = (request, schema, contentType, preferReference) 
     // If there are no schema but we have a body example, try to generate a schema from it.
     // We stop at 1 auto-generated schema.
     if (request.body && schema.length === 0) {
-        contentTypeScheme[contentType] = generateSchemaFromExample(request.headers, request.body, true);
+        contentTypeScheme[contentType] = generateSchemaFromExample(request.headers, request.body, options);
         if (contentTypeScheme[contentType]){
             schema.push({ scheme: contentTypeScheme[contentType], contentType });
         }
@@ -286,9 +287,10 @@ const setOpenApiRequestSchema = (operation, schema) => {
 }
 
 module.exports.processRequests = (operation, action, context) => {
-    const { openApi3, preferReference } = context.options
+    const { options } = context
+    const { openApi3 } = options
     var schema = [],
-        scheme = searchDataStructure(action.content, openApi3); // Attributes 3
+        scheme = searchDataStructure(action.content, options); // Attributes 3
     if (scheme) schema.push({ contentType: 'application/json', scheme });
 
     let bodyExamples = {}
@@ -300,9 +302,9 @@ module.exports.processRequests = (operation, action, context) => {
             
             operation = setSecurity(context, request, operation)
 
-            var headers = swaggerHeaders(context, request.headers);
+            var headers = swaggerHeaders(options, request.headers);
             if (headers) {
-                operation.parameters = mergeHeaders(headers, operation.parameters, openApi3)
+                operation.parameters = mergeHeaders(headers, operation.parameters, options)
             }
          
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
@@ -315,19 +317,19 @@ module.exports.processRequests = (operation, action, context) => {
             if (!openApi3) {
                 // Build schemas and examples for swagger 2.0
                 if (request.schema) {
-                    scheme = processRequestSchema(request, openApi3)
+                    scheme = processRequestSchema(request, options)
                     if (scheme) schema.push({ scheme, contentType });
                 } else {
-                    const attributes = processRequestAttributes(request, openApi3, contentType, schema) 
+                    const attributes = processRequestAttributes(request, options, contentType) 
                     schema.push(...attributes)
                     // fall back to body
                     if (request.body && schema.length === 0) {
-                        scheme = generateSchemaFromExample(request.headers, request.body, openApi3);
+                        scheme = generateSchemaFromExample(request.headers, request.body, options);
                         if (scheme) schema.push({ scheme, contentType });
                     }
                 }
             } else {
-                schema = getOpenApiRequestSchema(request, schema, contentType, preferReference)
+                schema = getOpenApiRequestSchema(request, schema, contentType, options)
             }
         }
     }

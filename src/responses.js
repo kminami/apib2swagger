@@ -3,9 +3,9 @@ const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
 
-const parseResponseSchema = (schema, openApi3) => {
+const parseResponseSchema = (schema, options) => {
     if (!schema) return
-    if (openApi3 && hasFileRef(schema)){
+    if (options.openApi3 && hasFileRef(schema)){
         return getRefFromInclude(schema) 
     }
     try {
@@ -16,8 +16,8 @@ const parseResponseSchema = (schema, openApi3) => {
     } catch (e) { }
 }
 
-const parseResponseBody = (body, header, openApi3) => {
-    if (openApi3 && hasFileRef(body)){
+const parseResponseBody = (body, header, options) => {
+    if (options.openApi3 && hasFileRef(body)){
         return getRefFromInclude(body)
     }
     if (!header.value.match(/application\/.*json/)) {
@@ -29,10 +29,9 @@ const parseResponseBody = (body, header, openApi3) => {
 }
 
 const getResponseSchema = (response, options) => {
-    const { preferReference, openApi3 } = options
-    const componentsPath = openApi3 ? '#/components/schemas' : '#/definitions/'
-    if (preferReference) { // MSON then schema
-        const inputSchema = searchDataStructure(response.content, openApi3); // Attributes in response
+    const componentsPath = options.openApi3 ? '#/components/schemas' : '#/definitions/'
+    if (options.preferReference) { // MSON then schema
+        const inputSchema = searchDataStructure(response.content, options); // Attributes in response
         if (inputSchema) {
             return inputSchema
         } else if (response.reference) {
@@ -40,17 +39,17 @@ const getResponseSchema = (response, options) => {
                 '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
             };
         } else if (response.schema) {
-            return parseResponseSchema(response.schema, openApi3)
+            return parseResponseSchema(response.schema, options)
         }
     } else { // schema then MSON
         if (response.schema) {
-            const schema = parseResponseSchema(response.schema, openApi3)
+            const schema = parseResponseSchema(response.schema, options)
             if (schema) {
                 return schema
             }
         }
        
-        const inputSchema = searchDataStructure(response.content, openApi3); // Attributes in response
+        const inputSchema = searchDataStructure(response.content, options); // Attributes in response
         if (inputSchema) return inputSchema;
         if (response.reference) {
             return {
@@ -60,8 +59,8 @@ const getResponseSchema = (response, options) => {
     }
 }
 
-const setResponseSchema = (responses, response, schema, openApi3) => {
-    if (!openApi3){
+const setResponseSchema = (responses, response, schema, options) => {
+    if (!options.openApi3){
         responses[response.name].schema = schema
         return responses
     }
@@ -96,8 +95,8 @@ const setResponseSchema = (responses, response, schema, openApi3) => {
     return responses
 }
 
-const setResponseExample = (responses, response, header, body, openApi3) => {
-    if (!openApi3) {
+const setResponseExample = (responses, response, header, body, options) => {
+    if (!options.openApi3) {
         // Sample path to Swagger 2.0 example:  
         // responses -> 200 -> examples -> application/json -> { }
         responses[response.name].examples[header.value] = body;
@@ -156,15 +155,15 @@ module.exports.processResponses = (examples, options) => {
             const schema = getResponseSchema(response, options)
 
             if (schema){
-                responses = setResponseSchema(responses, response, schema, openApi3)
+                responses = setResponseSchema(responses, response, schema, options)
             }
             
             for (var n = 0; n < response.headers.length; n++) {
                 var header = response.headers[n];
                 if (header.name.toLowerCase() === 'content-type') {
-                    let body = parseResponseBody(response.body, header, openApi3)
+                    let body = parseResponseBody(response.body, header, options)
                     if (body || body === '') {
-                        responses = setResponseExample(responses, response, header, body, openApi3) 
+                        responses = setResponseExample(responses, response, header, body, options) 
                     }
                 } else if (header.name.toLowerCase() !== 'authorization') {
                     if (openApi3) {

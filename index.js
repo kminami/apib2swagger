@@ -61,7 +61,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                const definitions = swaggerDefinitions(content, openApi3);
+                const definitions = swaggerDefinitions(content, options);
                 if (openApi3) {
                     output.components.schemas = { ...output.components.schemas, ...definitions }
                 } else {
@@ -73,7 +73,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
                 tags[groupName].description = content.content;
             } else if (content.element === 'dataStructure') {
                 const { id } = content.content[0].meta
-                const schema = jsonSchemaFromMSON(content, openApi3);
+                const schema = jsonSchemaFromMSON(content, options);
                 if (openApi3) {
                     output.components.schemas[id] = schema
                 } else {
@@ -103,11 +103,12 @@ function swaggerPathName(uriTemplate) {
     return decodeURIComponent(uriTemplate.expand(params));
 }
 
-var swaggerDefinitions = function (resource, openApi3) {
+var swaggerDefinitions = function (resource, options) {
     var scheme;
     const result = {}
+    const { openApi3 } = options
     if (resource.name) {
-        scheme = searchDataStructure(resource.content, openApi3); // Attributes 1
+        scheme = searchDataStructure(resource.content, options); // Attributes 1
         if (openApi3) {
             if (scheme) {
                 result[resource.name] = scheme
@@ -118,10 +119,10 @@ var swaggerDefinitions = function (resource, openApi3) {
     }
     const model = resource.model;
     if (model.content && model.name) {
-        scheme = searchDataStructure(model.content, openApi3); // Attribute 2
+        scheme = searchDataStructure(model.content, options); // Attribute 2
         // fall back to body
         if (!scheme && model.content.length > 0) {
-            scheme = generateSchemaFromExample(model.headers, model.content[0].content);
+            scheme = generateSchemaFromExample(model.headers, model.content[0].content, options);
         }
         if (openApi3) {
             if (scheme) {
@@ -135,11 +136,10 @@ var swaggerDefinitions = function (resource, openApi3) {
 };
 
 var swaggerPaths = function (context, tag, resource) {
-    const { openApi3 } = context.options
     var paths = context.swagger.paths;
     var uriTemplate = UriTemplate.parse(resource.uriTemplate),
         pathName = swaggerPathName(uriTemplate);
-    var pathParams = processParameters(resource.parameters, uriTemplate, openApi3); // for swagger ui
+    var pathParams = processParameters(resource.parameters, uriTemplate, context.options); // for swagger ui
     for (var k = 0; k < resource.actions.length; k++) {
         var action = resource.actions[k];
         if (!action.attributes.uriTemplate) {
@@ -155,14 +155,13 @@ var swaggerPaths = function (context, tag, resource) {
 };
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
-    const { openApi3 } = context.options
     var operation = {
         'responses': processResponses(action.examples, context.options),
         'summary': action.name,
         'operationId': action.name,
         'description': action.description,
         'tags': tag ? [tag] : [],
-        'parameters': pathParams.concat(processParameters(action.parameters, uriTemplate, openApi3))
+        'parameters': pathParams.concat(processParameters(action.parameters, uriTemplate, context.options))
     };
     var produces = {}, producesExist = false;
     for (var key in operation.responses) {

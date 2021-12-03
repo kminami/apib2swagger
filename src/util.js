@@ -63,15 +63,15 @@ module.exports.getRefFromInclude = (include) => {
     return { $ref: path }
 }
 
-module.exports.searchDataStructure = function (contents, openApi3) {
+module.exports.searchDataStructure = function (contents, options) {
     for (var i = 0; i < contents.length; i++) {
         var content = contents[i];
         if (content.element !== "dataStructure") continue;
-        return jsonSchemaFromMSON(content, openApi3);
+        return jsonSchemaFromMSON(content, options);
     }
 };
 
-module.exports.generateSchemaFromExample = function (headers, example, openApi3) {
+module.exports.generateSchemaFromExample = function (headers, example, options) {
     if (!headers || !headers.some(header => (
         header.name === 'Content-Type' && header.value.match(/application\/.*json/)
     ))) {
@@ -86,7 +86,7 @@ module.exports.generateSchemaFromExample = function (headers, example, openApi3)
         delete scheme.title;
         delete scheme.$schema;
         // if we have example values in the body then insert them into the json schema
-        if (!openApi3) {
+        if (!options.openApi3) {
             if (scheme['type'] === 'object') {
                 scheme.example = body;
             } else if (scheme['type'] === 'array') {
