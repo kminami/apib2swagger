@@ -3,7 +3,7 @@ name: Docker
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   IMAGE_NAME: 971383676178.dkr.ecr.us-west-2.amazonaws.com/apib2swagger:latest
