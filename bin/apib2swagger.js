@@ -166,7 +166,7 @@ function runServer(swagger) {
             if (fs.existsSync(swaggerFile)) return serveFile(response, swaggerFile)
 
             const file = util.getAbsolutePath(options, filePath)
-            if (file && fs.existsSync(file)) return serveFile(response, file)
+            if (file) return serveFile(response, file)
 
             response.statusCode = 404;
             response.end();
