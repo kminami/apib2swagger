@@ -1,0 +1,66 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+            "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/some/resource": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "./includes/resource-response-schema.json"
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "$ref": "./includes/resource-response-body.json"
+                                    },
+                                    "example2": {
+                                        "$ref": "./includes/resource-response-body-2.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "example1": {
+                                    "$ref": "./includes/resource-request-body.json"
+                                },
+                                "example2": {
+                                    "$ref": "./includes/resource-request-body-2.json"
+                                }
+                            },
+                            "schema": {
+                                "$ref": "./includes/resource-request-schema.json"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {}
+    },
+    "tags": []
+}

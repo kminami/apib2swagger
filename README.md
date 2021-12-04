@@ -13,6 +13,7 @@ Supported versions:
         - VERSION -> .info.version
     - [Include directive](https://github.com/danielgtaylor/aglio#including-files)
 - Swagger 2.0
+- OpenAPI 3.0.3
 - Node.js 10.x, 12.x or higher
 
 ## Install
@@ -30,6 +31,9 @@ $ apib2swagger -i api.md -o swagger.json
 $ apib2swagger -i api.md --yaml -o swagger.yaml
 $ apib2swagger -i api.md --prefer-reference
 $ apib2swagger -i api.md --bearer-apikey
+$ apib2swagger -i api.md --open-api-3
+$ apib2swagger -i api.md --info-title "My API Document Title"
+$ apib2swagger -i api.md --prefer-file-ref
 ```
 
 Without -i option it reads from STDIN, without -o option writes to STDOUT.
@@ -43,13 +47,33 @@ SwaggerUI will be automatically downloaded to current dir.
 ```shell
 $ apib2swagger -i api.md -s
 $ apib2swagger -i api.md -s -p 3000
+
+# When using file references and running the SwaggerUI server, you can specify the source
+# directory with the -sd flag. It will check the input directory and execution directory
+# if -sd is not given.
+$ apib2swagger -i api.md -s --prefer-file-ref -sd ~/project/src/
 ```
 
 Use as a library.
 ```javascript
 var apib2swagger = require('apib2swagger'),
     apib = '...',
-    options = { preferReference: true, bearerAsApikey: false };
+    options = { 
+        preferReference: true, 
+
+        // optional (Swagger 2.0 only).
+        bearerAsApikey: false,
+
+        // optional. swagger 2.0 is used by default.
+        openApi3: true, 
+
+        // optional. title will be grabbed from blueprint if not specified.
+        infoTitle: 'My API Document Title', 
+
+        // optional (Open API 3 only). 
+        // will set a $ref to the given file path instead of including the file contents.
+        preferFileRef: true 
+    };
 
 apib2swagger.convert(apib, options, function (error, result) {
     if (!error) console.log(result.swagger);
@@ -74,7 +98,7 @@ You can use container images in GitHub Container Registory like `ghcr.io/kminami
 
 ## License
 
-Copyright (c) 2015 Keisuke Minami
+Copyright (c) 2021 Keisuke Minami
 
 MIT
 

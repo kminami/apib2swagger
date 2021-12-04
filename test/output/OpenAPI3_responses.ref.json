@@ -1,0 +1,245 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "",
+        "version": "1.0.0",
+        "description": ""
+    },
+    "servers": [
+        {
+          "url": "https://www.testhost.com"
+        }
+    ],
+    "paths": {
+        "/some/resource": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Array schema",
+                        "headers": {
+                            "X-My-Message-Header": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "description": "This is the message description "
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "other": {
+                                                    "type": "string",
+                                                    "description": "This is the message description "
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "message": {
+                                                        "type": "string",
+                                                        "description": "This is the message description "
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "other": "Hello World!"
+                                        }
+                                    },
+                                    "example3": {
+                                        "value": {
+                                            "other": "Hello World!"
+                                        }
+                                    },
+                                    "example4": {
+                                        "value": [
+                                            {
+                                                "message": "Hello World!"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Invalid data"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            },
+            "post": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {
+                            "X-My-Message-Header": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "This is the message description "
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        },
+        "/test/attributes": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Message"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/OtherMessage"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "example1": {
+                                        "value": {
+                                            "message": "Hello World!"
+                                        }
+                                    },
+                                    "example2": {
+                                        "value": {
+                                            "message": "Hello World2"
+                                        }
+                                    },
+                                    "example3": {
+                                        "value": {
+                                            "otherMessage": "Hello World!"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Some resource",
+                "operationId": "Some resource",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        },
+        "/message": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Unparsable schema should fall back to Attributes",
+                        "headers": {},
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                },
+                                "example": {
+                                    "message": ""
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Message",
+                "operationId": "Message",
+                "description": "",
+                "tags": [],
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas":{
+            "Message": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "OtherMessage": {
+                "type": "object",
+                "properties": {
+                    "otherMessage": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "tags": []
+}

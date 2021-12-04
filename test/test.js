@@ -4,6 +4,14 @@ var assert = require("assert"),
     apib2swagger = require("../index.js"),
     tv4 = require('tv4');
 
+const swaggerSchema = JSON.parse(fs.readFileSync('test/swagger_20_schema.json'));
+const openAPI3Schema = JSON.parse(fs.readFileSync('test/openAPI_30_schema.json'))
+const meta_schema = JSON.parse(fs.readFileSync('test/meta_schema.json'));
+
+tv4.addSchema('http://json-schema.org/draft-04/schema', meta_schema);
+tv4.addSchema('https://spec.openapis.org/oas/3.0/schema/2021-09-28', openAPI3Schema);
+tv4.addSchema('http://swagger.io/v2/schema.json', swaggerSchema);
+      
 var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A9/examples/',
     localInput = 'test/input/',
     localOutput = 'test/output/',
@@ -39,7 +47,13 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#38.md',
         'Issue-#49.md',
         'apiblueprint_uber.md',
-        'apiblueprint_valid_simple.md'
+        'apiblueprint_valid_simple.md',
+        'schema_without_body.md',
+        'OpenAPI3_responses.md',
+        'OpenAPI3_requests.md',
+        'OpenAPI3_headers.md',
+        'OpenAPI3_includes.md',
+        'OpenAPI3_attributes.md'
     ];
 
 var fetch = function (file) {
@@ -79,6 +93,7 @@ const checkResultByFile = (result, file, originalExtension, newExtension) => {
         var f = fs.readFileSync(localOutput + file.replace(originalExtension, newExtension));
         var expected_answer = JSON.parse(f);
         assert.deepEqual(result.swagger, expected_answer);
+        const schema = file.includes('OpenAPI3') ? openAPI3Schema : swaggerSchema
         var validation_result = tv4.validateResult(result.swagger, schema);
         if (validation_result.error) {
             console.log(validation_result);
@@ -95,16 +110,16 @@ describe("apib2swagger", function () {
             return Promise.all(files.map(fetch));
         });
 
-        schema = JSON.parse(fs.readFileSync('test/swagger_20_schema.json'));
-        tv4.addSchema('http://swagger.io/v2/schema.json', schema);
-        meta_schema = JSON.parse(fs.readFileSync('test/meta_schema.json'));
-        tv4.addSchema('http://json-schema.org/draft-04/schema', meta_schema);
-
         files.concat(includedFiles).forEach(function (file) {
+            const options = {}
+            if (file.includes('OpenAPI3')){
+                options.openApi3 = true
+            }
+
             it(file, function (done) {
                 this.timeout(10000); // 10s
                 var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
-                apib2swagger.convert(apib, function (error, result) {
+                apib2swagger.convert(apib, options, function (error, result) {
                     if (error) {
                         return done(error);
                     }
@@ -117,7 +132,7 @@ describe("apib2swagger", function () {
             it(file + ' (--prefer-reference)', function (done) {
                 this.timeout(10000); // 10s
                 var apib = fs.readFileSync(localInput + file, "utf-8").replace(/\r/g, '');
-                apib2swagger.convert(apib, { preferReference: true }, function (error, result) {
+                apib2swagger.convert(apib, { ...options, preferReference: true }, function (error, result) {
                     if (error) {
                         return done(error);
                     }
@@ -140,7 +155,7 @@ describe("apib2swagger", function () {
                         return done(error);
                     }
                     assert.equal(result.swagger.info.version, test.output);
-                    var validation_result = tv4.validateResult(result.swagger, schema);
+                    var validation_result = tv4.validateResult(result.swagger, swaggerSchema);
                     if (validation_result.error) {
                         console.log(validation_result);
                     }
