@@ -1,10 +1,10 @@
 # apib2swagger
 
-[![Build Status](https://travis-ci.org/kminami/apib2swagger.svg?branch=master)](https://travis-ci.org/kminami/apib2swagger)
+![Build Status](https://github.com/kminami/apib2swagger/actions/workflows/nodejs.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/kminami/apib2swagger/badge.svg?branch=master)](https://coveralls.io/github/kminami/apib2swagger?branch=master)
 [![npm version](https://badge.fury.io/js/apib2swagger.svg)](https://badge.fury.io/js/apib2swagger)
 
-Convert [API Blueprint][] to [Swagger][].
+Convert [API Blueprint](https://apiblueprint.org/) to [Swagger 2.0](http://swagger.io/) or [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification).
 
 Supported versions:
 - API Blueprint 1A9
@@ -99,6 +99,3 @@ $ docker run -it --rm -v $(pwd):/docs ghcr.io/kminami/apib2swagger -i /docs/api.
 Copyright (c) 2021 Keisuke Minami
 
 MIT
-
-[API Blueprint]: https://apiblueprint.org/ "API Blueprint"
-[Swagger]: http://swagger.io/ "Swagger"
