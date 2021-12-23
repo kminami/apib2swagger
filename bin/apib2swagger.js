@@ -126,7 +126,7 @@ function processBlueprint(blueprint, opts) {
             return runServer(swagger);
         }
         if (opts.yaml) {
-            var data = yaml.safeDump(swagger);
+            var data = yaml.dump(swagger);
             if (output !== '-') {
                 fs.writeFileSync(output, data);
             } else {
