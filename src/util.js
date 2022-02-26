@@ -87,10 +87,8 @@ module.exports.generateSchemaFromExample = function (headers, example, options) 
         delete scheme.$schema;
         // if we have example values in the body then insert them into the json schema
         if (!options.openApi3) {
-            if (scheme['type'] === 'object') {
+            if (scheme['type'] === 'object' || scheme['type'] === 'array') {
                 scheme.example = body;
-            } else if (scheme['type'] === 'array') {
-                scheme.items.example = body;
             }
         }
         return scheme;
