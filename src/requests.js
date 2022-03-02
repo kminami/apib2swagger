@@ -1,6 +1,7 @@
 const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
+const toOpenApi = require('json-schema-to-openapi-schema')
 
 const swaggerHeaders = function (options, headers) {
     var params = [];
@@ -250,8 +251,14 @@ const setOpenApiRequestSchema = (operation, schema) => {
         if (!operation.requestBody.content[schema[0].contentType]){
             operation.requestBody.content[schema[0].contentType] = schema[0].scheme 
         } else {
-            operation.requestBody.content[schema[0].contentType].schema = schema[0].scheme 
+            operation.requestBody.content[schema[0].contentType].schema = schema[0].scheme
         }
+        Object.keys(operation.requestBody.content).forEach(contentType => {
+            const s = operation.requestBody.content[contentType].schema;
+            if (s) {
+                operation.requestBody.content[contentType].schema = toOpenApi(s)
+            }
+        })
         return operation
     } 
 
@@ -281,6 +288,12 @@ const setOpenApiRequestSchema = (operation, schema) => {
                 operation.requestBody.content[s.contentType].schema, // existing
                 s.scheme // additional
             ]
+        }
+    })
+    Object.keys(operation.requestBody.content).forEach(contentType => {
+        const s = operation.requestBody.content[contentType].schema;
+        if (s) {
+            operation.requestBody.content[contentType].schema = toOpenApi(s)
         }
     })
     return operation

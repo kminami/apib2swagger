@@ -2,6 +2,7 @@ const { fixArraySchema, hasFileRef, getRefFromInclude, searchDataStructure } = r
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
+const toOpenApi = require('json-schema-to-openapi-schema')
 
 const parseResponseSchema = (schema, options) => {
     if (!schema) return
@@ -64,6 +65,10 @@ const setResponseSchema = (responses, response, schema, options) => {
         responses[response.name].schema = schema
         return responses
     }
+    // Convert JSON Schema draft04 to OpenAPI 3.0.x (type: null -> nullable: true)
+    // TODO: Skip this for OpenAPI 3.1.x or later.
+    schema = toOpenApi(schema)
+
     // In openAPI 3 the schema lives under the content type
     const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')
     if (!contentTypeHeader.value) {
