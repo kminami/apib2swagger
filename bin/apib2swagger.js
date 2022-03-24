@@ -111,6 +111,12 @@ function processBlueprint(blueprint, opts) {
     };
     apib2swagger.convert(blueprint, options, function(error, result) {
         if (error) {
+            if (error.stack && error.result) {
+                // override toString() of drafter's error to expand error.result.error.location
+                console.log(error.stack);
+                console.log(JSON.stringify(error.result, 0, 2));
+                return;
+            }
             console.log(error);
             return;
         }
