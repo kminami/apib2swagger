@@ -51,11 +51,11 @@ function convert(mson, options) {
     schema.required = [];
     schema.properties = {};
     for (var j = 0; mson.content && j < mson.content.length; j++) {
-        var member = mson.content[j];
+        const member = mson.content[j];
         if (member.element !== "member") continue;
-        schema.properties[member.content.key.content] = convert(member.content.value, options);
+        var propertySchema = convert(member.content.value, options);
         if (member.meta && member.meta.description) {
-            schema.properties[member.content.key.content].description = member.meta.description;
+            propertySchema.description = member.meta.description;
         }
         var fixedType = false;
         if (member.attributes && member.attributes.typeAttributes) {
@@ -68,14 +68,19 @@ function convert(mson, options) {
                         schema.required.push(member.content.key.content);
                         break;
                     case 'nullable':
-                        schema.properties[member.content.key.content].type = [schema.properties[member.content.key.content].type, 'null']
+                        if (propertySchema.$ref) {
+                            propertySchema = {oneOf: [propertySchema, {type: 'null'}]};
+                        } else {
+                            propertySchema.type = [propertySchema.type, 'null']
+                        }
                         break;
                 }
             });
         }
-        if (schema.properties[member.content.key.content].type === 'array' && !fixedType) {
-            schema.properties[member.content.key.content].items = {}; // reset item schema
+        if (propertySchema.type === 'array' && !fixedType) {
+            propertySchema.items = {}; // reset item schema
         }
+        schema.properties[member.content.key.content] = propertySchema;
     }
 
     // According to schema definition, required is a stringArray, which must be non-empty

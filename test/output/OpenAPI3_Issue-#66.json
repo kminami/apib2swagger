@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "ImagesType": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "BodyType": {
+        "type": "object",
+        "required": [
+          "images"
+        ],
+        "properties": {
+          "images": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ImagesType"
+              },
+              {
+                "nullable": true
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
