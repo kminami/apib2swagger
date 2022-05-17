@@ -226,45 +226,56 @@
       "properties": {
         "id": {
           "type": "number",
+          "example": 1,
           "description": "unique numerical identified"
         },
         "principal_id": {
           "type": "number",
+          "example": 1,
           "description": "unique numerical identified across users and groups"
         },
         "provider_key": {
           "type": "string",
+          "example": "p401",
           "description": "unique identifier in string format"
         },
         "email": {
           "type": "string",
+          "example": "chad@test.com",
           "description": "email address"
         },
         "email_hash": {
           "type": "string",
+          "example": "a51b767bfd8fccf9b5831a99e1f97c81",
           "description": "hashed email address"
         },
         "username": {
           "type": "string",
+          "example": "admin",
           "description": "username of the user"
         },
         "first_name": {
           "type": "string",
+          "example": "Chad",
           "description": "the first name of the user"
         },
         "last_name": {
           "type": "string",
+          "example": "Smith",
           "description": "the last name of the user"
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "example": "password"
         },
         "user_role": {
           "type": "string",
+          "example": "administrator",
           "description": "the role of the user"
         },
         "confirmed": {
           "type": "boolean",
+          "example": true,
           "description": "has the user been confirmed"
         },
         "locked": {

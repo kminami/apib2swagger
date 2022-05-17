@@ -148,10 +148,12 @@
       ],
       "properties": {
         "id": {
-          "type": "number"
+          "type": "number",
+          "example": 42
         },
         "text": {
-          "type": "string"
+          "type": "string",
+          "example": "Hello World"
         },
         "author": {
           "$ref": "#/definitions/Author",
@@ -169,10 +171,12 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "example": "Boba Fett"
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "example": "fett@intergalactic.com"
         }
       }
     },
@@ -180,10 +184,12 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "example": "Lando Calrissian"
         },
         "email": {
-          "type": "string"
+          "type": "string",
+          "example": "lando@intergalactic.com"
         }
       }
     }

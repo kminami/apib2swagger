@@ -38,6 +38,9 @@ function convert(mson, options) {
         case 'boolean':
         case 'string':
         case 'number':
+            if (mson.content) {
+                return { type: mson.element, example: mson.content };
+            }
             return { type: mson.element };
         default:
             if (!mson.content) {

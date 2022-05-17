@@ -17,14 +17,17 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "250FF"
                 },
                 "created": {
                   "type": "number",
+                  "example": 1415203908,
                   "description": "Time stamp"
                 },
                 "percent_off": {
                   "type": "number",
+                  "example": 25,
                   "description": "A positive integer between 1 and 100 that represents the discount the coupon will apply."
                 },
                 "redeem_by": {

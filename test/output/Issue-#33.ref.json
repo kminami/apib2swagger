@@ -55,6 +55,7 @@
                     "properties": {
                       "state": {
                         "type": "string",
+                        "example": "COMPLETED",
                         "description": "State code"
                       },
                       "stateCounters": {
@@ -72,6 +73,7 @@
                             },
                             "count": {
                               "type": "number",
+                              "example": 5,
                               "description": "number of plans"
                             }
                           }
