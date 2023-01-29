@@ -1,4 +1,4 @@
-const { fixArraySchema, hasFileRef, getRefFromInclude, searchDataStructure } = require('./util')
+const { fixArraySchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
@@ -56,6 +56,12 @@ const getResponseSchema = (response, options) => {
             return {
                 '$ref': componentsPath + escapeJSONPointer(response.reference.id + 'Model')
             };
+        }
+    }
+    for (let content of response.content) {
+        const schema = generateSchemaFromExample(response.headers, content.content, options)
+        if (schema) {
+            return schema
         }
     }
 }

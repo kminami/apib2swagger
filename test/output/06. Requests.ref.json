@@ -20,6 +20,17 @@
               "application/json": {
                 "message": "Hello World!"
               }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "message": "Hello World!"
+              }
             }
           }
         },

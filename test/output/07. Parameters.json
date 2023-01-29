@@ -21,6 +21,21 @@
                 "id": 1,
                 "message": "Hello World!"
               }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "id": 1,
+                "message": "Hello World!"
+              }
             }
           }
         },
@@ -101,6 +116,38 @@
             "headers": {},
             "examples": {
               "application/json": [
+                {
+                  "id": 1,
+                  "message": "Hello World!"
+                },
+                {
+                  "id": 2,
+                  "message": "Time is an illusion. Lunchtime doubly so."
+                },
+                {
+                  "id": 3,
+                  "message": "So long, and thanks for all the fish."
+                }
+              ]
+            },
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "number"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "message"
+                ]
+              },
+              "example": [
                 {
                   "id": 1,
                   "message": "Hello World!"

@@ -31,6 +31,57 @@
                   }
                 }
               }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "_links": {
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "type": "object",
+                      "properties": {
+                        "href": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "gists": {
+                      "type": "object",
+                      "properties": {
+                        "href": {
+                          "type": "string"
+                        },
+                        "templated": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "authorization": {
+                      "type": "object",
+                      "properties": {
+                        "href": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "_links": {
+                  "self": {
+                    "href": "/"
+                  },
+                  "gists": {
+                    "href": "/gists?{since}",
+                    "templated": true
+                  },
+                  "authorization": {
+                    "href": "/authorization"
+                  }
+                }
+              }
             }
           }
         },

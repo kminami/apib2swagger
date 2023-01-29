@@ -94,6 +94,17 @@
               "application/json": {
                 "prop1": "a string"
               }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prop1": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "prop1": "a string"
+              }
             }
           }
         },
