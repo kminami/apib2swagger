@@ -6,3 +6,9 @@ FORMAT: 1A
 ## Config
 + alice (string, required) - information about alice
 + bob (string, required) - information about bob
+
+## Filter
++ status (array[enum])
+    + Members
+        + option1
+        + option2

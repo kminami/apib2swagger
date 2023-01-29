@@ -27,6 +27,15 @@
           "description": "information about bob"
         }
       }
+    },
+    "Filter": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "array",
+          "items": {}
+        }
+      }
     }
   },
   "securityDefinitions": {},

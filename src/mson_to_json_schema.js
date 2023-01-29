@@ -99,6 +99,7 @@ function convert(mson, options) {
 }
 
 function convertEnum(contents) {
+    if (!contents) return null
     var schema = { type: '', enum: [] };
     for (var i = 0; i < contents.length; i++) {
         var content = contents[i];
