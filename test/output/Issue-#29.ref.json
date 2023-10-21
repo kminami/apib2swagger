@@ -54,7 +54,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/posts": {
@@ -134,6 +135,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     }

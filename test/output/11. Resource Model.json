@@ -46,7 +46,8 @@
         "parameters": [],
         "produces": [
           "application/vnd.siren+json"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -78,6 +79,10 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "text/plain",
+          "application/json"
         ]
       }
     }

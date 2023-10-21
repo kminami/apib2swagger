@@ -68,7 +68,8 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "consumes": []
       }
     },
     "/v1/estimates/price": {
@@ -159,7 +160,8 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "consumes": []
       }
     },
     "/v1/estimates/time": {
@@ -242,7 +244,8 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "consumes": []
       }
     },
     "/v1/me": {
@@ -285,7 +288,8 @@
         "tags": [
           "User"
         ],
-        "parameters": []
+        "parameters": [],
+        "consumes": []
       }
     },
     "/v1/history": {
@@ -354,7 +358,8 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "consumes": []
       }
     }
   },

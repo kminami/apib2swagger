@@ -43,7 +43,8 @@
         "parameters": [],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -59,7 +60,10 @@
         "tags": [
           "Messages"
         ],
-        "parameters": []
+        "parameters": [],
+        "consumes": [
+          "text/plain"
+        ]
       }
     }
   },

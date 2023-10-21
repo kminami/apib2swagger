@@ -41,7 +41,8 @@
         "tags": [
           "Coupons"
         ],
-        "parameters": []
+        "parameters": [],
+        "consumes": []
       }
     }
   },

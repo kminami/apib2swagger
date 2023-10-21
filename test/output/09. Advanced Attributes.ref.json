@@ -42,7 +42,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/coupons": {
@@ -84,7 +85,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       },
       "post": {
         "responses": {
@@ -129,6 +131,9 @@
           }
         ],
         "produces": [
+          "application/json"
+        ],
+        "consumes": [
           "application/json"
         ]
       }

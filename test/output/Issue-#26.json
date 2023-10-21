@@ -78,7 +78,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -157,6 +158,9 @@
           }
         ],
         "produces": [
+          "application/json"
+        ],
+        "consumes": [
           "application/json"
         ]
       }

@@ -51,7 +51,8 @@
         "parameters": [],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/users": {
@@ -93,7 +94,8 @@
         "parameters": [],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/users/{user_id}": {
@@ -144,7 +146,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     }
   },

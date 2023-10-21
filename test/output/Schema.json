@@ -46,6 +46,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     },
@@ -86,6 +89,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     },
@@ -172,6 +178,9 @@
           }
         ],
         "produces": [
+          "application/json"
+        ],
+        "consumes": [
           "application/json"
         ]
       }

@@ -14,7 +14,7 @@ Supported versions:
     - [Include directive](https://github.com/danielgtaylor/aglio#including-files)
 - Swagger 2.0
 - OpenAPI 3.0.3
-- Node.js 14.x, 16.x, 18.x or higher
+- Node.js 18.x, 20.x or higher
 
 ## Install
 

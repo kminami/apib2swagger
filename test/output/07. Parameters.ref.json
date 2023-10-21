@@ -65,7 +65,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -105,6 +106,10 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "text/plain",
+          "application/json"
         ]
       }
     },
@@ -182,7 +187,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     }
   },

@@ -26,7 +26,8 @@
         "parameters": [],
         "produces": [
           "text/plain"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -42,7 +43,10 @@
         "tags": [
           "Messages"
         ],
-        "parameters": []
+        "parameters": [],
+        "consumes": [
+          "text/plain"
+        ]
       }
     }
   },

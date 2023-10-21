@@ -308,6 +308,8 @@ module.exports.processRequests = (operation, action, context) => {
 
     let bodyExamples = {}
 
+    if (!openApi3) operation.consumes = []
+
     for (var j = 0; j < action.examples.length; j++) {
         var example = action.examples[j];
         for (var l = 0; l < example.requests.length; l++) {
@@ -320,8 +322,14 @@ module.exports.processRequests = (operation, action, context) => {
                 operation.parameters = mergeHeaders(headers, operation.parameters, options)
             }
          
+            var contentType = 'application/json'
             const contentTypeHeader = request.headers.find((h) => h.name === 'Content-Type')
-            const contentType = contentTypeHeader ? contentTypeHeader.value : 'application/json'
+            if (contentTypeHeader) {
+                contentType = contentTypeHeader.value
+                if (!openApi3 && !operation.consumes.includes(contentType)) {
+                    operation.consumes.push(contentType)
+                }
+            }
 
             if (request.body && openApi3) {
                 bodyExamples = buildBodyExamples(request.body, bodyExamples, contentType)
@@ -346,12 +354,19 @@ module.exports.processRequests = (operation, action, context) => {
             }
         }
     }
-    if (openApi3 && (schema.length || Object.keys(bodyExamples).length)){  
+    if (openApi3 && (schema.length || Object.keys(bodyExamples).length)) {  
         operation.requestBody = { content: {} }
         if (Object.keys(bodyExamples).length) {
             operation.requestBody.content = bodyExamples
         }
     }
-  
+    if (!openApi3) {
+        for (var s of schema) {
+            if (!operation.consumes.includes(s.contentType)) {
+                operation.consumes.push(s.contentType)
+            }
+        }
+    }
+ 
     return openApi3 ? setOpenApiRequestSchema(operation, schema) : setSwaggerRequestSchema(operation, schema)
 }

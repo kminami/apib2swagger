@@ -130,7 +130,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     }
   },

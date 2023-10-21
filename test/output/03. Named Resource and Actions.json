@@ -24,7 +24,8 @@
         "parameters": [],
         "produces": [
           "text/plain"
-        ]
+        ],
+        "consumes": []
       },
       "put": {
         "responses": {
@@ -38,7 +39,10 @@
         "operationId": "Update a Message",
         "description": "`Update a message` - nice and simple naming is the best way to go.",
         "tags": [],
-        "parameters": []
+        "parameters": [],
+        "consumes": [
+          "text/plain"
+        ]
       }
     }
   },

@@ -53,7 +53,8 @@
         "parameters": [],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     }
   },

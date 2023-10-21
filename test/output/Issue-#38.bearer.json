@@ -29,6 +29,9 @@
             "default": 10
           }
         ],
+        "consumes": [
+          "application/json"
+        ],
         "security": [
           {
             "basic": []

@@ -92,7 +92,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/task/{id}": {
@@ -149,7 +150,8 @@
         ],
         "produces": [
           "application/json"
-        ]
+        ],
+        "consumes": []
       },
       "delete": {
         "responses": {
@@ -171,7 +173,8 @@
             "required": true,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       }
     }
   },

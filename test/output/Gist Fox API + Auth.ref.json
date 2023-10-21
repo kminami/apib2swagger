@@ -92,7 +92,8 @@
         "parameters": [],
         "produces": [
           "application/hal+json"
-        ]
+        ],
+        "consumes": []
       }
     },
     "/gists/{id}": {
@@ -132,7 +133,8 @@
             "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       },
       "patch": {
         "responses": {
@@ -185,6 +187,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       },
       "delete": {
@@ -216,7 +221,8 @@
             "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       }
     },
     "/gists": {
@@ -275,7 +281,8 @@
         ],
         "produces": [
           "application/hal+json"
-        ]
+        ],
+        "consumes": []
       },
       "post": {
         "responses": {
@@ -325,6 +332,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     },
@@ -358,7 +368,8 @@
             "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       },
       "delete": {
         "responses": {
@@ -389,7 +400,8 @@
             "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       },
       "get": {
         "responses": {
@@ -427,7 +439,8 @@
             "required": false,
             "type": "string"
           }
-        ]
+        ],
+        "consumes": []
       }
     },
     "/authorization": {
@@ -453,6 +466,7 @@
           "Access Authorization and Control"
         ],
         "parameters": [],
+        "consumes": [],
         "security": [
           {
             "basic": []
@@ -495,6 +509,9 @@
             }
           }
         ],
+        "consumes": [
+          "application/json"
+        ],
         "security": [
           {
             "basic": []
@@ -516,6 +533,7 @@
           "Access Authorization and Control"
         ],
         "parameters": [],
+        "consumes": [],
         "security": [
           {
             "basic": []

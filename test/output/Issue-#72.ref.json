@@ -1,0 +1,168 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/api/scim/v2/Users": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {
+              "application/scim+json": {}
+            },
+            "schema": {
+              "$ref": "#/definitions/ExistingUser"
+            }
+          }
+        },
+        "summary": "Create a user",
+        "operationId": "Create a user",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "schemas": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "userName": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "givenName": {
+                      "type": "string"
+                    },
+                    "familyName": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "emails": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "primary": {
+                        "type": "boolean"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "externalId": {
+                  "type": "string"
+                },
+                "active": {
+                  "type": "boolean"
+                }
+              },
+              "example": {
+                "schemas": [
+                  "urn:ietf:params:scim:schemas:core:2.0:User"
+                ],
+                "userName": "fredsmith",
+                "name": {
+                  "givenName": "Fred",
+                  "familyName": "Smith"
+                },
+                "emails": [
+                  {
+                    "primary": true,
+                    "value": "fred@example.com",
+                    "type": "work"
+                  }
+                ],
+                "displayName": "Fred Smith",
+                "externalId": "fred-external-id",
+                "active": true
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/scim+json"
+        ],
+        "consumes": [
+          "application/scim+json"
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ]
+      }
+    },
+    "/api2/scim/v2/Users": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {
+              "application/scim+json": {}
+            },
+            "schema": {
+              "$ref": "#/definitions/ExistingUser"
+            }
+          }
+        },
+        "summary": "Create a user 2",
+        "operationId": "Create a user 2",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "produces": [
+          "application/scim+json"
+        ],
+        "consumes": [
+          "application/scim+json"
+        ],
+        "security": [
+          {
+            "oauth2": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Create a user": {},
+    "Create a user 2": {},
+    "ExistingUser": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "securityDefinitions": {
+    "oauth2": {
+      "type": "oauth2",
+      "flow": "accessCode",
+      "authorizationUrl": "",
+      "tokenUrl": "",
+      "scopes": {}
+    }
+  },
+  "tags": []
+}

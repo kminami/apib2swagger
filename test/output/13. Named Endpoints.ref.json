@@ -41,6 +41,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     },
@@ -87,6 +90,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     }

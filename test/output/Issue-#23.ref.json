@@ -39,6 +39,9 @@
               }
             }
           }
+        ],
+        "consumes": [
+          "application/json"
         ]
       }
     }
