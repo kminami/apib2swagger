@@ -3,6 +3,7 @@ const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
 const toOpenApi = require('json-schema-to-openapi-schema')
+const generateSchema = require('generate-schema')
 
 const parseResponseSchema = (schema, options) => {
     if (!schema) return
@@ -71,9 +72,20 @@ const setResponseSchema = (responses, response, schema, options) => {
         responses[response.name].schema = schema
         return responses
     }
+    if (schema.type === 'extend') { // Workaround for invalid JSON schema
+        if (schema.enum.length > 0) {
+            schema = generateSchema.json('', schema.enum[0])
+        } else {
+            schema.type = 'object'
+        }
+    }
     // Convert JSON Schema draft04 to OpenAPI 3.0.x (type: null -> nullable: true)
     // TODO: Skip this for OpenAPI 3.1.x or later.
-    schema = toOpenApi(schema)
+    try {
+        schema = toOpenApi(schema)
+    } catch (e) {
+        return responses // TODO: Handle error
+    }
 
     // In openAPI 3 the schema lives under the content type
     const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')

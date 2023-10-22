@@ -32,7 +32,7 @@ function convert(mson, options) {
                 return { type: 'array', items: { 'anyOf': mson.content.map((m) => convert(m, options)) } };
             }
         case 'enum':
-            return convertEnum(mson.content);
+            return convertEnum(mson.content, componentsPath);
         case 'object':
             break;
         case 'boolean':
@@ -98,19 +98,38 @@ function convert(mson, options) {
     return schema;
 }
 
-function convertEnum(contents) {
+function convertEnum(contents, componentsPath) {
     if (!contents) return null
-    var schema = { type: '', enum: [] };
+    const schemaList = []
     for (var i = 0; i < contents.length; i++) {
         var content = contents[i];
-        if (!schema.type) {
-            schema.type = content.element;
-        } else if (schema.type != content.element) {
-            // WARN!! mixed type enum
+        switch (content.element) {
+        case "boolean":
+        case "string":
+        case "number":
+        case "array":
+        case "enum": // TODO
+        case "object":
+            let schema = schemaList.find(v => v.type === content.element)
+            if (!schema) {
+                schema = { type: content.element, enum: [] }
+                schemaList.push(schema)
+            }
+            schema.enum.push(content.content)
+            break
+        default: // CustomType
+            schemaList.push({ '$ref': componentsPath + escapeJSONPointer(content.element) })
+            break
         }
-        schema.enum.push(content.content);
     }
-    return schema;
+    switch (schemaList.length) {
+    case 0:
+        return {}
+    case 1:
+        return schemaList[0]
+    default:
+        return { oneOf: schemaList}
+    }
 }
 
 module.exports = convertMsonToJsonSchema;

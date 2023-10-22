@@ -1,0 +1,63 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1/api/v1"
+    }
+  ],
+  "paths": {
+    "/extensions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Extension"
+                },
+                "example": {
+                  "id": ""
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get extensions",
+        "operationId": "Get extensions",
+        "description": "",
+        "tags": [
+          "Extensions"
+        ],
+        "parameters": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Extension": {
+        "$ref": "#/components/schemas/Foo type"
+      },
+      "Foo type": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "the id"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Extensions"
+    }
+  ]
+}
