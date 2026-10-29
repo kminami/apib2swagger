@@ -1,0 +1,73 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API",
+    "version": "",
+    "description": ""
+  },
+  "host": "example.org",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "List",
+        "operationId": "List",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "consumes": []
+      }
+    },
+    "/items": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "List_2",
+        "operationId": "List_2",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "consumes": []
+      }
+    },
+    "/products": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "List",
+        "operationId": "List_3",
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "consumes": []
+      }
+    }
+  },
+  "definitions": {
+    "Users": {},
+    "Items": {},
+    "Products": {}
+  },
+  "securityDefinitions": {},
+  "tags": []
+}

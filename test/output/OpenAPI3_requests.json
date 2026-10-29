@@ -165,7 +165,7 @@
                     }
                 },
                 "summary": "Some resource",
-                "operationId": "Some resource",
+                "operationId": "Some resource_2",
                 "description": "",
                 "tags": [],
                 "parameters": [],
@@ -211,7 +211,7 @@
                     }
                 },
                 "summary": "Some resource",
-                "operationId": "Some resource",
+                "operationId": "Some resource_3",
                 "description": "",
                 "tags": [],
                 "parameters": [],
@@ -236,7 +236,7 @@
                     }
                 },
                 "summary": "Some resource",
-                "operationId": "Some resource",
+                "operationId": "Some resource_4",
                 "description": "",
                 "tags": [],
                 "parameters": [],
@@ -286,7 +286,7 @@
                     }
                 },
                 "summary": "Some resource",
-                "operationId": "Some resource",
+                "operationId": "Some resource_5",
                 "description": "",
                 "tags": [],
                 "parameters": [],
