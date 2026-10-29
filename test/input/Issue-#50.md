@@ -10,5 +10,10 @@ HOST: http://example.org
 
 ## Items [/items]
 
+### List_2 [GET]
++ Response 200 (application/json)
+
+## Products [/products]
+
 ### List [GET]
 + Response 200 (application/json)
