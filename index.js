@@ -50,7 +50,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         output.securityDefinitions = {};
     }
 
-    var converterContext = { swagger: output, options: options };
+    var converterContext = { swagger: output, options: options, operationIds: {} };
     var tags = {};
     apib.content.filter(function (content) {
         return content.element === 'category';
@@ -156,10 +156,17 @@ var swaggerPaths = function (context, tag, resource) {
 };
 
 var swaggerOperation = function (context, pathParams, uriTemplate, action, tag) {
+    var opId = action.name;
+    if (context.operationIds[opId]) {
+        context.operationIds[opId]++;
+        opId = opId + '_' + context.operationIds[opId];
+    } else {
+        context.operationIds[opId] = 1;
+    }
     var operation = {
         'responses': processResponses(action.examples, context.options),
         'summary': action.name,
-        'operationId': action.name,
+        'operationId': opId,
         'description': action.description,
         'tags': tag ? [tag] : [],
         'parameters': pathParams.concat(processParameters(action.parameters, uriTemplate, context.options))
