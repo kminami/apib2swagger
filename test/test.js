@@ -58,7 +58,8 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'OpenAPI3_attributes.md',
         'OpenAPI3_Issue-#58.md',
         'OpenAPI3_Issue-#66.md',
-        'OpenAPI3_Issue-#73.md'
+        'OpenAPI3_Issue-#73.md',
+        'OpenAPI3_Issue-#79.md'
     ];
 
 var fetch = function (file) {
