@@ -1,0 +1,58 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "My Title",
+    "version": "1.0.0",
+    "description": "This is some blueprint"
+  },
+  "servers": [
+    {
+      "url": "http://example.org"
+    }
+  ],
+  "paths": {
+    "/some/url": {
+      "put": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "summary": "Some super awesome endpoint",
+        "operationId": "Some super awesome endpoint",
+        "description": "",
+        "tags": [
+          "A Group"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "tags": [
+    {
+      "name": "A Group"
+    }
+  ]
+}
