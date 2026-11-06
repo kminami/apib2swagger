@@ -87,22 +87,26 @@ const setResponseSchema = (responses, response, schema, options) => {
         return responses // TODO: Handle error
     }
 
-    // In openAPI 3 the schema lives under the content type
+    // In openAPI 3 the schema lives under the content type.
+    // A response is not required to declare a Content-Type header
+    // (see API Blueprint specification); fall back to application/json,
+    // mirroring how requests are handled in requests.js.
     const contentTypeHeader = response.headers.find((h) => h.name.toLowerCase() === 'content-type')
-    if (!contentTypeHeader.value) {
+    const contentType = contentTypeHeader ? contentTypeHeader.value : 'application/json'
+    if (!contentType) {
         return responses
     }
-    if (!responses[response.name].content[contentTypeHeader.value]){
-        responses[response.name].content[contentTypeHeader.value] = {}
+    if (!responses[response.name].content[contentType]){
+        responses[response.name].content[contentType] = {}
     }
-    
-    if (!responses[response.name].content[contentTypeHeader.value].schema){
-        responses[response.name].content[contentTypeHeader.value].schema = schema
+
+    if (!responses[response.name].content[contentType].schema){
+        responses[response.name].content[contentType].schema = schema
         return responses
     }
 
     // If a schema already exists, we need to use oneOf for additional unique schemas.
-    let existingSchema = { ...responses[response.name].content[contentTypeHeader.value].schema }
+    let existingSchema = { ...responses[response.name].content[contentType].schema }
     // It is possible that the given schema is a duplicate. If that's the case, we don't add it.
     if (isEqual(existingSchema, schema)){
         return responses
@@ -110,10 +114,10 @@ const setResponseSchema = (responses, response, schema, options) => {
 
     if (existingSchema.oneOf){
         if (!existingSchema.oneOf.find((s) => isEqual(s, schema))){
-            responses[response.name].content[contentTypeHeader.value].schema.oneOf.push(schema)
+            responses[response.name].content[contentType].schema.oneOf.push(schema)
         }
     } else {
-        responses[response.name].content[contentTypeHeader.value].schema = { oneOf: [existingSchema, schema] }
+        responses[response.name].content[contentType].schema = { oneOf: [existingSchema, schema] }
     }
     return responses
 }
