@@ -3,6 +3,7 @@
   "version": "1.17.1",
   "description": "Convert API Blueprint to Swagger.",
   "bin": "./bin/apib2swagger.js",
+  "type": "commonjs",
   "scripts": {
     "prepareTest": "cross-env PREPARE=true mocha",
     "test": "nyc --reporter=html --reporter=text mocha",
