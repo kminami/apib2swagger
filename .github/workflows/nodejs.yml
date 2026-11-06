@@ -31,15 +31,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js (for npm ci)
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24.x
     - name: Use Bun
       uses: oven-sh/setup-bun@v2
-    - name: npm ci, then test on Bun
+    - name: bun install and test
       run: |
-        npm ci
+        bun install
         bun run test
       env:
         CI: true
@@ -50,17 +46,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js (for npm ci)
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24.x
     - name: Use Deno
       uses: denoland/setup-deno@v2
       with:
         deno-version: v2.x
-    - name: npm ci, then test on Deno
+    - name: deno install and test
       run: |
-        npm ci
+        deno install
         deno run -A npm:mocha
       env:
         CI: true
