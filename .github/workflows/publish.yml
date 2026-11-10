@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: 24.x
         registry-url: 'https://registry.npmjs.org'
-    - name: Update npm (trusted publishing requires npm >= 11.5.1)
+    - name: Update npm (staged publishing requires npm >= 11.15.0)
       run: npm install -g npm@latest
     - name: Check the tag matches the package version
       run: |
@@ -37,5 +37,5 @@ jobs:
         npm test
       env:
         CI: true
-    - name: Publish to npm
-      run: npm publish
+    - name: Stage on npm (goes live after maintainer approval)
+      run: npm stage publish
