@@ -1,0 +1,41 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - v*
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js 24.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 24.x
+        registry-url: 'https://registry.npmjs.org'
+    - name: Update npm (trusted publishing requires npm >= 11.5.1)
+      run: npm install -g npm@latest
+    - name: Check the tag matches the package version
+      run: |
+        PKG_VERSION=$(node -p "require('./package.json').version")
+        if [ "v$PKG_VERSION" != "$GITHUB_REF_NAME" ]; then
+          echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG_VERSION"
+          exit 1
+        fi
+    - name: npm install, build, and test
+      run: |
+        npm ci
+        npm run build --if-present
+        npm test
+      env:
+        CI: true
+    - name: Publish to npm
+      run: npm publish
