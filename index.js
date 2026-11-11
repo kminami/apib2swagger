@@ -50,7 +50,21 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         output.securityDefinitions = {};
     }
 
-    var converterContext = { swagger: output, options: options, operationIds: {}, usedOperationIds: new Set() };
+    // Collect the document's data structures first, so the MSON converter
+    // can resolve mixin includes against them (see src/mson_to_json_schema.js).
+    var dataStructures = {};
+    apib.content.filter(function (content) {
+        return content.element === 'category';
+    }).forEach(function (category) {
+        category.content.forEach(function (content) {
+            if (content.element === 'dataStructure') {
+                dataStructures[content.content[0].meta.id] = content.content[0];
+            }
+        });
+    });
+    var converterOptions = { ...options, dataStructures: dataStructures };
+
+    var converterContext = { swagger: output, options: converterOptions, operationIds: {}, usedOperationIds: new Set() };
     var tags = {};
     apib.content.filter(function (content) {
         return content.element === 'category';
@@ -62,7 +76,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
         category.content.forEach(function (content) {
             if (content.element === 'resource') {
                 // (name, description) in Resource section are discarded
-                const definitions = swaggerDefinitions(content, options);
+                const definitions = swaggerDefinitions(content, converterOptions);
                 if (openApi3) {
                     output.components.schemas = { ...output.components.schemas, ...definitions }
                 } else {
@@ -74,7 +88,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
                 tags[groupName].description = content.content;
             } else if (content.element === 'dataStructure') {
                 const { id } = content.content[0].meta
-                const schema = jsonSchemaFromMSON(content, options);
+                const schema = jsonSchemaFromMSON(content, converterOptions);
                 if (openApi3) {
                     output.components.schemas[id] = toOpenApi(schema)
                 } else {

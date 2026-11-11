@@ -55,6 +55,11 @@ function convert(mson, options) {
     schema.properties = {};
     for (var j = 0; mson.content && j < mson.content.length; j++) {
         const member = mson.content[j];
+        if (member.element === "ref") {
+            // MSON mixin include: merge the referenced type's members
+            mergeInclude(schema, member, options);
+            continue;
+        }
         if (member.element !== "member") continue;
         var propertySchema = convert(member.content.value, options);
         if (member.meta && member.meta.description) {
@@ -96,6 +101,35 @@ function convert(mson, options) {
     }
 
     return schema;
+}
+
+// Merge the members of a mixin-included type into the schema being built.
+// The included type is converted with the same options; its own includes
+// are resolved recursively, with the include stack guarding against cycles.
+// Members defined by the including type itself win over included ones.
+function mergeInclude(schema, ref, options) {
+    var href = ref.content && ref.content.href;
+    var registry = options && options.dataStructures;
+    if (!href || !registry || !registry[href]) return;
+    var stack = (options && options.includeStack) || [];
+    if (stack.includes(href)) return; // cyclic include
+    var includedSchema = convert(registry[href], { ...options, includeStack: [...stack, href] });
+    if (!includedSchema) return;
+    // A type extending another type converts to an allOf wrapper; its own
+    // members live in the object part of that wrapper.
+    var objectPart = includedSchema.properties ? includedSchema
+        : (includedSchema.allOf || []).find(function (part) { return part.properties; });
+    if (!objectPart) return;
+    for (var key in objectPart.properties) {
+        if (!(key in schema.properties)) {
+            schema.properties[key] = objectPart.properties[key];
+        }
+    }
+    (objectPart.required || []).forEach(function (name) {
+        if (!schema.required.includes(name)) {
+            schema.required.push(name);
+        }
+    });
 }
 
 function convertEnum(contents, componentsPath) {

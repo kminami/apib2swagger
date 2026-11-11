@@ -1,0 +1,110 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/accounts/register": {
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "uid": "",
+                "first_name": "",
+                "last_name": ""
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Member"
+            }
+          }
+        },
+        "summary": "Submit Registration",
+        "operationId": "Submit Registration",
+        "description": "",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "first_name",
+                "last_name"
+              ],
+              "example": {
+                "first_name": "",
+                "last_name": ""
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Person": {
+      "type": "object",
+      "required": [
+        "first_name",
+        "last_name"
+      ],
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        }
+      }
+    },
+    "Member": {
+      "type": "object",
+      "required": [
+        "uid",
+        "first_name",
+        "last_name"
+      ],
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        }
+      }
+    },
+    "Member Registrations": {}
+  },
+  "securityDefinitions": {},
+  "tags": [
+    {
+      "name": "Members"
+    }
+  ]
+}
