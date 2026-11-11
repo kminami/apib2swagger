@@ -61,6 +61,7 @@ function convert(mson, options) {
             propertySchema.description = member.meta.description;
         }
         var fixedType = false;
+        var nullable = false;
         if (member.attributes && member.attributes.typeAttributes) {
             member.attributes.typeAttributes.forEach(function (typeAttr) {
                 switch (typeAttr) {
@@ -71,17 +72,28 @@ function convert(mson, options) {
                         schema.required.push(member.content.key.content);
                         break;
                     case 'nullable':
-                        if (propertySchema.$ref) {
-                            propertySchema = {oneOf: [propertySchema, {type: 'null'}]};
-                        } else {
-                            propertySchema.type = [propertySchema.type, 'null']
-                        }
+                        nullable = true;
                         break;
                 }
             });
         }
-        if (propertySchema.type === 'array' && !fixedType) {
+        if (propertySchema.type === 'array' && !fixedType && !nullable) {
             propertySchema.items = {}; // reset item schema
+        }
+        if (nullable) {
+            // A JSON Schema draft-04 style null type (a type array or a
+            // {type: 'null'} branch) is not valid in a Swagger 2.0 or
+            // OpenAPI 3.0 schema; express nullability with the mode's own
+            // marker instead, wrapping a bare $ref in allOf so the marker
+            // has a schema to attach to.
+            if (propertySchema.$ref) {
+                propertySchema = { 'allOf': [propertySchema] };
+            }
+            if (openApi3) {
+                propertySchema.nullable = true;
+            } else {
+                propertySchema['x-nullable'] = true;
+            }
         }
         schema.properties[member.content.key.content] = propertySchema;
     }

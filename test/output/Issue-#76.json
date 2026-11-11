@@ -1,0 +1,110 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/user": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {
+              "application/json": {
+                "id": "",
+                "nickname": null,
+                "homeAddress": {
+                  "street": ""
+                }
+              }
+            },
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "nickname": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "homeAddress": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "street": {
+                      "type": "string"
+                    }
+                  },
+                  "description": "The home address"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          }
+        },
+        "summary": "Get one user",
+        "operationId": "Get one user",
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "produces": [
+          "application/json"
+        ],
+        "consumes": []
+      }
+    }
+  },
+  "definitions": {
+    "A user": {},
+    "Address": {
+      "type": "object",
+      "properties": {
+        "street": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "homeAddress": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Address",
+              "description": "The home address"
+            }
+          ],
+          "x-nullable": true
+        }
+      }
+    }
+  },
+  "securityDefinitions": {},
+  "tags": [
+    {
+      "name": "Users"
+    }
+  ]
+}
