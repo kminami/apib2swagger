@@ -1,0 +1,87 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "paths": {
+    "/api/iconsets/v3/search": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "content": {}
+          }
+        },
+        "summary": "By Keyword",
+        "operationId": "By Keyword",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "description": "the name or tag of the icon or any other phrase.",
+            "required": true,
+            "example": "home",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "description": "the maximum number of icons which you'd like to receive",
+            "schema": {
+              "type": "number",
+              "default": 25
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "the offset from the first received result",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "the style of the icons",
+            "schema": {
+              "type": "string",
+              "default": "all",
+              "enum": [
+                "all",
+                "ios7",
+                "win10"
+              ]
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "the language code to get localized result",
+            "required": true,
+            "example": "en-US",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "en-US",
+                "fr-FR",
+                "ja-JP"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "tags": []
+}
