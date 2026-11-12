@@ -106,6 +106,40 @@ const fixArraySchema = function (schema) {
 }
 module.exports.fixArraySchema = fixArraySchema
 
+// Convert a JSON Schema draft-04 nullable type array (e.g. ["string", "null"])
+// to the Swagger 2.0 form: the remaining type(s) plus x-nullable. Swagger 2.0
+// supports neither the null type nor multiple types; the definitions side
+// (mson_to_json_schema.js) already emits x-nullable directly, so this aligns
+// schemas that arrive as raw draft-04 (e.g. drafter's response schemas).
+// A type array of only ["null"] is left alone, as is a standalone
+// {type: 'null'} (a different, pre-existing quirk).
+const fixNullableSchema = function (schema) {
+    if (!schema || typeof schema !== 'object') return;
+    if (Array.isArray(schema.type) && schema.type.includes('null')) {
+        var types = schema.type.filter(function (t) { return t !== 'null'; });
+        if (types.length === 1) {
+            schema.type = types[0];
+            schema['x-nullable'] = true;
+        } else if (types.length > 1) {
+            schema.type = types;
+            schema['x-nullable'] = true;
+        }
+    }
+    if (schema.properties) {
+        for (var k in schema.properties) fixNullableSchema(schema.properties[k]);
+    }
+    if (schema.items && typeof schema.items === 'object') {
+        fixNullableSchema(schema.items);
+    }
+    ['allOf', 'anyOf', 'oneOf'].forEach(function (key) {
+        if (Array.isArray(schema[key])) schema[key].forEach(fixNullableSchema);
+    });
+    if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+        fixNullableSchema(schema.additionalProperties);
+    }
+}
+module.exports.fixNullableSchema = fixNullableSchema
+
 module.exports.getAbsolutePath = function (options, filePath) {
     const sd = options['source-dir']
     const directory = sd ? path.normalize(sd) : null

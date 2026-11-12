@@ -25,10 +25,8 @@
                   "type": "string"
                 },
                 "name": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": "string",
+                  "x-nullable": true
                 }
               },
               "required": [
@@ -109,10 +107,8 @@
           "type": "string"
         },
         "name": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string",
+          "x-nullable": true
         }
       }
     },
@@ -123,13 +119,11 @@
       ],
       "properties": {
         "users": {
-          "type": [
-            "array",
-            "null"
-          ],
+          "type": "array",
           "items": {
             "$ref": "#/definitions/User"
-          }
+          },
+          "x-nullable": true
         }
       }
     }

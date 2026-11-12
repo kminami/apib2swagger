@@ -1,4 +1,4 @@
-const { fixArraySchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
+const { fixArraySchema, fixNullableSchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
@@ -14,6 +14,13 @@ const parseResponseSchema = (schema, options) => {
         const result = JSON.parse(schema);
         delete result['$schema'];
         fixArraySchema(result); // work around for Swagger UI / Editor
+        if (!options.openApi3) {
+            // Swagger 2.0 has no null type; express draft-04 nullable type
+            // arrays with x-nullable instead. OpenAPI 3 mode does not need
+            // this: setResponseSchema converts the schema with
+            // json-schema-to-openapi-schema, which handles nullability.
+            fixNullableSchema(result);
+        }
         return result
     } catch (e) { }
 }
