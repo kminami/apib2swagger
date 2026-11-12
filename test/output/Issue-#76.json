@@ -18,7 +18,17 @@
                 "nickname": null,
                 "homeAddress": {
                   "street": ""
-                }
+                },
+                "named": {
+                  "name": "",
+                  "nickname": ""
+                },
+                "tags": [
+                  {
+                    "name": "",
+                    "nickname": ""
+                  }
+                ]
               }
             },
             "schema": {
@@ -44,6 +54,26 @@
                     }
                   },
                   "description": "The home address"
+                },
+                "named": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "nickname": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "tags": {
+                  "type": [
+                    "array",
+                    "null"
+                  ]
                 }
               },
               "required": [
@@ -76,6 +106,29 @@
         }
       }
     },
+    "Base": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Named": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "nickname": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "User": {
       "type": "object",
       "required": [
@@ -96,6 +149,21 @@
               "description": "The home address"
             }
           ],
+          "x-nullable": true
+        },
+        "named": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Named"
+            }
+          ],
+          "x-nullable": true
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Named"
+          },
           "x-nullable": true
         }
       }

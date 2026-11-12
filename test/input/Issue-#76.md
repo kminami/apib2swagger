@@ -11,7 +11,15 @@
 ## Address (object)
 + street (string)
 
+## Base (object)
++ name (string)
+
+## Named (Base)
++ nickname (string)
+
 ## User (object)
 + id (string, required)
 + nickname (string, nullable)
 + homeAddress (Address, nullable) - The home address
++ named (Named, nullable)
++ tags (array[Named], nullable)

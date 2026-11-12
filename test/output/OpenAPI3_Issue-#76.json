@@ -33,6 +33,23 @@
                       },
                       "description": "The home address",
                       "nullable": true
+                    },
+                    "named": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "nickname": {
+                          "type": "string"
+                        }
+                      },
+                      "nullable": true
+                    },
+                    "tags": {
+                      "type": "array",
+                      "nullable": true,
+                      "items": {}
                     }
                   },
                   "required": [
@@ -44,7 +61,17 @@
                   "nickname": null,
                   "homeAddress": {
                     "street": ""
-                  }
+                  },
+                  "named": {
+                    "name": "",
+                    "nickname": ""
+                  },
+                  "tags": [
+                    {
+                      "name": "",
+                      "nickname": ""
+                    }
+                  ]
                 }
               }
             }
@@ -70,6 +97,29 @@
           }
         }
       },
+      "Base": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Named": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Base"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "nickname": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
       "User": {
         "type": "object",
         "required": [
@@ -90,6 +140,21 @@
                 "description": "The home address"
               }
             ],
+            "nullable": true
+          },
+          "named": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Named"
+              }
+            ],
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Named"
+            },
             "nullable": true
           }
         }

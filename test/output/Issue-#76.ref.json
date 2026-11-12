@@ -18,7 +18,17 @@
                 "nickname": null,
                 "homeAddress": {
                   "street": ""
-                }
+                },
+                "named": {
+                  "name": "",
+                  "nickname": ""
+                },
+                "tags": [
+                  {
+                    "name": "",
+                    "nickname": ""
+                  }
+                ]
               }
             },
             "schema": {
@@ -50,6 +60,29 @@
         }
       }
     },
+    "Base": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Named": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "nickname": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "User": {
       "type": "object",
       "required": [
@@ -70,6 +103,21 @@
               "description": "The home address"
             }
           ],
+          "x-nullable": true
+        },
+        "named": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/Named"
+            }
+          ],
+          "x-nullable": true
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Named"
+          },
           "x-nullable": true
         }
       }
