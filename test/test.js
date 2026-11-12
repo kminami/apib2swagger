@@ -49,6 +49,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'Issue-#50.md',
         'Issue-#57.md',
         'Issue-#72.md',
+        'Issue-#78.md',
         'apiblueprint_uber.md',
         'apiblueprint_valid_simple.md',
         'schema_without_body.md',
@@ -60,6 +61,7 @@ var remote = 'https://raw.githubusercontent.com/apiaryio/api-blueprint/format-1A
         'OpenAPI3_Issue-#58.md',
         'OpenAPI3_Issue-#66.md',
         'OpenAPI3_Issue-#73.md',
+        'OpenAPI3_Issue-#78.md',
         'OpenAPI3_Issue-#79.md'
     ];
 

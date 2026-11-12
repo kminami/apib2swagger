@@ -55,6 +55,11 @@ function convert(mson, options) {
     schema.properties = {};
     for (var j = 0; mson.content && j < mson.content.length; j++) {
         const member = mson.content[j];
+        if (member.element === "ref") {
+            // MSON mixin include: merge the referenced type's members
+            mergeInclude(schema, member, options);
+            continue;
+        }
         if (member.element !== "member") continue;
         var propertySchema = convert(member.content.value, options);
         if (member.meta && member.meta.description) {
@@ -96,6 +101,62 @@ function convert(mson, options) {
     }
 
     return schema;
+}
+
+// Merge the members of a mixin-included type into the schema being built.
+// The included type is converted with the same options; its own includes
+// are resolved recursively, with the include stack guarding against cycles.
+// Members defined by the including type itself win over included ones.
+function mergeInclude(schema, ref, options) {
+    var href = ref.content && ref.content.href;
+    if (!href) return;
+    mergeType(schema, href, options);
+}
+
+function mergeType(schema, name, options) {
+    var registry = options && options.dataStructures;
+    if (!registry || !registry[name]) return;
+    var stack = (options && options.includeStack) || [];
+    if (stack.includes(name)) return; // cyclic include
+    var childOptions = { ...options, includeStack: [...stack, name] };
+    var includedSchema = convert(registry[name], childOptions);
+    if (!includedSchema) return;
+    if (includedSchema.allOf) {
+        // A type extending another type converts to an allOf wrapper:
+        // merge its own members and, recursively, the base type's.
+        includedSchema.allOf.forEach(function (part) {
+            if (part.properties) {
+                mergeMembers(schema, part);
+            } else if (part.$ref) {
+                var baseName = refToTypeName(part.$ref, options);
+                if (baseName) mergeType(schema, baseName, childOptions);
+            }
+        });
+    } else {
+        mergeMembers(schema, includedSchema);
+    }
+}
+
+function mergeMembers(schema, objectPart) {
+    var properties = objectPart.properties || {};
+    for (var key in properties) {
+        if (!(key in schema.properties)) {
+            schema.properties[key] = properties[key];
+        }
+    }
+    (objectPart.required || []).forEach(function (name) {
+        if (!schema.required.includes(name)) {
+            schema.required.push(name);
+        }
+    });
+}
+
+// A $ref produced by the converter points at a named type in the
+// definitions / components section; recover the type name from it.
+function refToTypeName(ref, options) {
+    var prefix = options && options.openApi3 ? '#/components/schemas/' : '#/definitions/';
+    if (!ref.startsWith(prefix)) return null;
+    return ref.slice(prefix.length).replace(/~1/g, '/').replace(/~0/g, '~');
 }
 
 function convertEnum(contents, componentsPath) {
