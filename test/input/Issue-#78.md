@@ -9,10 +9,19 @@ FORMAT: 1A
 - first_name (string, required)
 - last_name (string, required)
 
+## `Base` (object)
+
+- id (number, required)
+
+## `Named` (Base)
+
+- name (string)
+
 ## `Member` (object)
 
 - uid (string, required)
 - Include `Person`
+- Include `Named`
 
 # Group Members
 

@@ -20,7 +20,9 @@
                 "example": {
                   "uid": "",
                   "first_name": "",
-                  "last_name": ""
+                  "last_name": "",
+                  "id": 0,
+                  "name": ""
                 }
               }
             }
@@ -66,12 +68,39 @@
           }
         }
       },
+      "Base": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          }
+        }
+      },
+      "Named": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Base"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
       "Member": {
         "type": "object",
         "required": [
           "uid",
           "first_name",
-          "last_name"
+          "last_name",
+          "id"
         ],
         "properties": {
           "uid": {
@@ -81,6 +110,12 @@
             "type": "string"
           },
           "last_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "number"
+          },
+          "name": {
             "type": "string"
           }
         }

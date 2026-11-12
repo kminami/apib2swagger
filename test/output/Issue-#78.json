@@ -16,7 +16,9 @@
               "application/json": {
                 "uid": "",
                 "first_name": "",
-                "last_name": ""
+                "last_name": "",
+                "id": 0,
+                "name": ""
               }
             },
             "schema": {
@@ -30,12 +32,19 @@
                 },
                 "last_name": {
                   "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                },
+                "name": {
+                  "type": "string"
                 }
               },
               "required": [
                 "uid",
                 "first_name",
-                "last_name"
+                "last_name",
+                "id"
               ]
             }
           }
@@ -96,12 +105,39 @@
         }
       }
     },
+    "Base": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "number"
+        }
+      }
+    },
+    "Named": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/Base"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
     "Member": {
       "type": "object",
       "required": [
         "uid",
         "first_name",
-        "last_name"
+        "last_name",
+        "id"
       ],
       "properties": {
         "uid": {
@@ -111,6 +147,12 @@
           "type": "string"
         },
         "last_name": {
+          "type": "string"
+        },
+        "id": {
+          "type": "number"
+        },
+        "name": {
           "type": "string"
         }
       }
