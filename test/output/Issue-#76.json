@@ -38,28 +38,21 @@
                   "type": "string"
                 },
                 "nickname": {
-                  "type": [
-                    "string",
-                    "null"
-                  ]
+                  "type": "string",
+                  "x-nullable": true
                 },
                 "homeAddress": {
-                  "type": [
-                    "object",
-                    "null"
-                  ],
+                  "type": "object",
                   "properties": {
                     "street": {
                       "type": "string"
                     }
                   },
-                  "description": "The home address"
+                  "description": "The home address",
+                  "x-nullable": true
                 },
                 "named": {
-                  "type": [
-                    "object",
-                    "null"
-                  ],
+                  "type": "object",
                   "properties": {
                     "name": {
                       "type": "string"
@@ -67,13 +60,12 @@
                     "nickname": {
                       "type": "string"
                     }
-                  }
+                  },
+                  "x-nullable": true
                 },
                 "tags": {
-                  "type": [
-                    "array",
-                    "null"
-                  ]
+                  "type": "array",
+                  "x-nullable": true
                 }
               },
               "required": [
