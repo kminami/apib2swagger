@@ -91,6 +91,20 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
 }
 
 function swaggerPathName(uriTemplate) {
+    // A hard-coded query string in the href (e.g. /search?term={term})
+    // is not part of the path. Drop everything from the '?' that appears
+    // outside a template expression before expanding the path.
+    var templateText = uriTemplate.templateText;
+    var depth = 0;
+    for (var i = 0; i < templateText.length; i++) {
+        var c = templateText[i];
+        if (c === '{') depth++;
+        else if (c === '}') depth--;
+        else if (c === '?' && depth === 0) {
+            uriTemplate = UriTemplate.parse(templateText.slice(0, i));
+            break;
+        }
+    }
     var params = {};
     for (var i = 0; i < uriTemplate.expressions.length; i++) {
         var exp = uriTemplate.expressions[i];

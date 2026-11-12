@@ -1,0 +1,82 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": "",
+    "description": ""
+  },
+  "paths": {
+    "/api/iconsets/v3/search": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {},
+            "examples": {}
+          }
+        },
+        "summary": "By Keyword",
+        "operationId": "By Keyword",
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "term",
+            "in": "query",
+            "description": "the name or tag of the icon or any other phrase.",
+            "required": true,
+            "x-example": "home",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "description": "the maximum number of icons which you'd like to receive",
+            "required": false,
+            "type": "number",
+            "default": 25
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "the offset from the first received result",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "the style of the icons",
+            "required": false,
+            "type": "string",
+            "default": "all",
+            "enum": [
+              "all",
+              "ios7",
+              "win10"
+            ]
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "the language code to get localized result",
+            "required": true,
+            "x-example": "en-US",
+            "type": "string",
+            "enum": [
+              "en-US",
+              "fr-FR",
+              "ja-JP"
+            ]
+          }
+        ],
+        "consumes": []
+      }
+    }
+  },
+  "definitions": {
+    "Search": {}
+  },
+  "securityDefinitions": {},
+  "tags": []
+}

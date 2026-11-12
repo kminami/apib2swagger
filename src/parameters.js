@@ -2,13 +2,21 @@
 const getParamType = (name, uriTemplate, options) => {
     const defaultType = options.openApi3 ? 'query' : 'body'
     if (!uriTemplate) return defaultType;
+    var inQuery = false;
     for (var i = 0; i < uriTemplate.expressions.length; i++) {
         var exp = uriTemplate.expressions[i];
+        if (exp.literal) {
+            // A '?' in a literal starts a hard-coded query string
+            // (e.g. /search?term={term}); variables after it are
+            // query parameters, not path parameters.
+            if (exp.literal.includes('?')) inQuery = true;
+            continue;
+        }
         if (!exp.varspecs) continue;
         for (var j = 0; j < exp.varspecs.length; j++) {
             var spec = exp.varspecs[j];
             if (spec.varname === name) {
-                return exp.operator.symbol === '?' ? 'query' : 'path';
+                return (inQuery || exp.operator.symbol === '?') ? 'query' : 'path';
             }
         }
     }
