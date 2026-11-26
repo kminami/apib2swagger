@@ -106,39 +106,84 @@ const fixArraySchema = function (schema) {
 }
 module.exports.fixArraySchema = fixArraySchema
 
-// Convert a JSON Schema draft-04 nullable type array (e.g. ["string", "null"])
-// to the Swagger 2.0 form: the remaining type(s) plus x-nullable. Swagger 2.0
-// supports neither the null type nor multiple types; the definitions side
-// (mson_to_json_schema.js) already emits x-nullable directly, so this aligns
-// schemas that arrive as raw draft-04 (e.g. drafter's response schemas).
+// Walk every subschema of a JSON Schema, applying fn to each one.
+const walkSchema = function (schema, fn) {
+    if (!schema || typeof schema !== 'object') return;
+    fn(schema);
+    if (schema.properties) {
+        for (var k in schema.properties) walkSchema(schema.properties[k], fn);
+    }
+    if (schema.items && typeof schema.items === 'object') {
+        walkSchema(schema.items, fn);
+    }
+    ['allOf', 'anyOf', 'oneOf'].forEach(function (key) {
+        if (Array.isArray(schema[key])) schema[key].forEach(function (sub) { walkSchema(sub, fn); });
+    });
+    if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+        walkSchema(schema.additionalProperties, fn);
+    }
+}
+
+// The MSON converter (src/mson_to_json_schema.js) emits JSON Schema
+// draft-04, where a nullable member is a type array containing 'null'
+// (e.g. ["string", "null"]) or, for a referenced type, a
+// {oneOf: [schema, {type: 'null'}]} pair. Neither form is valid in
+// Swagger 2.0, so every schema entering a Swagger 2.0 document is passed
+// through this conversion: the remaining type(s) plus x-nullable, and
+// the oneOf pair becomes an allOf wrapping plus x-nullable.
 // A type array of only ["null"] is left alone, as is a standalone
 // {type: 'null'} (a different, pre-existing quirk).
 const fixNullableSchema = function (schema) {
-    if (!schema || typeof schema !== 'object') return;
-    if (Array.isArray(schema.type) && schema.type.includes('null')) {
-        var types = schema.type.filter(function (t) { return t !== 'null'; });
-        if (types.length === 1) {
-            schema.type = types[0];
-            schema['x-nullable'] = true;
-        } else if (types.length > 1) {
-            schema.type = types;
-            schema['x-nullable'] = true;
+    walkSchema(schema, function (sub) {
+        if (Array.isArray(sub.type) && sub.type.includes('null')) {
+            var types = sub.type.filter(function (t) { return t !== 'null'; });
+            if (types.length >= 1) {
+                sub.type = types.length === 1 ? types[0] : types;
+                sub['x-nullable'] = true;
+            }
         }
-    }
-    if (schema.properties) {
-        for (var k in schema.properties) fixNullableSchema(schema.properties[k]);
-    }
-    if (schema.items && typeof schema.items === 'object') {
-        fixNullableSchema(schema.items);
-    }
-    ['allOf', 'anyOf', 'oneOf'].forEach(function (key) {
-        if (Array.isArray(schema[key])) schema[key].forEach(fixNullableSchema);
+        if (Array.isArray(sub.oneOf) && sub.oneOf.length === 2) {
+            var nullIndex = sub.oneOf.findIndex(function (branch) {
+                return branch && branch.type === 'null' && Object.keys(branch).length === 1;
+            });
+            if (nullIndex !== -1) {
+                var other = sub.oneOf[1 - nullIndex];
+                delete sub.oneOf;
+                sub.allOf = [other];
+                sub['x-nullable'] = true;
+            }
+        }
     });
-    if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
-        fixNullableSchema(schema.additionalProperties);
-    }
+    return schema;
 }
 module.exports.fixNullableSchema = fixNullableSchema
+
+// Convert a JSON Schema draft-04 schema to an OpenAPI 3.0 schema.
+// json-schema-to-openapi-schema already turns a nullable type array
+// into a single type plus nullable: true, but it converts the
+// {type: 'null'} branch of a oneOf pair into a bare {nullable: true}
+// branch, which is not a valid schema; rewrite that pair into an
+// allOf wrapping plus nullable: true, as on the Swagger 2.0 side.
+const jsonSchemaToOpenApi = require('json-schema-to-openapi-schema')
+const fixConvertedNullableSchema = function (schema) {
+    walkSchema(schema, function (sub) {
+        if (Array.isArray(sub.oneOf) && sub.oneOf.length === 2) {
+            var nullIndex = sub.oneOf.findIndex(function (branch) {
+                return branch && branch.nullable === true && Object.keys(branch).length === 1;
+            });
+            if (nullIndex !== -1) {
+                var other = sub.oneOf[1 - nullIndex];
+                delete sub.oneOf;
+                sub.allOf = [other];
+                sub.nullable = true;
+            }
+        }
+    });
+    return schema;
+}
+module.exports.jsonSchemaToOpenApi3 = function (schema) {
+    return fixConvertedNullableSchema(jsonSchemaToOpenApi(schema));
+}
 
 module.exports.getAbsolutePath = function (options, filePath) {
     const sd = options['source-dir']

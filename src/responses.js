@@ -1,8 +1,7 @@
-const { fixArraySchema, fixNullableSchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
+const { fixArraySchema, fixNullableSchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, jsonSchemaToOpenApi3 } = require('./util')
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
-const toOpenApi = require('json-schema-to-openapi-schema')
 const generateSchema = require('generate-schema')
 
 const parseResponseSchema = (schema, options) => {
@@ -14,13 +13,8 @@ const parseResponseSchema = (schema, options) => {
         const result = JSON.parse(schema);
         delete result['$schema'];
         fixArraySchema(result); // work around for Swagger UI / Editor
-        if (!options.openApi3) {
-            // Swagger 2.0 has no null type; express draft-04 nullable type
-            // arrays with x-nullable instead. OpenAPI 3 mode does not need
-            // this: setResponseSchema converts the schema with
-            // json-schema-to-openapi-schema, which handles nullability.
-            fixNullableSchema(result);
-        }
+        // Nullability is adapted to the target mode in setResponseSchema,
+        // together with the schemas from every other source.
         return result
     } catch (e) { }
 }
@@ -76,7 +70,9 @@ const getResponseSchema = (response, options) => {
 
 const setResponseSchema = (responses, response, schema, options) => {
     if (!options.openApi3){
-        responses[response.name].schema = schema
+        // Swagger 2.0 has no null type; adapt the draft-04 nullable
+        // forms (type arrays, oneOf pairs) to x-nullable.
+        responses[response.name].schema = fixNullableSchema(schema)
         return responses
     }
     if (schema.type === 'extend') { // Workaround for invalid JSON schema
@@ -89,7 +85,7 @@ const setResponseSchema = (responses, response, schema, options) => {
     // Convert JSON Schema draft04 to OpenAPI 3.0.x (type: null -> nullable: true)
     // TODO: Skip this for OpenAPI 3.1.x or later.
     try {
-        schema = toOpenApi(schema)
+        schema = jsonSchemaToOpenApi3(schema)
     } catch (e) {
         return responses // TODO: Handle error
     }

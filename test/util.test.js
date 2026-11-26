@@ -1,4 +1,4 @@
-const { hasFileRef, normalizeIncludes, getRefFromInclude, getAbsolutePath } = require('../src/util')
+const { hasFileRef, normalizeIncludes, getRefFromInclude, getAbsolutePath, fixNullableSchema, jsonSchemaToOpenApi3 } = require('../src/util')
 const assert = require('assert')
 const sinon = require('sinon')
 const fs = require('fs')
@@ -146,6 +146,55 @@ describe('util', () => {
             }
             const result = getAbsolutePath(options, '/file.json')
             assert.equal(result, null)
+        })
+    })
+
+    describe('fixNullableSchema', () => {
+        it('should convert a nullable type array to a single type plus x-nullable', () => {
+            const result = fixNullableSchema({ type: ['string', 'null'] })
+            assert.deepEqual(result, { type: 'string', 'x-nullable': true })
+        })
+
+        it('should convert a oneOf pair with a null branch to allOf plus x-nullable', () => {
+            const result = fixNullableSchema({ oneOf: [{ $ref: '#/definitions/User' }, { type: 'null' }] })
+            assert.deepEqual(result, { allOf: [{ $ref: '#/definitions/User' }], 'x-nullable': true })
+        })
+
+        it('should convert nested schemas', () => {
+            const result = fixNullableSchema({
+                type: 'object',
+                properties: {
+                    user: { oneOf: [{ $ref: '#/definitions/User' }, { type: 'null' }] }
+                }
+            })
+            assert.deepEqual(result, {
+                type: 'object',
+                properties: {
+                    user: { allOf: [{ $ref: '#/definitions/User' }], 'x-nullable': true }
+                }
+            })
+        })
+
+        it('should leave a oneOf with more than two branches unchanged', () => {
+            const schema = { oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'null' }] }
+            assert.deepEqual(fixNullableSchema(schema), schema)
+        })
+
+        it('should leave a oneOf whose null branch has other keys unchanged', () => {
+            const schema = { oneOf: [{ $ref: '#/definitions/User' }, { type: 'null', description: 'absent' }] }
+            assert.deepEqual(fixNullableSchema(schema), schema)
+        })
+
+        it('should leave a standalone null type unchanged', () => {
+            const schema = { type: 'null' }
+            assert.deepEqual(fixNullableSchema(schema), schema)
+        })
+    })
+
+    describe('jsonSchemaToOpenApi3', () => {
+        it('should convert a oneOf pair with a null branch to allOf plus nullable', () => {
+            const result = jsonSchemaToOpenApi3({ oneOf: [{ $ref: '#/definitions/User' }, { type: 'null' }] })
+            assert.deepEqual(result, { allOf: [{ $ref: '#/definitions/User' }], nullable: true })
         })
     })
 })

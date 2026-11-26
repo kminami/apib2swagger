@@ -3,11 +3,10 @@ var url = require('url'),
     UriTemplate = require('uritemplate'),
     jsonSchemaFromMSON = require('./src/mson_to_json_schema');
 
-const { searchDataStructure, generateSchemaFromExample } = require('./src/util')
+const { searchDataStructure, generateSchemaFromExample, fixNullableSchema, jsonSchemaToOpenApi3 } = require('./src/util')
 const { processRequests } = require('./src/requests')
 const { processResponses } = require('./src/responses')
 const { processParameters } = require('./src/parameters')
-const toOpenApi = require('json-schema-to-openapi-schema')
 
 var apib2swagger = module.exports.convertParsed = function (apib, options) {
     const { openApi3, infoTitle } = options
@@ -76,9 +75,9 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
                 const { id } = content.content[0].meta
                 const schema = jsonSchemaFromMSON(content, options);
                 if (openApi3) {
-                    output.components.schemas[id] = toOpenApi(schema)
+                    output.components.schemas[id] = jsonSchemaToOpenApi3(schema)
                 } else {
-                    output.definitions[id] = schema
+                    output.definitions[id] = fixNullableSchema(schema)
                 }
             }
         });
@@ -112,10 +111,10 @@ var swaggerDefinitions = function (resource, options) {
         scheme = searchDataStructure(resource.content, options); // Attributes 1
         if (openApi3) {
             if (scheme) {
-                result[resource.name] = toOpenApi(scheme)
+                result[resource.name] = jsonSchemaToOpenApi3(scheme)
             }
         } else {
-            result[resource.name] = scheme ? scheme : {};
+            result[resource.name] = scheme ? fixNullableSchema(scheme) : {};
         }
     }
     const model = resource.model;
@@ -127,10 +126,10 @@ var swaggerDefinitions = function (resource, options) {
         }
         if (openApi3) {
             if (scheme) {
-                result[model.name + 'Model'] = toOpenApi(scheme)
+                result[model.name + 'Model'] = jsonSchemaToOpenApi3(scheme)
             }
         } else {
-            result[model.name + 'Model'] = scheme ? scheme : {};
+            result[model.name + 'Model'] = scheme ? fixNullableSchema(scheme) : {};
         }
     }
     return result

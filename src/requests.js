@@ -1,7 +1,6 @@
-const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
+const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, fixNullableSchema, jsonSchemaToOpenApi3 } = require('./util')
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
-const toOpenApi = require('json-schema-to-openapi-schema')
 
 const swaggerHeaders = function (options, headers) {
     var params = [];
@@ -79,15 +78,15 @@ const setSwaggerRequestSchema = (operation, schema) => {
         return operation
     }
     if (schema.length === 1) {
-        operation.parameters.push({ name: 'body', in: 'body', schema: schema[0].scheme })
+        operation.parameters.push({ name: 'body', in: 'body', schema: fixNullableSchema(schema[0].scheme) })
         return operation
-    } 
-    operation.parameters.push({ 
-        name: 'body', 
-        in: 'body', 
-        schema: { 
-            anyOf: schema.map((s) => s.scheme)
-        } 
+    }
+    operation.parameters.push({
+        name: 'body',
+        in: 'body',
+        schema: {
+            anyOf: schema.map((s) => fixNullableSchema(s.scheme))
+        }
     });
     return operation
 }
@@ -256,11 +255,11 @@ const setOpenApiRequestSchema = (operation, schema) => {
         Object.keys(operation.requestBody.content).forEach(contentType => {
             const s = operation.requestBody.content[contentType].schema;
             if (s) {
-                operation.requestBody.content[contentType].schema = toOpenApi(s)
+                operation.requestBody.content[contentType].schema = jsonSchemaToOpenApi3(s)
             }
         })
         return operation
-    } 
+    }
 
     schema.forEach(s => {
         if (!operation.requestBody.content[s.contentType].schema){
@@ -293,7 +292,7 @@ const setOpenApiRequestSchema = (operation, schema) => {
     Object.keys(operation.requestBody.content).forEach(contentType => {
         const s = operation.requestBody.content[contentType].schema;
         if (s) {
-            operation.requestBody.content[contentType].schema = toOpenApi(s)
+            operation.requestBody.content[contentType].schema = jsonSchemaToOpenApi3(s)
         }
     })
     return operation
