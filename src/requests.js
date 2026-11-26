@@ -1,6 +1,7 @@
-const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, fixNullableSchema, jsonSchemaToOpenApi3 } = require('./util')
+const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, fixNullableSchema } = require('./util')
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
+const toOpenApi = require('json-schema-to-openapi-schema')
 
 const swaggerHeaders = function (options, headers) {
     var params = [];
@@ -255,7 +256,7 @@ const setOpenApiRequestSchema = (operation, schema) => {
         Object.keys(operation.requestBody.content).forEach(contentType => {
             const s = operation.requestBody.content[contentType].schema;
             if (s) {
-                operation.requestBody.content[contentType].schema = jsonSchemaToOpenApi3(s)
+                operation.requestBody.content[contentType].schema = toOpenApi(s)
             }
         })
         return operation
@@ -292,7 +293,7 @@ const setOpenApiRequestSchema = (operation, schema) => {
     Object.keys(operation.requestBody.content).forEach(contentType => {
         const s = operation.requestBody.content[contentType].schema;
         if (s) {
-            operation.requestBody.content[contentType].schema = jsonSchemaToOpenApi3(s)
+            operation.requestBody.content[contentType].schema = toOpenApi(s)
         }
     })
     return operation

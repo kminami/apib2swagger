@@ -158,18 +158,6 @@ const fixNullableSchema = function (schema) {
 }
 module.exports.fixNullableSchema = fixNullableSchema
 
-// Convert a JSON Schema draft-04 schema to an OpenAPI 3.0 schema.
-// json-schema-to-openapi-schema turns a nullable type array into a
-// single type plus nullable: true. For a oneOf pair with a
-// {type: 'null'} branch it currently leaves a bare {nullable: true}
-// branch behind (upstream bug, openapi-contrib issue #42, fixed in
-// the maintained @openapi-contrib package). That remnant is accepted
-// here for now; the library migration is handled separately.
-const jsonSchemaToOpenApi = require('json-schema-to-openapi-schema')
-module.exports.jsonSchemaToOpenApi3 = function (schema) {
-    return jsonSchemaToOpenApi(schema);
-}
-
 module.exports.getAbsolutePath = function (options, filePath) {
     const sd = options['source-dir']
     const directory = sd ? path.normalize(sd) : null
