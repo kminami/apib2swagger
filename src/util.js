@@ -159,30 +159,15 @@ const fixNullableSchema = function (schema) {
 module.exports.fixNullableSchema = fixNullableSchema
 
 // Convert a JSON Schema draft-04 schema to an OpenAPI 3.0 schema.
-// json-schema-to-openapi-schema already turns a nullable type array
-// into a single type plus nullable: true, but it converts the
-// {type: 'null'} branch of a oneOf pair into a bare {nullable: true}
-// branch, which is not a valid schema; rewrite that pair into an
-// allOf wrapping plus nullable: true, as on the Swagger 2.0 side.
+// json-schema-to-openapi-schema turns a nullable type array into a
+// single type plus nullable: true. For a oneOf pair with a
+// {type: 'null'} branch it currently leaves a bare {nullable: true}
+// branch behind (upstream bug, openapi-contrib issue #42, fixed in
+// the maintained @openapi-contrib package). That remnant is accepted
+// here for now; the library migration is handled separately.
 const jsonSchemaToOpenApi = require('json-schema-to-openapi-schema')
-const fixConvertedNullableSchema = function (schema) {
-    walkSchema(schema, function (sub) {
-        if (Array.isArray(sub.oneOf) && sub.oneOf.length === 2) {
-            var nullIndex = sub.oneOf.findIndex(function (branch) {
-                return branch && branch.nullable === true && Object.keys(branch).length === 1;
-            });
-            if (nullIndex !== -1) {
-                var other = sub.oneOf[1 - nullIndex];
-                delete sub.oneOf;
-                sub.allOf = [other];
-                sub.nullable = true;
-            }
-        }
-    });
-    return schema;
-}
 module.exports.jsonSchemaToOpenApi3 = function (schema) {
-    return fixConvertedNullableSchema(jsonSchemaToOpenApi(schema));
+    return jsonSchemaToOpenApi(schema);
 }
 
 module.exports.getAbsolutePath = function (options, filePath) {

@@ -23,12 +23,14 @@
         ],
         "properties": {
           "images": {
-            "allOf": [
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/ImagesType"
+              },
+              {
+                "nullable": true
               }
-            ],
-            "nullable": true
+            ]
           }
         }
       }

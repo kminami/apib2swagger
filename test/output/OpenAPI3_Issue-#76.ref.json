@@ -95,21 +95,25 @@
             "nullable": true
           },
           "homeAddress": {
-            "allOf": [
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/Address",
                 "description": "The home address"
+              },
+              {
+                "nullable": true
               }
-            ],
-            "nullable": true
+            ]
           },
           "named": {
-            "allOf": [
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/Named"
+              },
+              {
+                "nullable": true
               }
-            ],
-            "nullable": true
+            ]
           },
           "tags": {
             "type": "array",

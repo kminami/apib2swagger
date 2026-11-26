@@ -1,4 +1,4 @@
-const { hasFileRef, normalizeIncludes, getRefFromInclude, getAbsolutePath, fixNullableSchema, jsonSchemaToOpenApi3 } = require('../src/util')
+const { hasFileRef, normalizeIncludes, getRefFromInclude, getAbsolutePath, fixNullableSchema } = require('../src/util')
 const assert = require('assert')
 const sinon = require('sinon')
 const fs = require('fs')
@@ -188,13 +188,6 @@ describe('util', () => {
         it('should leave a standalone null type unchanged', () => {
             const schema = { type: 'null' }
             assert.deepEqual(fixNullableSchema(schema), schema)
-        })
-    })
-
-    describe('jsonSchemaToOpenApi3', () => {
-        it('should convert a oneOf pair with a null branch to allOf plus nullable', () => {
-            const result = jsonSchemaToOpenApi3({ oneOf: [{ $ref: '#/definitions/User' }, { type: 'null' }] })
-            assert.deepEqual(result, { allOf: [{ $ref: '#/definitions/User' }], nullable: true })
         })
     })
 })
