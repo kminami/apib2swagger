@@ -2,7 +2,7 @@ const { fixArraySchema, fixNullableSchema, hasFileRef, getRefFromInclude, search
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
-const toOpenApi = require('json-schema-to-openapi-schema')
+const toOpenApi = require('@openapi-contrib/json-schema-to-openapi-schema').convertSync
 const generateSchema = require('generate-schema')
 
 const parseResponseSchema = (schema, options) => {

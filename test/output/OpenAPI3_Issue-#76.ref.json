@@ -98,9 +98,7 @@
             "oneOf": [
               {
                 "$ref": "#/components/schemas/Address",
-                "description": "The home address"
-              },
-              {
+                "description": "The home address",
                 "nullable": true
               }
             ]
@@ -108,9 +106,7 @@
           "named": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/Named"
-              },
-              {
+                "$ref": "#/components/schemas/Named",
                 "nullable": true
               }
             ]

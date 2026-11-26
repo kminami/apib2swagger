@@ -25,9 +25,7 @@
           "images": {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/ImagesType"
-              },
-              {
+                "$ref": "#/components/schemas/ImagesType",
                 "nullable": true
               }
             ]

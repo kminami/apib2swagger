@@ -1,7 +1,7 @@
 const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, fixNullableSchema } = require('./util')
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
-const toOpenApi = require('json-schema-to-openapi-schema')
+const toOpenApi = require('@openapi-contrib/json-schema-to-openapi-schema').convertSync
 
 const swaggerHeaders = function (options, headers) {
     var params = [];
