@@ -7,7 +7,7 @@ const { searchDataStructure, generateSchemaFromExample } = require('./src/util')
 const { processRequests } = require('./src/requests')
 const { processResponses } = require('./src/responses')
 const { processParameters } = require('./src/parameters')
-const toOpenApi = require('json-schema-to-openapi-schema')
+const toOpenApi = require('@openapi-contrib/json-schema-to-openapi-schema').convertSync
 
 var apib2swagger = module.exports.convertParsed = function (apib, options) {
     const { openApi3, infoTitle } = options

@@ -17,11 +17,11 @@
     "name": "Keisuke Minami"
   },
   "dependencies": {
+    "@openapi-contrib/json-schema-to-openapi-schema": "^4.3.4",
     "apib-include-directive": "^0.1.0",
     "drafter.js": "^2.6.2",
     "generate-schema": "^2.5.0",
     "js-yaml": "^4.1.0",
-    "json-schema-to-openapi-schema": "^0.4.0",
     "lodash.isequal": "^4.5.0",
     "nopt": "^3.0.6",
     "uritemplate": "^0.3.4"
