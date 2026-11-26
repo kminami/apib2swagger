@@ -106,6 +106,58 @@ const fixArraySchema = function (schema) {
 }
 module.exports.fixArraySchema = fixArraySchema
 
+// Walk every subschema of a JSON Schema, applying fn to each one.
+const walkSchema = function (schema, fn) {
+    if (!schema || typeof schema !== 'object') return;
+    fn(schema);
+    if (schema.properties) {
+        for (var k in schema.properties) walkSchema(schema.properties[k], fn);
+    }
+    if (schema.items && typeof schema.items === 'object') {
+        walkSchema(schema.items, fn);
+    }
+    ['allOf', 'anyOf', 'oneOf'].forEach(function (key) {
+        if (Array.isArray(schema[key])) schema[key].forEach(function (sub) { walkSchema(sub, fn); });
+    });
+    if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+        walkSchema(schema.additionalProperties, fn);
+    }
+}
+
+// The MSON converter (src/mson_to_json_schema.js) emits JSON Schema
+// draft-04, where a nullable member is a type array containing 'null'
+// (e.g. ["string", "null"]) or, for a referenced type, a
+// {oneOf: [schema, {type: 'null'}]} pair. Neither form is valid in
+// Swagger 2.0, so every schema entering a Swagger 2.0 document is passed
+// through this conversion: the remaining type(s) plus x-nullable, and
+// the oneOf pair becomes an allOf wrapping plus x-nullable.
+// A type array of only ["null"] is left alone, as is a standalone
+// {type: 'null'} (a different, pre-existing quirk).
+const fixNullableSchema = function (schema) {
+    walkSchema(schema, function (sub) {
+        if (Array.isArray(sub.type) && sub.type.includes('null')) {
+            var types = sub.type.filter(function (t) { return t !== 'null'; });
+            if (types.length >= 1) {
+                sub.type = types.length === 1 ? types[0] : types;
+                sub['x-nullable'] = true;
+            }
+        }
+        if (Array.isArray(sub.oneOf) && sub.oneOf.length === 2) {
+            var nullIndex = sub.oneOf.findIndex(function (branch) {
+                return branch && branch.type === 'null' && Object.keys(branch).length === 1;
+            });
+            if (nullIndex !== -1) {
+                var other = sub.oneOf[1 - nullIndex];
+                delete sub.oneOf;
+                sub.allOf = [other];
+                sub['x-nullable'] = true;
+            }
+        }
+    });
+    return schema;
+}
+module.exports.fixNullableSchema = fixNullableSchema
+
 module.exports.getAbsolutePath = function (options, filePath) {
     const sd = options['source-dir']
     const directory = sd ? path.normalize(sd) : null

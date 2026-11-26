@@ -3,7 +3,7 @@ var url = require('url'),
     UriTemplate = require('uritemplate'),
     jsonSchemaFromMSON = require('./src/mson_to_json_schema');
 
-const { searchDataStructure, generateSchemaFromExample } = require('./src/util')
+const { searchDataStructure, generateSchemaFromExample, fixNullableSchema } = require('./src/util')
 const { processRequests } = require('./src/requests')
 const { processResponses } = require('./src/responses')
 const { processParameters } = require('./src/parameters')
@@ -78,7 +78,7 @@ var apib2swagger = module.exports.convertParsed = function (apib, options) {
                 if (openApi3) {
                     output.components.schemas[id] = toOpenApi(schema)
                 } else {
-                    output.definitions[id] = schema
+                    output.definitions[id] = fixNullableSchema(schema)
                 }
             }
         });
@@ -115,7 +115,7 @@ var swaggerDefinitions = function (resource, options) {
                 result[resource.name] = toOpenApi(scheme)
             }
         } else {
-            result[resource.name] = scheme ? scheme : {};
+            result[resource.name] = scheme ? fixNullableSchema(scheme) : {};
         }
     }
     const model = resource.model;
@@ -130,7 +130,7 @@ var swaggerDefinitions = function (resource, options) {
                 result[model.name + 'Model'] = toOpenApi(scheme)
             }
         } else {
-            result[model.name + 'Model'] = scheme ? scheme : {};
+            result[model.name + 'Model'] = scheme ? fixNullableSchema(scheme) : {};
         }
     }
     return result

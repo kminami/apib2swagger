@@ -1,4 +1,4 @@
-const { fixArraySchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
+const { fixArraySchema, fixNullableSchema, hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
 const escapeJSONPointer = require('./escape_json_pointer')
 const isEqual = require('lodash.isequal')
 const http = require('http')
@@ -14,6 +14,8 @@ const parseResponseSchema = (schema, options) => {
         const result = JSON.parse(schema);
         delete result['$schema'];
         fixArraySchema(result); // work around for Swagger UI / Editor
+        // Nullability is adapted to the target mode in setResponseSchema,
+        // together with the schemas from every other source.
         return result
     } catch (e) { }
 }
@@ -69,7 +71,9 @@ const getResponseSchema = (response, options) => {
 
 const setResponseSchema = (responses, response, schema, options) => {
     if (!options.openApi3){
-        responses[response.name].schema = schema
+        // Swagger 2.0 has no null type; adapt the draft-04 nullable
+        // forms (type arrays, oneOf pairs) to x-nullable.
+        responses[response.name].schema = fixNullableSchema(schema)
         return responses
     }
     if (schema.type === 'extend') { // Workaround for invalid JSON schema

@@ -1,4 +1,4 @@
-const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample } = require('./util')
+const { hasFileRef, getRefFromInclude, searchDataStructure, generateSchemaFromExample, fixNullableSchema } = require('./util')
 const isEqual = require('lodash.isequal')
 const escapeJSONPointer = require('./escape_json_pointer')
 const toOpenApi = require('@openapi-contrib/json-schema-to-openapi-schema').convertSync
@@ -79,15 +79,15 @@ const setSwaggerRequestSchema = (operation, schema) => {
         return operation
     }
     if (schema.length === 1) {
-        operation.parameters.push({ name: 'body', in: 'body', schema: schema[0].scheme })
+        operation.parameters.push({ name: 'body', in: 'body', schema: fixNullableSchema(schema[0].scheme) })
         return operation
-    } 
-    operation.parameters.push({ 
-        name: 'body', 
-        in: 'body', 
-        schema: { 
-            anyOf: schema.map((s) => s.scheme)
-        } 
+    }
+    operation.parameters.push({
+        name: 'body',
+        in: 'body',
+        schema: {
+            anyOf: schema.map((s) => fixNullableSchema(s.scheme))
+        }
     });
     return operation
 }
@@ -260,7 +260,7 @@ const setOpenApiRequestSchema = (operation, schema) => {
             }
         })
         return operation
-    } 
+    }
 
     schema.forEach(s => {
         if (!operation.requestBody.content[s.contentType].schema){

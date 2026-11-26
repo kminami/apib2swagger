@@ -71,7 +71,12 @@ function convert(mson, options) {
                         schema.required.push(member.content.key.content);
                         break;
                     case 'nullable':
-                        if (propertySchema.$ref) {
+                        // Express nullability the JSON Schema draft-04 way.
+                        // Neither form is valid as-is in a Swagger 2.0 or
+                        // OpenAPI 3.0 schema; the conversion to each mode's
+                        // own nullable representation happens outside this
+                        // converter (see src/util.js).
+                        if (propertySchema.$ref || !propertySchema.type) {
                             propertySchema = {oneOf: [propertySchema, {type: 'null'}]};
                         } else {
                             propertySchema.type = [propertySchema.type, 'null']
